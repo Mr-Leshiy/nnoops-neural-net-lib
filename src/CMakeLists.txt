@@ -1,7 +1,7 @@
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
 set(SOURCES
-        class_A.cpp
+        quadratic_function.cpp
         )
 
 
