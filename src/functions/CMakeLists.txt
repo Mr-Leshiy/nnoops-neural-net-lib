@@ -1,0 +1,4 @@
+
+add_library(functions OBJECT
+        quadratic_function.cpp
+        )
