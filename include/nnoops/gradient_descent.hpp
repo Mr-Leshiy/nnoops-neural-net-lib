@@ -1,0 +1,6 @@
+#ifndef NNOOPS_LIB_CPP_GRADIENT_DESCENT_HPP_
+#define NNOOPS_LIB_CPP_GRADIENT_DESCENT_HPP_
+
+namespace nnoops {}
+
+#endif
