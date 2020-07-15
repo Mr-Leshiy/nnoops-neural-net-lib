@@ -1,6 +1,7 @@
 #include "nnoops/functions/gradient_descent.hpp"
 
 #include <gtest/gtest.h>
+#include <math.h>
 
 #include "nnoops/functions/quadratic_function.hpp"
 
@@ -18,15 +19,14 @@ TEST(GradientDescent, QuadraticFunctionTest) {
 
   EXPECT_TRUE(abs(res - expect) < eps * 10);
 
-  QuadraticFunction f2(-5, 20, 11);
+  QuadraticFunction f2(5, -20, 11);
 
-  alpha = 0.00001;
+  alpha = 0.1;
   eps = 0.001;
 
   res = gradient_descent(f2, 100, alpha, eps);
 
   expect = 2;
 
-  EXPECT_EQ(res, expect);
-  EXPECT_TRUE(abs(res - expect) < eps * 10);
+  EXPECT_TRUE(fabs(res - expect) < eps * 10);
 }

@@ -23,7 +23,7 @@ double gradient_descent(const BaseFunction& function,
   do {
     prev_value = value;
     value = do_gradient_descent(function, prev_value, alpha);
-  } while (abs(prev_value - value) > eps);
+  } while (fabs(prev_value - value) > eps);
 
   return value;
 }
