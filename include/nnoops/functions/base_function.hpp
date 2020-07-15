@@ -6,8 +6,8 @@ namespace nnoops {
 struct BaseFunction {
   virtual ~BaseFunction() = default;
 
-  virtual double function(double x) = 0;
-  virtual double derivative(double x) = 0;
+  virtual double function(double x) const = 0;
+  virtual double derivative(double x) const = 0;
 };
 
 }  // namespace nnoops

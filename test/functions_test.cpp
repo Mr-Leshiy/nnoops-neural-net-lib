@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "nnoops/quadratic_function.hpp"
+#include "nnoops/functions/quadratic_function.hpp"
 
 using namespace nnoops;
 

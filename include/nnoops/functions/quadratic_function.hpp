@@ -1,7 +1,7 @@
 #ifndef NNOOPS_LIB_CPP_QUADRATIC_FUNCTION_HPP_
 #define NNOOPS_LIB_CPP_QUADRATIC_FUNCTION_HPP_
 
-#include "nnoops/base_function.hpp"
+#include "nnoops/functions/base_function.hpp"
 
 namespace nnoops {
 
@@ -11,9 +11,9 @@ struct QuadraticFunction : public BaseFunction {
 
   ~QuadraticFunction() override = default;
 
-  double function(double x) override;
+  double function(double x) const override;
 
-  double derivative(double x) override;
+  double derivative(double x) const override;
 
  private:
   double a{1.0};
