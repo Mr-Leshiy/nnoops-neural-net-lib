@@ -17,15 +17,15 @@ double gradient_descent(const BaseFunction& function,
                         double start_point,
                         double alpha,
                         double eps) {
-  double new_value = do_gradient_descent(function, start_point, alpha);
+  double value = do_gradient_descent(function, start_point, alpha);
   double prev_value;
 
   do {
-    prev_value = new_value;
-    new_value = do_gradient_descent(function, prev_value, alpha);
-  } while (abs(prev_value - new_value) > eps);
+    prev_value = value;
+    value = do_gradient_descent(function, prev_value, alpha);
+  } while (abs(prev_value - value) > eps);
 
-  return 0;
+  return value;
 }
 
 double gradient_descent(const BaseFunction& function,
