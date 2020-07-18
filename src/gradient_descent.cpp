@@ -1,4 +1,4 @@
-#include "nnoops/functions/gradient_descent.hpp"
+#include "nnoops/gradient_descent.hpp"
 
 #include <math.h>
 #include <stdint.h>
