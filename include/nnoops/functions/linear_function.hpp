@@ -1,19 +1,17 @@
-#ifndef NNOOPS_LIB_CPP_QUADRATIC_FUNCTION_HPP_
-#define NNOOPS_LIB_CPP_QUADRATIC_FUNCTION_HPP_
+#ifndef NNOOPS_LIB_CPP_LINEAR_FUNCTION_HPP_
+#define NNOOPS_LIB_CPP_LINEAR_FUNCTION_HPP_
 
 #include <cassert>
 
 #include "nnoops/functions/base_function.hpp"
 
 namespace nnoops {
-
-struct QuadraticFunction : public BaseFunction {
-  QuadraticFunction() = default;
-  QuadraticFunction(double a, double b, double c) : a(a), b(b), c(c) {
+struct LinearFunction : BaseFunction {
+  LinearFunction() = default;
+  LinearFunction(double a, double b) : a(a), b(b) {
     assert(a != 0 && "'a' field should not equal to zero");
   }
-
-  ~QuadraticFunction() override = default;
+  ~LinearFunction() override = default;
 
   double function(double x) const override;
 
@@ -22,7 +20,6 @@ struct QuadraticFunction : public BaseFunction {
  private:
   double a{1.0};
   double b{0};
-  double c{0};
 };
 
 }  // namespace nnoops

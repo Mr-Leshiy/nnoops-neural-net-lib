@@ -1,9 +1,14 @@
 #include <gtest/gtest.h>
+#include <math.h>
 
 #include <vector>
 
 #include "nnoops/functions/complex_function.hpp"
+#include "nnoops/functions/linear_function.hpp"
 #include "nnoops/functions/quadratic_function.hpp"
+#include "nnoops/functions/relu_function.hpp"
+#include "nnoops/functions/sigmoid_function.hpp"
+#include "nnoops/functions/tanh_function.hpp"
 
 using namespace nnoops;
 
@@ -87,6 +92,87 @@ static std::vector<FunctionValueTestCase> f_value_test_cases = {
         std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
             QuadraticFunction(2, 3, 1), QuadraticFunction(1, 2, 0)),
     },
+
+    // SigmoidFunction test cases
+    {
+        0.5,
+        0.25,
+        0,
+        std::make_shared<SigmoidFunction>(),
+    },
+    {
+        (1.0 / (1 + exp(-1))),
+        (exp(-1) / ((1 + exp(-1)) * (1 + exp(-1)))),
+        1,
+        std::make_shared<SigmoidFunction>(),
+    },
+    {
+        (1.0 / (1 + exp(1))),
+        (exp(1) / ((1 + exp(1)) * (1 + exp(1)))),
+        -1,
+        std::make_shared<SigmoidFunction>(),
+    },
+
+    // LinearFunction test cases
+    {
+        -7.236,
+        1,
+        -7.236,
+        std::make_shared<LinearFunction>(),
+    },
+    {
+        23,
+        2,
+        10,
+        std::make_shared<LinearFunction>(2, 3),
+    },
+    {
+        -17,
+        -2,
+        2,
+        std::make_shared<LinearFunction>(-2, -13),
+    },
+
+    // ReLUFunction test cases
+    {
+        123.123,
+        1,
+        123.123,
+        std::make_shared<ReLUFunction>(),
+    },
+    {
+        0,
+        0,
+        -123.123,
+        std::make_shared<ReLUFunction>(),
+    },
+    {
+        0,
+        0,
+        0,
+        std::make_shared<ReLUFunction>(),
+    },
+
+    // TanhFunction test cases
+    {
+        0,
+        1,
+        0,
+        std::make_shared<TanhFunction>(),
+    },
+    {
+        (exp(1) - exp(-1)) / (exp(1) + exp(-1)),
+        4 * exp(2) / ((exp(2) + 1) * (exp(2) + 1)),
+        1,
+        std::make_shared<TanhFunction>(),
+    },
+    {
+        (exp(-1) - exp(1)) / (exp(1) + exp(-1)),
+        4 * exp(-2) / ((exp(-2) + 1) * (exp(-2) + 1)),
+        -1,
+        std::make_shared<TanhFunction>(),
+    },
+
 };
 
 TEST_P(FunctionValueTest, function_test) {

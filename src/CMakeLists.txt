@@ -3,7 +3,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR})
 add_subdirectory(functions)
 
 set(SOURCES
-        functions/quadratic_function.cpp
+        $<TARGET_OBJECTS:functions>
         gradient_descent.cpp
         )
 
