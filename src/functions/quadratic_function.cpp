@@ -2,10 +2,12 @@
 
 namespace nnoops {
 
-double QuadraticFunction::function(double x) const {
-  return (a * x * x) + (b * x) + c;
+double QuadraticFunction::function(const Point<1>& x) const {
+  return ((a * x * x) + (b * x) + c)[0];
 }
 
-double QuadraticFunction::derivative(double x) const { return 2 * (a * x) + b; }
+double QuadraticFunction::derivative(const Point<1>& x) const {
+  return (2 * (a * x) + b)[0];
+}
 
 }  // namespace nnoops

@@ -15,8 +15,8 @@ using namespace nnoops;
 struct FunctionValueTestCase {
   double expected_function_value;
   double expected_derivative_value;
-  double argument;
-  std::shared_ptr<BaseFunction> f;
+  Point<1> argument;
+  std::shared_ptr<BaseFunction<1>> f;
 };
 
 struct FunctionValueTest
@@ -27,25 +27,25 @@ static std::vector<FunctionValueTestCase> f_value_test_cases = {
     {
         0,
         0,
-        0,
+        Point<1>{0},
         std::make_shared<QuadraticFunction>(),
     },
     {
         0.00001,
         2,
-        0,
+        Point<1>{0},
         std::make_shared<QuadraticFunction>(1, 2, 0.00001),
     },
     {
         37.00002,
         15,
-        3,
+        Point<1>{3},
         std::make_shared<QuadraticFunction>(2, 3, 10.00002),
     },
     {
         19.00002,
         -9,
-        -3,
+        Point<1>{-3},
         std::make_shared<QuadraticFunction>(2, 3, 10.00002),
     },
 
@@ -53,63 +53,63 @@ static std::vector<FunctionValueTestCase> f_value_test_cases = {
     {
         16,
         32,
-        2,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(), QuadraticFunction()),
+        Point<1>{2},
+        std::make_shared<ComplexFunction<1>>(QuadraticFunction(),
+                                             QuadraticFunction()),
     },
     {
         81,
         108,
-        3,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(), QuadraticFunction()),
+        Point<1>{3},
+        std::make_shared<ComplexFunction<1>>(QuadraticFunction(),
+                                             QuadraticFunction()),
     },
     {
         256,
         256,
-        4,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(), QuadraticFunction()),
+        Point<1>{4},
+        std::make_shared<ComplexFunction<1>>(QuadraticFunction(),
+                                             QuadraticFunction()),
     },
     {
         153,
         210,
-        2,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(2, 3, 1), QuadraticFunction(1, 2, 0)),
+        Point<1>{2},
+        std::make_shared<ComplexFunction<1>>(QuadraticFunction(2, 3, 1),
+                                             QuadraticFunction(1, 2, 0)),
     },
     {
         496,
         504,
-        3,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(2, 3, 1), QuadraticFunction(1, 2, 0)),
+        Point<1>{3},
+        std::make_shared<ComplexFunction<1>>(QuadraticFunction(2, 3, 1),
+                                             QuadraticFunction(1, 2, 0)),
     },
     {
         1225,
         990,
-        4,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(2, 3, 1), QuadraticFunction(1, 2, 0)),
+        Point<1>{4},
+        std::make_shared<ComplexFunction<1>>(QuadraticFunction(2, 3, 1),
+                                             QuadraticFunction(1, 2, 0)),
     },
 
     // SigmoidFunction test cases
     {
         0.5,
         0.25,
-        0,
+        Point<1>{0},
         std::make_shared<SigmoidFunction>(),
     },
     {
         (1.0 / (1 + exp(-1))),
         (exp(-1) / ((1 + exp(-1)) * (1 + exp(-1)))),
-        1,
+        Point<1>{1},
         std::make_shared<SigmoidFunction>(),
     },
     {
         (1.0 / (1 + exp(1))),
         (exp(1) / ((1 + exp(1)) * (1 + exp(1)))),
-        -1,
+        Point<1>{-1},
         std::make_shared<SigmoidFunction>(),
     },
 
@@ -117,19 +117,19 @@ static std::vector<FunctionValueTestCase> f_value_test_cases = {
     {
         -7.236,
         1,
-        -7.236,
+        Point<1>{-7.236},
         std::make_shared<LinearFunction>(),
     },
     {
         23,
         2,
-        10,
+        Point<1>{10},
         std::make_shared<LinearFunction>(2, 3),
     },
     {
         -17,
         -2,
-        2,
+        Point<1>{2},
         std::make_shared<LinearFunction>(-2, -13),
     },
 
@@ -137,19 +137,19 @@ static std::vector<FunctionValueTestCase> f_value_test_cases = {
     {
         123.123,
         1,
-        123.123,
+        Point<1>{123.123},
         std::make_shared<ReLUFunction>(),
     },
     {
         0,
         0,
-        -123.123,
+        Point<1>{-123.123},
         std::make_shared<ReLUFunction>(),
     },
     {
         0,
         0,
-        0,
+        Point<1>{0},
         std::make_shared<ReLUFunction>(),
     },
 
@@ -157,19 +157,19 @@ static std::vector<FunctionValueTestCase> f_value_test_cases = {
     {
         0,
         1,
-        0,
+        Point<1>{0},
         std::make_shared<TanhFunction>(),
     },
     {
         (exp(1) - exp(-1)) / (exp(1) + exp(-1)),
         4 * exp(2) / ((exp(2) + 1) * (exp(2) + 1)),
-        1,
+        Point<1>{1},
         std::make_shared<TanhFunction>(),
     },
     {
         (exp(-1) - exp(1)) / (exp(1) + exp(-1)),
         4 * exp(-2) / ((exp(-2) + 1) * (exp(-2) + 1)),
-        -1,
+        Point<1>{-1},
         std::make_shared<TanhFunction>(),
     },
 

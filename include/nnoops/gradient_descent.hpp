@@ -7,12 +7,14 @@
 
 namespace nnoops {
 
-double gradient_descent(const BaseFunction& function,
+template <uint32_t N>
+double gradient_descent(const BaseFunction<N>& function,
                         double start_point,
                         double alpha,
                         double eps);
 
-double gradient_descent(const BaseFunction& function,
+template <uint32_t N>
+double gradient_descent(const BaseFunction<N>& function,
                         double start_point,
                         double alpha,
                         uint32_t num_iterations);

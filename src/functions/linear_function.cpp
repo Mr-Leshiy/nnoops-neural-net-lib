@@ -2,8 +2,10 @@
 
 namespace nnoops {
 
-double LinearFunction::function(double x) const { return a * x + b; }
+double LinearFunction::function(const Point<1>& x) const {
+  return (a * x + b)[0];
+}
 
-double LinearFunction::derivative(double) const { return a; }
+double LinearFunction::derivative(const Point<1>&) const { return a; }
 
 }  // namespace nnoops

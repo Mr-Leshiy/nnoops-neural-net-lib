@@ -6,16 +6,17 @@
 #include "nnoops/functions/base_function.hpp"
 
 namespace nnoops {
-struct LinearFunction : BaseFunction {
+
+struct LinearFunction : BaseFunction<1> {
   LinearFunction() = default;
   LinearFunction(double a, double b) : a(a), b(b) {
     assert(a != 0 && "'a' field should not equal to zero");
   }
   ~LinearFunction() override = default;
 
-  double function(double x) const override;
+  double function(const Point<1>& x) const override;
 
-  double derivative(double x) const override;
+  double derivative(const Point<1>& x) const override;
 
  private:
   double a{1.0};

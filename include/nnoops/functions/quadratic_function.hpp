@@ -7,7 +7,7 @@
 
 namespace nnoops {
 
-struct QuadraticFunction : public BaseFunction {
+struct QuadraticFunction : public BaseFunction<1> {
   QuadraticFunction() = default;
   QuadraticFunction(double a, double b, double c) : a(a), b(b), c(c) {
     assert(a != 0 && "'a' field should not equal to zero");
@@ -15,9 +15,9 @@ struct QuadraticFunction : public BaseFunction {
 
   ~QuadraticFunction() override = default;
 
-  double function(double x) const override;
+  double function(const Point<1>& x) const override;
 
-  double derivative(double x) const override;
+  double derivative(const Point<1>& x) const override;
 
  private:
   double a{1.0};

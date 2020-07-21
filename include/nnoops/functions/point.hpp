@@ -53,6 +53,13 @@ struct Point {
     return this->x[index];
   }
 
+  const double& operator[](uint32_t index) const {
+    if (index >= N) {
+      throw std::out_of_range("index out of range");
+    }
+    return this->x[index];
+  }
+
   Point<N>& operator+=(double val) {
     for (uint32_t i = 0; i < N; ++i) {
       this->x[i] += val;

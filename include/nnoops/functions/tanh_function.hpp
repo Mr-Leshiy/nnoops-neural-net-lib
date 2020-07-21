@@ -5,13 +5,13 @@
 
 namespace nnoops {
 
-struct TanhFunction : public BaseFunction {
+struct TanhFunction : public BaseFunction<1> {
   TanhFunction() = default;
   ~TanhFunction() override = default;
 
-  double function(double x) const override;
+  double function(const Point<1>& x) const override;
 
-  double derivative(double x) const override;
+  double derivative(const Point<1>& x) const override;
 };
 
 }  // namespace nnoops

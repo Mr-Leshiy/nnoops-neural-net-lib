@@ -7,13 +7,13 @@
 
 namespace nnoops {
 
-struct SigmoidFunction : public BaseFunction {
+struct SigmoidFunction : public BaseFunction<1> {
   SigmoidFunction() = default;
   ~SigmoidFunction() override = default;
 
-  double function(double x) const override;
+  double function(const Point<1>& x) const override;
 
-  double derivative(double x) const override;
+  double derivative(const Point<1>& x) const override;
 };
 
 }  // namespace nnoops
