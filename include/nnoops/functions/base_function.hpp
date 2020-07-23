@@ -13,7 +13,7 @@ struct BaseFunction {
 
   virtual double function(const Point<N>& x) const = 0;
 
-  virtual double derivative(const Point<N>& x) const = 0;
+  virtual Point<N> gradient(const Point<N>& x) const = 0;
 };
 
 }  // namespace nnoops
