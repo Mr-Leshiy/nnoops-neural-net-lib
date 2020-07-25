@@ -35,17 +35,34 @@ struct ArgumentTypeHolder<k, Argument<T, Ts...>> {
 template <size_t k, typename... Ts>
 typename std::enable_if<
     k == 0,
-    typename ArgumentTypeHolder<0, Argument<Ts...>>::type>::type
-get_arg(Argument<Ts...> arg) {
+    typename ArgumentTypeHolder<0, Argument<Ts...>>::type&>::type
+get_arg(Argument<Ts...>& arg) {
   return arg.arg;
 }
 
 template <size_t k, typename T, typename... Ts>
 typename std::enable_if<
     k != 0,
-    typename ArgumentTypeHolder<k, Argument<T, Ts...>>::type>::type
-get_arg(Argument<T, Ts...> arg) {
-  Argument<Ts...> base = arg;
+    typename ArgumentTypeHolder<k, Argument<T, Ts...>>::type&>::type
+get_arg(Argument<T, Ts...>& arg) {
+  Argument<Ts...>& base = arg;
+  return get_arg<k - 1>(base);
+}
+
+template <size_t k, typename... Ts>
+typename std::enable_if<
+    k == 0,
+    typename ArgumentTypeHolder<0, Argument<Ts...>>::type&>::type
+get_arg(Argument<Ts...>&& arg) {
+  return arg.arg;
+}
+
+template <size_t k, typename T, typename... Ts>
+typename std::enable_if<
+    k != 0,
+    typename ArgumentTypeHolder<k, Argument<T, Ts...>>::type&>::type
+get_arg(Argument<T, Ts...>&& arg) {
+  Argument<Ts...>& base = arg;
   return get_arg<k - 1>(base);
 }
 
