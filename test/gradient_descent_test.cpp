@@ -1,14 +1,12 @@
-#include "nnoops/gradient_descent.hpp"
-
 #include <gtest/gtest.h>
 #include <math.h>
 
 #include "nnoops/functions/complex_function.hpp"
-#include "nnoops/functions/quadratic_function.hpp"
+#include "nnoops/gradient_descent.hpp"
 
 using namespace nnoops;
 
-//TEST(GradientDescent, QuadraticFunctionTest) {
+// TEST(GradientDescent, QuadraticFunctionTest) {
 //  QuadraticFunction f1(2, 3, 10);
 //
 //  double alpha = 0.1;
@@ -32,7 +30,7 @@ using namespace nnoops;
 //  EXPECT_TRUE(fabs(res - expect) < eps * 10);
 //}
 
-//TEST(GradientDescent, ComplexFunction) {
+// TEST(GradientDescent, ComplexFunction) {
 //  QuadraticFunction f1;
 //  QuadraticFunction f2;
 //
