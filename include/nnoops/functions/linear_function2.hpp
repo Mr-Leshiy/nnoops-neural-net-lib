@@ -10,16 +10,19 @@ namespace nnoops {
 
 template <uint32_t N>
 struct LinearFunction2 : BaseFunction<Point<N>, double> {
+  using arg_t = typename BaseFunction<Point<N>, double>::arg_t;
+
   LinearFunction2() = default;
 
   LinearFunction2(Point<N> x) : x(x) {}
 
   ~LinearFunction2() override = default;
 
-  double function(Argument<Point<N>, double> argument) const override {}
+  double function(const arg_t& argument) const override {
+    return x * get_arg<0>(argument) + get_arg<1>(argument);
+  }
 
-  Argument<Point<N>, double> gradient(
-      Argument<Point<N>, double> argument) const override {}
+  arg_t gradient(const arg_t&) const override { return arg_t(x, 1.0); }
 
  private:
   Point<N> x{};

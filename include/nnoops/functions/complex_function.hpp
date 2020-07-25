@@ -12,25 +12,27 @@ namespace nnoops {
 // funct_t1 f1
 // funct_t2 f2
 // f1(f2())
-template <uint32_t N>
-struct ComplexFunction : public BaseFunction<N> {
+template <typename... Ts>
+struct ComplexFunction : public BaseFunction<Ts...> {
+  using arg_t = typename BaseFunction<Ts...>::arg_t;
+
   ~ComplexFunction() override = default;
 
-  ComplexFunction(std::shared_ptr<BaseFunction<1>> f1,
-                  std::shared_ptr<BaseFunction<N>> f2)
+  ComplexFunction(std::shared_ptr<BaseFunction<double>> f1,
+                  std::shared_ptr<BaseFunction<Ts...>> f2)
       : f1(f1), f2(f2) {}
 
-  double function(const Point<N>& x) const override {
-    return f1->function(Point<1>{f2->function(x)});
+  double function(const arg_t& argument) const override {
+    return f1->function(f2->function(argument));
   }
 
-  double derivative(const Point<N>& x) const override {
-    return f2->derivative(x) * f1->derivative(Point<1>{f2->function(x)});
+  arg_t gradient(const arg_t& argument) const override {
+    return f2->gradient(argument) * f1->gradient(f2->function(argument));
   }
 
  private:
-  std::shared_ptr<BaseFunction<1>> f1;
-  std::shared_ptr<BaseFunction<N>> f2;
+  std::shared_ptr<BaseFunction<double>> f1;
+  std::shared_ptr<BaseFunction<Ts...>> f2;
 };
 
 }  // namespace nnoops
