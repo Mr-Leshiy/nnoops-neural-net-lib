@@ -18,8 +18,13 @@ struct CheckPoint {
 template <uint32_t N, typename = typename std::enable_if<N != 0>::type>
 struct Point : public CheckPoint {
   Point() = default;
+
   Point(const Point<N>& point) : x(point.x) {}
+
+  Point(Point<N>&& point) : x(std::move(point.x)) {}
+
   Point(const std::array<double, N> val) : x(val) {}
+
   Point(const std::initializer_list<double>& list) {
     if (list.size() != N) {
       throw std::out_of_range("invalid initializer list size");
@@ -48,6 +53,11 @@ struct Point : public CheckPoint {
     for (const auto& el : list) {
       this->x[i++] = el;
     }
+    return *this;
+  }
+
+  Point<N>& operator=(Point<N>&& point) {
+    this->x = std::move(point.x);
     return *this;
   }
 
@@ -125,28 +135,28 @@ struct Point : public CheckPoint {
 
   friend inline Point<N> operator+(const Point<N>& point1,
                                    const Point<N>& point2) {
-    return Point(point1) += point2;
+    return std::move(Point(point1) += point2);
   }
 
   friend inline Point<N> operator+(double val, const Point<N>& point) {
-    return Point(point) += val;
+    return std::move(Point(point) += val);
   }
 
   friend inline Point<N> operator+(const Point<N>& point, double val) {
-    return Point(point) += val;
+    return std::move(Point(point) += val);
   }
 
   friend inline Point<N> operator-(const Point<N>& point1,
                                    const Point<N>& point2) {
-    return Point(point1) -= point2;
+    return std::move(Point(point1) -= point2);
   }
 
   friend inline Point<N> operator-(double val, const Point<N>& point) {
-    return Point(point) -= -val;
+    return std::move(Point(point) -= -val);
   }
 
   friend inline Point<N> operator-(const Point<N>& point, double val) {
-    return Point(point) -= val;
+    return std::move(Point(point) -= val);
   }
 
   friend inline double operator*(const Point<N>& point1,
@@ -159,11 +169,11 @@ struct Point : public CheckPoint {
   }
 
   friend inline Point<N> operator*(double val, const Point<N>& point) {
-    return Point(point) *= val;
+    return std::move(Point(point) *= val);
   }
 
   friend inline Point<N> operator*(const Point<N>& point, double val) {
-    return Point(point) *= val;
+    return std::move(Point(point) *= val);
   }
 
   friend inline bool operator==(const Point<N>& point1,
@@ -178,8 +188,7 @@ struct Point : public CheckPoint {
 
  private:
   std::array<double, N> x{};
-
-};  // namespace nnoops
+};
 
 }  // namespace nnoops
 

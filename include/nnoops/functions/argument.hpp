@@ -45,6 +45,36 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
     return *this;
   }
 
+  friend inline Argument<T, Ts...> operator*(const Argument<T, Ts...>& arg,
+                                             double val) {
+    return std::move(Argument<T, Ts...>(arg) *= val);
+  }
+
+  friend inline Argument<T, Ts...> operator+(const Argument<T, Ts...>& arg,
+                                             double val) {
+    return std::move(Argument<T, Ts...>(arg) += val);
+  }
+
+  friend inline Argument<T, Ts...> operator-(const Argument<T, Ts...>& arg,
+                                             double val) {
+    return std::move(Argument<T, Ts...>(arg) -= val);
+  }
+
+  friend inline Argument<T, Ts...> operator*(double val,
+                                             const Argument<T, Ts...>& arg) {
+    return std::move(Argument<T, Ts...>(arg) *= val);
+  }
+
+  friend inline Argument<T, Ts...> operator+(double val,
+                                             const Argument<T, Ts...>& arg) {
+    return std::move(Argument<T, Ts...>(arg) += val);
+  }
+
+  friend inline Argument<T, Ts...> operator-(double val,
+                                             const Argument<T, Ts...>& arg) {
+    return std::move(Argument<T, Ts...>(arg) -= val);
+  }
+
   T arg;
 };
 

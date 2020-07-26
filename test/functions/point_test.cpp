@@ -87,4 +87,9 @@ TEST(Point, addition_substraction_test) {
   point1 = {1, 2, 3};
   point2 = {2, 3, 5};
   EXPECT_EQ(23, point1 * point2);
+
+  point3 = point1 + point2 + point3;
+
+  point3 = {4, 7, 11};
+  EXPECT_EQ(point3, point1 + point2 + point1);
 }
