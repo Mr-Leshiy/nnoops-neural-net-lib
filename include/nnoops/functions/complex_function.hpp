@@ -27,8 +27,8 @@ struct ComplexFunction : public BaseFunction<Ts...> {
   }
 
   arg_t gradient(const arg_t& argument) const override {
-    // return f2->gradient(argument) * f1->gradient(f2->function(argument));
-    return f2->gradient(argument);
+    return f2->gradient(argument) *
+           get_arg<0>(f1->gradient(f2->function(argument)));
   }
 
  private:

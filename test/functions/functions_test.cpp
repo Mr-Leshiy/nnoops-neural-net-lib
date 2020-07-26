@@ -104,16 +104,15 @@ static std::vector<FunctionValueTestCase2> f_value_test_cases2 = {
         std::make_shared<LinearFunction2<1>>(Point<1>{3.44}),
     },
     // Complex function test cases
-    // {
-    //     0,
-    //     arg2_t(Point<1>{3, 44}, 1.0),
-    //     arg2_t(Point<1>{1.0}, 2.56),
-    //     std::make_shared<ComplexFunction<Point<1>, double>>(
-    //         std::make_shared<SigmoidFunction>(),
-    //         std::make_shared<LinearFunction2<1>>(Point<1>{1.0})),
+    {
+        0.5,
+        arg2_t(Point<1>{0.25}, 0.25),
+        arg2_t(Point<1>{0.0}, 0.0),
+        std::make_shared<ComplexFunction<Point<1>, double>>(
+            std::make_shared<SigmoidFunction>(),
+            std::make_shared<LinearFunction2<1>>(Point<1>{1.0})),
 
-    // },
-
+    },
 };
 
 TEST_P(FunctionValueTest2, function_test) {
