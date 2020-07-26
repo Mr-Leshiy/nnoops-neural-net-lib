@@ -10,7 +10,13 @@ namespace nnoops {
 struct CheckPoint;
 
 template <typename... Ts>
-struct Argument {};
+struct Argument {
+  Argument<Ts...>& operator*=(double) { return *this; }
+
+  Argument<Ts...>& operator+=(double) { return *this; }
+
+  Argument<Ts...>& operator-=(double) { return *this; }
+};
 
 template <typename T, typename... Ts>
 struct Argument<T, Ts...> : public Argument<Ts...> {
@@ -20,6 +26,24 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
                               std::is_base_of<CheckPoint, T>::value>::type;
 
   Argument(T arg, Ts... args) : Argument<Ts...>(args...), arg(arg) {}
+
+  Argument<T, Ts...>& operator*=(double val) {
+    this->arg *= val;
+    Argument<Ts...>::operator*=(val);
+    return *this;
+  }
+
+  Argument<T, Ts...>& operator+=(double val) {
+    this->arg += val;
+    Argument<Ts...>::operator+=(val);
+    return *this;
+  }
+
+  Argument<T, Ts...>& operator-=(double val) {
+    this->arg -= val;
+    Argument<Ts...>::operator-=(val);
+    return *this;
+  }
 
   T arg;
 };

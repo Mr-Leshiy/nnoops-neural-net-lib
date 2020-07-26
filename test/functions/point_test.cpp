@@ -1,6 +1,6 @@
-#include "nnoops/functions/point.hpp"
-
 #include <gtest/gtest.h>
+
+#include "nnoops/functions/point.hpp"
 
 using namespace nnoops;
 
