@@ -10,8 +10,13 @@
 
 namespace nnoops {
 
+// This struct is only for the compile time type validation
+struct CheckPoint {
+  virtual ~CheckPoint() = default;
+};
+
 template <uint32_t N, typename = typename std::enable_if<N != 0>::type>
-struct Point {
+struct Point : public CheckPoint {
   Point() = default;
   Point(const Point<N>& point) : x(point.x) {}
   Point(const std::array<double, N> val) : x(val) {}

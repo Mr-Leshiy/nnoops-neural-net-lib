@@ -6,6 +6,7 @@
 #include "nnoops/functions/complex_function.hpp"
 #include "nnoops/functions/linear_function.hpp"
 #include "nnoops/functions/linear_function2.hpp"
+#include "nnoops/functions/sigmoid_function.hpp"
 
 using namespace nnoops;
 
@@ -102,6 +103,16 @@ static std::vector<FunctionValueTestCase2> f_value_test_cases2 = {
         arg2_t(Point<1>{1.0}, 2.56),
         std::make_shared<LinearFunction2<1>>(Point<1>{3.44}),
     },
+    // Complex function test cases
+    // {
+    //     0,
+    //     arg2_t(Point<1>{3, 44}, 1.0),
+    //     arg2_t(Point<1>{1.0}, 2.56),
+    //     std::make_shared<ComplexFunction<Point<1>, double>>(
+    //         std::make_shared<SigmoidFunction>(),
+    //         std::make_shared<LinearFunction2<1>>(Point<1>{1.0})),
+
+    // },
 
 };
 
@@ -116,8 +127,53 @@ TEST_P(FunctionValueTest2, derivative_test) {
 
   EXPECT_EQ(get_arg<0>(value.f->gradient(value.argument)),
             get_arg<0>(value.expected_derivative_value));
+
+  EXPECT_EQ(get_arg<1>(value.f->gradient(value.argument)),
+            get_arg<1>(value.expected_derivative_value));
 }
 
 INSTANTIATE_TEST_SUITE_P(FunctionValue,
                          FunctionValueTest2,
                          testing::ValuesIn(f_value_test_cases2));
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+using arg3_t = Argument<double>;
+
+struct FunctionValueTestCase3 {
+  double expected_function_value;
+  arg3_t expected_derivative_value;
+  arg3_t argument;
+  std::shared_ptr<BaseFunction<double>> f;
+};
+
+struct FunctionValueTest3
+    : public testing::TestWithParam<FunctionValueTestCase3> {};
+
+static std::vector<FunctionValueTestCase3> f_value_test_cases3 = {
+    // Linear function2 test cases
+    {
+        0.5,
+        arg3_t(0.25),
+        arg3_t(0),
+        std::make_shared<SigmoidFunction>(),
+    },
+};
+
+TEST_P(FunctionValueTest3, function_test) {
+  auto value = GetParam();
+
+  EXPECT_EQ(value.f->function(value.argument), value.expected_function_value);
+}
+
+TEST_P(FunctionValueTest3, derivative_test) {
+  auto value = GetParam();
+
+  EXPECT_EQ(get_arg<0>(value.f->gradient(value.argument)),
+            get_arg<0>(value.expected_derivative_value));
+}
+
+INSTANTIATE_TEST_SUITE_P(FunctionValue,
+                         FunctionValueTest3,
+                         testing::ValuesIn(f_value_test_cases3));

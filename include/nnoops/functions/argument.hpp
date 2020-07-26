@@ -3,13 +3,22 @@
 
 #include <stdio.h>
 
+#include <type_traits>
+
 namespace nnoops {
+
+struct CheckPoint;
 
 template <typename... Ts>
 struct Argument {};
 
 template <typename T, typename... Ts>
 struct Argument<T, Ts...> : public Argument<Ts...> {
+  using type =
+      typename std::enable_if<std::is_integral<T>::value ||
+                              std::is_floating_point<T>::value ||
+                              std::is_base_of<CheckPoint, T>::value>::type;
+
   Argument(T arg, Ts... args) : Argument<Ts...>(args...), arg(arg) {}
 
   T arg;
@@ -62,39 +71,39 @@ get_arg(const Argument<T, Ts...>& arg) {
   return get_arg<k - 1>(base);
 }
 
-// template <size_t k, typename... Ts>
-// typename std::enable_if<
-//     k == 0,
-//     typename ArgumentTypeHolder<0, Argument<Ts...>>::type&>::type
-// get_arg(Argument<Ts...>&& arg) {
-//   return arg.arg;
-// }
+template <size_t k, typename... Ts>
+typename std::enable_if<
+    k == 0,
+    typename ArgumentTypeHolder<0, Argument<Ts...>>::type&>::type
+get_arg(Argument<Ts...>&& arg) {
+  return arg.arg;
+}
 
-// template <size_t k, typename... Ts>
-// typename std::enable_if<
-//     k == 0,
-//     const typename ArgumentTypeHolder<0, Argument<Ts...>>::type&>::type
-// get_arg(const Argument<Ts...>&& arg) {
-//   return arg.arg;
-// }
+template <size_t k, typename... Ts>
+typename std::enable_if<
+    k == 0,
+    const typename ArgumentTypeHolder<0, Argument<Ts...>>::type&>::type
+get_arg(const Argument<Ts...>&& arg) {
+  return arg.arg;
+}
 
-// template <size_t k, typename T, typename... Ts>
-// typename std::enable_if<
-//     k != 0,
-//     typename ArgumentTypeHolder<k, Argument<T, Ts...>>::type&>::type
-// get_arg(Argument<T, Ts...>&& arg) {
-//   Argument<Ts...>& base = arg;
-//   return get_arg<k - 1>(base);
-// }
+template <size_t k, typename T, typename... Ts>
+typename std::enable_if<
+    k != 0,
+    typename ArgumentTypeHolder<k, Argument<T, Ts...>>::type&>::type
+get_arg(Argument<T, Ts...>&& arg) {
+  Argument<Ts...>& base = arg;
+  return get_arg<k - 1>(base);
+}
 
-// template <size_t k, typename T, typename... Ts>
-// typename std::enable_if<
-//     k != 0,
-//     const typename ArgumentTypeHolder<k, Argument<T, Ts...>>::type&>::type
-// get_arg(const Argument<T, Ts...>&& arg) {
-//   const Argument<Ts...>& base = arg;
-//   return get_arg<k - 1>(base);
-// }
+template <size_t k, typename T, typename... Ts>
+typename std::enable_if<
+    k != 0,
+    const typename ArgumentTypeHolder<k, Argument<T, Ts...>>::type&>::type
+get_arg(const Argument<T, Ts...>&& arg) {
+  const Argument<Ts...>& base = arg;
+  return get_arg<k - 1>(base);
+}
 
 }  // namespace nnoops
 
