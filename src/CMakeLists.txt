@@ -1,9 +1,6 @@
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
-add_subdirectory(functions)
-
 set(SOURCES
-        $<TARGET_OBJECTS:functions>
         gradient_descent.cpp
         )
 

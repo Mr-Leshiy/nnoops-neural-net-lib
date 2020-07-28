@@ -5,174 +5,50 @@
 
 #include "nnoops/functions/complex_function.hpp"
 #include "nnoops/functions/linear_function.hpp"
-#include "nnoops/functions/quadratic_function.hpp"
-#include "nnoops/functions/relu_function.hpp"
+#include "nnoops/functions/linear_function2.hpp"
 #include "nnoops/functions/sigmoid_function.hpp"
-#include "nnoops/functions/tanh_function.hpp"
 
 using namespace nnoops;
 
+using arg_t = Argument<Point<1>>;
+
 struct FunctionValueTestCase {
   double expected_function_value;
-  double expected_derivative_value;
-  double argument;
-  std::shared_ptr<BaseFunction> f;
+  arg_t expected_derivative_value;
+  arg_t argument;
+  std::shared_ptr<BaseFunction<Point<1>>> f;
 };
 
 struct FunctionValueTest
     : public testing::TestWithParam<FunctionValueTestCase> {};
 
 static std::vector<FunctionValueTestCase> f_value_test_cases = {
-    // Quadratic function test cases
+    // Linear function test cases
     {
         0,
-        0,
-        0,
-        std::make_shared<QuadraticFunction>(),
+        arg_t(Point<1>{1.0}),
+        arg_t(Point<1>{0}),
+        std::make_shared<LinearFunction<1>>(Point<1>{1}, 0),
     },
     {
-        0.00001,
-        2,
-        0,
-        std::make_shared<QuadraticFunction>(1, 2, 0.00001),
+        5.678,
+        arg_t(Point<1>{1.0}),
+        arg_t(Point<1>{5.678}),
+        std::make_shared<LinearFunction<1>>(Point<1>{1}, 0),
     },
     {
-        37.00002,
-        15,
-        3,
-        std::make_shared<QuadraticFunction>(2, 3, 10.00002),
+        15.678,
+        arg_t(Point<1>{1.0}),
+        arg_t(Point<1>{5.678}),
+        std::make_shared<LinearFunction<1>>(Point<1>{1}, 10),
     },
     {
-        19.00002,
-        -9,
-        -3,
-        std::make_shared<QuadraticFunction>(2, 3, 10.00002),
+        12.67,
+        arg_t(Point<1>{2.67}),
+        arg_t(Point<1>{1.0}),
+        std::make_shared<LinearFunction<1>>(Point<1>{2.67}, 10),
     },
-
-    // ComplexFunction test cases
-    {
-        16,
-        32,
-        2,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(), QuadraticFunction()),
-    },
-    {
-        81,
-        108,
-        3,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(), QuadraticFunction()),
-    },
-    {
-        256,
-        256,
-        4,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(), QuadraticFunction()),
-    },
-    {
-        153,
-        210,
-        2,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(2, 3, 1), QuadraticFunction(1, 2, 0)),
-    },
-    {
-        496,
-        504,
-        3,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(2, 3, 1), QuadraticFunction(1, 2, 0)),
-    },
-    {
-        1225,
-        990,
-        4,
-        std::make_shared<ComplexFunction<QuadraticFunction, QuadraticFunction>>(
-            QuadraticFunction(2, 3, 1), QuadraticFunction(1, 2, 0)),
-    },
-
-    // SigmoidFunction test cases
-    {
-        0.5,
-        0.25,
-        0,
-        std::make_shared<SigmoidFunction>(),
-    },
-    {
-        (1.0 / (1 + exp(-1))),
-        (exp(-1) / ((1 + exp(-1)) * (1 + exp(-1)))),
-        1,
-        std::make_shared<SigmoidFunction>(),
-    },
-    {
-        (1.0 / (1 + exp(1))),
-        (exp(1) / ((1 + exp(1)) * (1 + exp(1)))),
-        -1,
-        std::make_shared<SigmoidFunction>(),
-    },
-
-    // LinearFunction test cases
-    {
-        -7.236,
-        1,
-        -7.236,
-        std::make_shared<LinearFunction>(),
-    },
-    {
-        23,
-        2,
-        10,
-        std::make_shared<LinearFunction>(2, 3),
-    },
-    {
-        -17,
-        -2,
-        2,
-        std::make_shared<LinearFunction>(-2, -13),
-    },
-
-    // ReLUFunction test cases
-    {
-        123.123,
-        1,
-        123.123,
-        std::make_shared<ReLUFunction>(),
-    },
-    {
-        0,
-        0,
-        -123.123,
-        std::make_shared<ReLUFunction>(),
-    },
-    {
-        0,
-        0,
-        0,
-        std::make_shared<ReLUFunction>(),
-    },
-
-    // TanhFunction test cases
-    {
-        0,
-        1,
-        0,
-        std::make_shared<TanhFunction>(),
-    },
-    {
-        (exp(1) - exp(-1)) / (exp(1) + exp(-1)),
-        4 * exp(2) / ((exp(2) + 1) * (exp(2) + 1)),
-        1,
-        std::make_shared<TanhFunction>(),
-    },
-    {
-        (exp(-1) - exp(1)) / (exp(1) + exp(-1)),
-        4 * exp(-2) / ((exp(-2) + 1) * (exp(-2) + 1)),
-        -1,
-        std::make_shared<TanhFunction>(),
-    },
-
+    // Complex function test cases
 };
 
 TEST_P(FunctionValueTest, function_test) {
@@ -184,10 +60,119 @@ TEST_P(FunctionValueTest, function_test) {
 TEST_P(FunctionValueTest, derivative_test) {
   auto value = GetParam();
 
-  EXPECT_EQ(value.f->derivative(value.argument),
-            value.expected_derivative_value);
+  EXPECT_EQ(get_arg<0>(value.f->gradient(value.argument)),
+            get_arg<0>(value.expected_derivative_value));
 }
 
 INSTANTIATE_TEST_SUITE_P(FunctionValue,
                          FunctionValueTest,
                          testing::ValuesIn(f_value_test_cases));
+
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+
+using arg2_t = Argument<Point<1>, double>;
+
+struct FunctionValueTestCase2 {
+  double expected_function_value;
+  arg2_t expected_derivative_value;
+  arg2_t argument;
+  std::shared_ptr<BaseFunction<Point<1>, double>> f;
+};
+
+struct FunctionValueTest2
+    : public testing::TestWithParam<FunctionValueTestCase2> {};
+
+static std::vector<FunctionValueTestCase2> f_value_test_cases2 = {
+    // Linear function2 test cases
+    {
+        0,
+        arg2_t(Point<1>{1.0}, 1.0),
+        arg2_t(Point<1>{0}, 0),
+        std::make_shared<LinearFunction2<1>>(Point<1>{1.0}),
+    },
+    {
+        2.56,
+        arg2_t(Point<1>{1.0}, 1.0),
+        arg2_t(Point<1>{0}, 2.56),
+        std::make_shared<LinearFunction2<1>>(Point<1>{1.0}),
+    },
+    {
+        6.0,
+        arg2_t(Point<1>{3.44}, 1.0),
+        arg2_t(Point<1>{1.0}, 2.56),
+        std::make_shared<LinearFunction2<1>>(Point<1>{3.44}),
+    },
+    // Complex function test cases
+    {
+        0.5,
+        arg2_t(Point<1>{0.25}, 0.25),
+        arg2_t(Point<1>{0.0}, 0.0),
+        std::make_shared<ComplexFunction<Point<1>, double>>(
+            std::make_shared<SigmoidFunction>(),
+            std::make_shared<LinearFunction2<1>>(Point<1>{1.0})),
+
+    },
+};
+
+TEST_P(FunctionValueTest2, function_test) {
+  auto value = GetParam();
+
+  EXPECT_EQ(value.f->function(value.argument), value.expected_function_value);
+}
+
+TEST_P(FunctionValueTest2, derivative_test) {
+  auto value = GetParam();
+
+  EXPECT_EQ(get_arg<0>(value.f->gradient(value.argument)),
+            get_arg<0>(value.expected_derivative_value));
+
+  EXPECT_EQ(get_arg<1>(value.f->gradient(value.argument)),
+            get_arg<1>(value.expected_derivative_value));
+}
+
+INSTANTIATE_TEST_SUITE_P(FunctionValue,
+                         FunctionValueTest2,
+                         testing::ValuesIn(f_value_test_cases2));
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+using arg3_t = Argument<double>;
+
+struct FunctionValueTestCase3 {
+  double expected_function_value;
+  arg3_t expected_derivative_value;
+  arg3_t argument;
+  std::shared_ptr<BaseFunction<double>> f;
+};
+
+struct FunctionValueTest3
+    : public testing::TestWithParam<FunctionValueTestCase3> {};
+
+static std::vector<FunctionValueTestCase3> f_value_test_cases3 = {
+    // Linear function2 test cases
+    {
+        0.5,
+        arg3_t(0.25),
+        arg3_t(0),
+        std::make_shared<SigmoidFunction>(),
+    },
+};
+
+TEST_P(FunctionValueTest3, function_test) {
+  auto value = GetParam();
+
+  EXPECT_EQ(value.f->function(value.argument), value.expected_function_value);
+}
+
+TEST_P(FunctionValueTest3, derivative_test) {
+  auto value = GetParam();
+
+  EXPECT_EQ(get_arg<0>(value.f->gradient(value.argument)),
+            get_arg<0>(value.expected_derivative_value));
+}
+
+INSTANTIATE_TEST_SUITE_P(FunctionValue,
+                         FunctionValueTest3,
+                         testing::ValuesIn(f_value_test_cases3));

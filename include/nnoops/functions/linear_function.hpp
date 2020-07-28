@@ -4,22 +4,27 @@
 #include <cassert>
 
 #include "nnoops/functions/base_function.hpp"
+#include "nnoops/functions/point.hpp"
 
 namespace nnoops {
-struct LinearFunction : BaseFunction {
-  LinearFunction() = default;
-  LinearFunction(double a, double b) : a(a), b(b) {
-    assert(a != 0 && "'a' field should not equal to zero");
-  }
+
+template <uint32_t N>
+struct LinearFunction : public BaseFunction<Point<N>> {
+  using arg_t = typename BaseFunction<Point<N>>::arg_t;
+
+  LinearFunction(Point<N> a, double b) : a(a), b(b) {}
+
   ~LinearFunction() override = default;
 
-  double function(double x) const override;
+  double function(const arg_t& argument) const override {
+    return a * get_arg<0>(argument) + b;
+  }
 
-  double derivative(double x) const override;
+  arg_t gradient(const arg_t&) const override { return arg_t(a); }
 
  private:
-  double a{1.0};
-  double b{0};
+  Point<N> a;
+  double b;
 };
 
 }  // namespace nnoops
