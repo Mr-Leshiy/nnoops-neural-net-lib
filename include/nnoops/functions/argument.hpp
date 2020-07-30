@@ -53,7 +53,7 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
   }
 
   Argument<T, Ts...>& operator*=(const Argument<T, Ts...>&& arg) {
-    this->arg *= arg.arg;
+    this->arg *= arg;
     Argument<Ts...>::operator*=(arg);
     return *this;
   }
@@ -65,7 +65,7 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
   }
 
   Argument<T, Ts...>& operator+=(const Argument<T, Ts...>&& arg) {
-    this->arg += arg.arg;
+    this->arg += std::move(arg.arg);
     Argument<Ts...>::operator+=(arg);
     return *this;
   }
@@ -83,7 +83,7 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
   }
 
   Argument<T, Ts...>& operator-=(const Argument<T, Ts...>&& arg) {
-    this->arg -= arg.arg;
+    this->arg -= std::move(arg.arg);
     Argument<Ts...>::operator-=(arg);
     return *this;
   }
