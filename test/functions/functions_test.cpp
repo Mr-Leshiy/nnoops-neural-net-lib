@@ -6,6 +6,7 @@
 #include "nnoops/functions/complex_function.hpp"
 #include "nnoops/functions/linear_function.hpp"
 #include "nnoops/functions/linear_function2.hpp"
+#include "nnoops/functions/log_loss_function.hpp"
 #include "nnoops/functions/sigmoid_function.hpp"
 
 using namespace nnoops;
@@ -166,6 +167,19 @@ static std::vector<FunctionValueTestCase3> f_value_test_cases3 = {
         arg3_t(0.25),
         arg3_t(0),
         std::make_shared<SigmoidFunction>(),
+    },
+    // Log Loss function test cases
+    {
+        -log(0.98),
+        arg3_t(-(1.0 - 0.98) / (0.98 * (1.0 - 0.98))),
+        arg3_t(0.98),
+        std::make_shared<LogLossFunction>(1.0),
+    },
+    {
+        -log(0.58),
+        arg3_t(-(1.0 - 0.58) / (0.58 * (1.0 - 0.58))),
+        arg3_t(0.58),
+        std::make_shared<LogLossFunction>(1.0),
     },
 };
 

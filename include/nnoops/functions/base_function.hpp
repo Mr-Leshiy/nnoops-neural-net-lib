@@ -9,7 +9,6 @@
 
 namespace nnoops {
 
-// N - size of the argument, K - number of arguments
 template <typename... Ts>
 struct BaseFunction {
   using arg_t = Argument<Ts...>;

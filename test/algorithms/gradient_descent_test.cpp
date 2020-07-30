@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <math.h>
 
+#include "nnoops/algorithms/gradient_descent.hpp"
 #include "nnoops/functions/complex_function.hpp"
-#include "nnoops/gradient_descent.hpp"
 
 using namespace nnoops;
 

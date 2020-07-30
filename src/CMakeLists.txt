@@ -1,7 +1,9 @@
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
+add_subdirectory(algorithms)
+
 set(SOURCES
-        gradient_descent.cpp
+        $<TARGET_OBJECTS:algorithms>
         )
 
 

@@ -83,3 +83,20 @@ TEST(Argument, Operations_methods_test) {
   EXPECT_EQ(get_arg<1>(arg), 56);
   EXPECT_EQ(get_arg<2>(arg), p);
 }
+
+TEST(Argument, Operations_between_two_arguments) {
+  Argument<double, double> arg1 = {4, 10};
+  Argument<double, double> arg2 = {4, 10};
+
+  arg1 = arg1 + arg1;
+  arg2 += arg2;
+
+  EXPECT_EQ(get_arg<0>(arg1), get_arg<0>(arg2));
+  EXPECT_EQ(get_arg<1>(arg1), get_arg<1>(arg2));
+
+  arg1 -= Argument<double, double>{4, 10};
+  arg2 = arg2 - Argument<double, double>{4, 10};
+
+    EXPECT_EQ(get_arg<0>(arg1), get_arg<0>(arg2));
+    EXPECT_EQ(get_arg<1>(arg1), get_arg<1>(arg2));
+}
