@@ -22,14 +22,14 @@ struct LogLossFunction : public BaseFunction<double> {
 
   double function(const arg_t& argument) const override {
     const double& val = get_arg<0>(argument);
-    assert((val < 1 && val > 0) &&
+    assert((val < 1.0 && val > 0.0) &&
            "argument value should be in the interval of (0, 1)");
     return -(y * log(val) + (1 - y) * log(1 - val));
   }
 
   arg_t gradient(const arg_t& argument) const override {
     const double& val = get_arg<0>(argument);
-    assert((val < 1 && val > 0) &&
+    assert((val < 1.0 && val > 0.0) &&
            "argument value should be in the interval of (0, 1)");
     return -(y - val) / (val * (1 - val));
   }

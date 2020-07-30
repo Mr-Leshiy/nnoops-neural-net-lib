@@ -10,26 +10,28 @@ namespace nnoops {
 
 namespace {
 
-template<typename... Args>
-double do_gradient_descent(const BaseFunction<Args...>& f,
-                           const Argument<Args...>& x,
-                           double alpha) {
-  return x - alpha * f.derivative(x);
+template <typename... Args>
+Argument<Args...> do_gradient_descent(const BaseFunction<Args...>& f,
+                                      const Argument<Args...>& x,
+                                      double alpha) {
+  return x - alpha * f.gradient(x);
 }
 
 }  // namespace
 
 template <typename... Args>
-double gradient_descent(const BaseFunction<Args...>& function,
-                        const Argument<Args...>& start_point,
-                        double alpha,
-                        double eps);
+Argument<Args...> gradient_descent(const BaseFunction<Args...>& function,
+                                   const Argument<Args...>& start_point,
+                                   double alpha,
+                                   uint64_t num_iterations) {
+  Argument<Args...> value = do_gradient_descent(function, start_point, alpha);
 
-template <typename... Args>
-double gradient_descent(const BaseFunction<Args...>& function,
-                        const Argument<Args...>& start_point,
-                        double alpha,
-                        uint32_t num_iterations);
+  for (uint64_t i = 0; i < num_iterations; ++i) {
+    value = do_gradient_descent(function, value, alpha);
+  }
+
+  return value;
+}
 
 }  // namespace nnoops
 
