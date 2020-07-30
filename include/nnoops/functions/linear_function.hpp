@@ -8,7 +8,8 @@
 
 namespace nnoops {
 
-template <uint32_t N>
+// N - size of the argument
+template <uint64_t N>
 struct LinearFunction : public BaseFunction<Point<N>> {
   using arg_t = typename BaseFunction<Point<N>>::arg_t;
 

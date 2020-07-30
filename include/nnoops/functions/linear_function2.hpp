@@ -8,11 +8,9 @@
 
 namespace nnoops {
 
-template <uint32_t N>
+template <uint64_t N>
 struct LinearFunction2 : BaseFunction<Point<N>, double> {
   using arg_t = typename BaseFunction<Point<N>, double>::arg_t;
-
-  LinearFunction2() = default;
 
   LinearFunction2(Point<N> x) : x(x) {}
 
