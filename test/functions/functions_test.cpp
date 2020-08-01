@@ -8,6 +8,7 @@
 #include "nnoops/functions/linear_function2.hpp"
 #include "nnoops/functions/log_loss_function.hpp"
 #include "nnoops/functions/sigmoid_function.hpp"
+#include "nnoops/functions/sum_function.hpp"
 
 using namespace nnoops;
 
@@ -180,6 +181,36 @@ static std::vector<FunctionValueTestCase3> f_value_test_cases3 = {
         arg3_t(-(1.0 - 0.58) / (0.58 * (1.0 - 0.58))),
         arg3_t(0.58),
         std::make_shared<LogLossFunction>(1.0),
+    },
+    // Sum function test cases
+    {
+        0.5,
+        arg3_t(0.25),
+        arg3_t(0),
+        std::make_shared<SumFunction<double>>(
+            std::vector<std::shared_ptr<BaseFunction<double>>>{
+                std::make_shared<SigmoidFunction>()}),
+    },
+    {
+        1.0,
+        arg3_t(0.5),
+        arg3_t(0),
+        std::make_shared<SumFunction<double>>(
+            std::vector<std::shared_ptr<BaseFunction<double>>>{
+                std::make_shared<SigmoidFunction>(),
+                std::make_shared<SigmoidFunction>(),
+            }),
+    },
+    {
+        2,
+        arg3_t(1.0),
+        arg3_t(0),
+        std::make_shared<SumFunction<double>>(
+            std::vector<std::shared_ptr<BaseFunction<double>>>{
+                std::make_shared<SigmoidFunction>(),
+                std::make_shared<SigmoidFunction>(),
+            },
+            2),
     },
 };
 

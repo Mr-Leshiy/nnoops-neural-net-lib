@@ -35,6 +35,18 @@ struct Argument {
   Argument<Ts...>& operator-=(const Argument<Ts...>&&) { return *this; }
 
   Argument<Ts...>& operator-=(const Argument<Ts...>&) { return *this; }
+
+  // operator==
+
+  bool operator==(const Argument<Ts...>&&) const { return true; }
+
+  bool operator==(const Argument<Ts...>&) const { return true; }
+
+  // operator!=
+
+  bool operator!=(const Argument<Ts...>&&) const { return true; }
+
+  bool operator!=(const Argument<Ts...>&) const { return true; }
 };
 
 template <typename T, typename... Ts>
@@ -52,15 +64,15 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
     return *this;
   }
 
-  Argument<T, Ts...>& operator*=(const Argument<T, Ts...>&& arg) {
-    this->arg *= std::move(arg.arg);
-    Argument<Ts...>::operator*=(arg);
+  Argument<T, Ts...>& operator*=(const Argument<T, Ts...>&& val) {
+    this->arg *= std::move(val.arg);
+    Argument<Ts...>::operator*=(val);
     return *this;
   }
 
-    Argument<T, Ts...>& operator*=(const Argument<T, Ts...>& arg) {
-    this->arg *= arg.arg;
-    Argument<Ts...>::operator*=(arg);
+  Argument<T, Ts...>& operator*=(const Argument<T, Ts...>& val) {
+    this->arg *= val.arg;
+    Argument<Ts...>::operator*=(val);
     return *this;
   }
 
@@ -70,15 +82,15 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
     return *this;
   }
 
-  Argument<T, Ts...>& operator+=(const Argument<T, Ts...>&& arg) {
-    this->arg += std::move(arg.arg);
-    Argument<Ts...>::operator+=(arg);
+  Argument<T, Ts...>& operator+=(const Argument<T, Ts...>&& val) {
+    this->arg += std::move(val.arg);
+    Argument<Ts...>::operator+=(val);
     return *this;
   }
 
-  Argument<T, Ts...>& operator+=(const Argument<T, Ts...>& arg) {
-    this->arg += arg.arg;
-    Argument<Ts...>::operator+=(arg);
+  Argument<T, Ts...>& operator+=(const Argument<T, Ts...>& val) {
+    this->arg += val.arg;
+    Argument<Ts...>::operator+=(val);
     return *this;
   }
 
@@ -88,16 +100,35 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
     return *this;
   }
 
-  Argument<T, Ts...>& operator-=(const Argument<T, Ts...>&& arg) {
-    this->arg -= std::move(arg.arg);
-    Argument<Ts...>::operator-=(arg);
+  Argument<T, Ts...>& operator-=(const Argument<T, Ts...>&& val) {
+    this->arg -= std::move(val.arg);
+    Argument<Ts...>::operator-=(val);
     return *this;
   }
 
-  Argument<T, Ts...>& operator-=(const Argument<T, Ts...>& arg) {
-    this->arg -= arg.arg;
-    Argument<Ts...>::operator-=(arg);
+  Argument<T, Ts...>& operator-=(const Argument<T, Ts...>& val) {
+    this->arg -= val.arg;
+    Argument<Ts...>::operator-=(val);
     return *this;
+  }
+
+  // operator==
+
+  bool operator==(const Argument<T, Ts...>&& val) const {
+    return this->arg == val.arg && Argument<Ts...>::operator==(val);
+  }
+
+  bool operator==(const Argument<T, Ts...>& val) const {
+    return this->arg == val.arg && Argument<Ts...>::operator==(val);
+  }
+
+  // operator!=
+  bool operator!=(const Argument<T, Ts...>&& val) const {
+    return this->arg != val.arg && Argument<Ts...>::operator==(val);
+  }
+
+  bool operator!=(const Argument<T, Ts...>& val) const {
+    return this->arg != val.arg && Argument<Ts...>::operator==(val);
   }
 
   // operator*

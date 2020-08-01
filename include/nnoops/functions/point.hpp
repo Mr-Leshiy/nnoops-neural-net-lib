@@ -176,14 +176,12 @@ struct Point : public CheckPoint {
     return std::move(Point(point) *= val);
   }
 
-  friend inline bool operator==(const Point<N>& point1,
-                                const Point<N>& point2) {
-    return point1.x == point2.x;
+  bool operator==(const Point<N>& point) const {
+    return this->x == point.x;
   }
 
-  friend inline bool operator!=(const Point<N>& point1,
-                                const Point<N>& point2) {
-    return point1.x != point2.x;
+  bool operator!=(const Point<N>& point) const {
+    return this->x != point.x;
   }
 
  private:
