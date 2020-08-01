@@ -38,9 +38,15 @@ struct Argument {
 
   // operator==
 
-  bool operator==(const Argument<Ts...>&&) { return true; }
+  bool operator==(const Argument<Ts...>&&) const { return true; }
 
-  bool operator==(const Argument<Ts...>&) { return true; }
+  bool operator==(const Argument<Ts...>&) const { return true; }
+
+  // operator!=
+
+  bool operator!=(const Argument<Ts...>&&) const { return true; }
+
+  bool operator!=(const Argument<Ts...>&) const { return true; }
 };
 
 template <typename T, typename... Ts>
@@ -108,12 +114,21 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
 
   // operator==
 
-  bool operator==(const Argument<T, Ts...>&& val) {
+  bool operator==(const Argument<T, Ts...>&& val) const {
     return this->arg == val.arg && Argument<Ts...>::operator==(val);
   }
 
-  bool operator==(const Argument<T, Ts...>& val) {
+  bool operator==(const Argument<T, Ts...>& val) const {
     return this->arg == val.arg && Argument<Ts...>::operator==(val);
+  }
+
+  // operator!=
+  bool operator!=(const Argument<T, Ts...>&& val) const {
+    return this->arg != val.arg && Argument<Ts...>::operator==(val);
+  }
+
+  bool operator!=(const Argument<T, Ts...>& val) const {
+    return this->arg != val.arg && Argument<Ts...>::operator==(val);
   }
 
   // operator*

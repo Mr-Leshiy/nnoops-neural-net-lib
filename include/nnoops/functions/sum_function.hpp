@@ -14,7 +14,7 @@ namespace nnoops {
 //   sum += f_i(x)
 template <typename... Args>
 struct SumFunction : public BaseFunction<Args...> {
-  using arg_t = BaseFunction<Args...>::arg_t;
+  using arg_t = typename BaseFunction<Args...>::arg_t;
 
   SumFunction(const std::vector<std::shared_ptr<BaseFunction<Args...>>>& funcs)
       : funcs(funcs) {
@@ -48,8 +48,8 @@ struct SumFunction : public BaseFunction<Args...> {
 
  private:
   // Sum elements
-  double k{1.0};
   std::vector<std::shared_ptr<BaseFunction<Args...>>> funcs;
+  double k{1.0};
 };
 
 }  // namespace nnoops

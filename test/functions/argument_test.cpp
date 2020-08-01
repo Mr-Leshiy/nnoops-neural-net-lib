@@ -91,14 +91,10 @@ TEST(Argument, Operations_between_two_arguments) {
   arg1 = arg1 + arg1;
   arg2 += arg2;
 
-  // EXPECT_TRUE(arg1 == arg2);
-
-  EXPECT_EQ(get_arg<0>(arg1), get_arg<0>(arg2));
-  EXPECT_EQ(get_arg<1>(arg1), get_arg<1>(arg2));
+  EXPECT_EQ(arg1, arg2);
 
   arg1 -= Argument<double, double>{4, 10};
   arg2 = arg2 - Argument<double, double>{4, 10};
 
-  EXPECT_EQ(get_arg<0>(arg1), get_arg<0>(arg2));
-  EXPECT_EQ(get_arg<1>(arg1), get_arg<1>(arg2));
+  EXPECT_EQ(arg1, arg2);
 }

@@ -13,8 +13,14 @@ TEST(Neuron, Basic_test) {
   auto activation_func = neuron.get_activation_function(Point<1>{1.0});
 
   Argument<Point<1>, double> arg(Point<1>{0.0}, 0.0);
+  Argument<Point<1>, double> expected_grad(Point<1>{0.25}, 0.25);
+  double expect_val = 0.5;
 
-  auto grad = activation_func->gradient(arg);
+  Argument<Point<1>, double> grad = activation_func->gradient(arg);
+  EXPECT_EQ(grad, expected_grad);
+
+  double val = activation_func->function(arg);
+  EXPECT_EQ(val, expect_val);
 }
 
 TEST(NeuralNet, Basic_test) {}
