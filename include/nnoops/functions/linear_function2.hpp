@@ -9,7 +9,8 @@
 namespace nnoops {
 
 template <uint64_t N>
-struct LinearFunction2 : BaseFunction<Point<N>, double> {
+struct LinearFunction2 : public BaseFunction<Point<N>, double> {
+  using base_fn_t = BaseFunction<Point<N>, double>;
   using arg_t = typename BaseFunction<Point<N>, double>::arg_t;
 
   LinearFunction2(Point<N> x) : x(x) {}

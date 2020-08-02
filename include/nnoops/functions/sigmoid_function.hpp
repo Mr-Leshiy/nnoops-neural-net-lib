@@ -8,6 +8,7 @@
 namespace nnoops {
 
 struct SigmoidFunction : public BaseFunction<double> {
+  using base_fn_t = BaseFunction<double>;
   using arg_t = typename BaseFunction<double>::arg_t;
 
   ~SigmoidFunction() override = default;
