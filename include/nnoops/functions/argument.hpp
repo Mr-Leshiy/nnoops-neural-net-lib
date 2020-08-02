@@ -51,11 +51,13 @@ struct Argument {
 
 template <typename T, typename... Ts>
 struct Argument<T, Ts...> : public Argument<Ts...> {
-  using type =
+ private:
+  using check_type =
       typename std::enable_if<std::is_integral<T>::value ||
                               std::is_floating_point<T>::value ||
                               std::is_base_of<CheckPoint, T>::value>::type;
 
+ public:
   Argument(T arg, Ts... args) : Argument<Ts...>(args...), arg(arg) {}
 
   Argument<T, Ts...>& operator*=(double val) {

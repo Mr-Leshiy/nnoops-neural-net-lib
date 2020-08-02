@@ -13,15 +13,24 @@
 
 namespace nnoops {
 
-// N - size of the argument
-template <
-    uint64_t N,
-    typename z_func_t,
-    typename g_func_t,
-    typename = typename std::enable_if<
-        std::is_base_of<BaseFunction<Point<N>, double>, z_func_t>::value &&
-        std::is_base_of<BaseFunction<double>, g_func_t>::value>::type>
+// ArgSize - size of the argument
+template <uint64_t ArgSize, typename ZFuncType, typename GFuncType>
+struct NeuronFuncTypes {
+  const static uint64_t N = ArgSize;
+  using z_func_t = ZFuncType;
+  using g_func_t = GFuncType;
+
+  using check_type = typename std::enable_if<
+      std::is_base_of<BaseFunction<Point<N>, double>, z_func_t>::value &&
+      std::is_base_of<BaseFunction<double>, g_func_t>::value>::type;
+};
+
+template <typename NeuronFuncTypes>
 struct Neuron : public BaseNeuron {
+  using z_func_t = typename NeuronFuncTypes::z_func_t;
+  using g_func_t = typename NeuronFuncTypes::g_func_t;
+  const static uint64_t N = NeuronFuncTypes::N;
+
   Neuron() = default;
   ~Neuron() override = default;
 

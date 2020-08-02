@@ -11,6 +11,7 @@ namespace nnoops {
 // N - size of the argument
 template <uint64_t N>
 struct LinearFunction : public BaseFunction<Point<N>> {
+  using base_fn_t = typename BaseFunction<Point<N>>;
   using arg_t = typename BaseFunction<Point<N>>::arg_t;
 
   LinearFunction(Point<N> a, double b) : a(a), b(b) {}
