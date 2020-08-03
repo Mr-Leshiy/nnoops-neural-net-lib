@@ -183,6 +183,20 @@ struct Point : public CheckPoint {
 
   bool operator!=(const Point<N>& point) const { return this->x != point.x; }
 
+  // return zero point {0, 0, ... , 0};
+  static Point<N> zero_point() {
+    Point<N> point;
+    point.x.fill(0.0);
+    return point;
+  }
+
+  // return zero point {1, 1, ... , 1};
+  static Point<N> unit_point() {
+    Point<N> point;
+    point.x.fill(1.0);
+    return point;
+  }
+
  private:
   std::array<double, N> x{};
 };

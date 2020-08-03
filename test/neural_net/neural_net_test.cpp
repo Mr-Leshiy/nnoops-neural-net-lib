@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "nnoops/functions/linear_function.hpp"
 #include "nnoops/functions/linear_function2.hpp"
 #include "nnoops/functions/sigmoid_function.hpp"
 #include "nnoops/neural_net/neural_net.hpp"

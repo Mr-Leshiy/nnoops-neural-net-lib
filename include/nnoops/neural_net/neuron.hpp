@@ -29,6 +29,9 @@ struct Neuron : public BaseNeuron {
   using g_func_t = typename NeuronFuncTypes::g_func_t;
   using z_base_fn_t = typename z_func_t::base_fn_t;
   using g_base_fn_t = typename g_func_t::base_fn_t;
+
+  using z_complementary_fn_t = typename z_func_t::complementary_fn_t;
+
   const static uint64_t N = NeuronFuncTypes::N;
 
   Neuron() = default;
@@ -47,6 +50,14 @@ struct Neuron : public BaseNeuron {
     std::shared_ptr<z_base_fn_t> z_fn = std::make_shared<z_func_t>(args...);
     return constructComplexFunction(g_func, z_fn);
   }
+
+  template<typename... Args>
+  void update(Args... args) {
+    calc_fn = std::make_shared<z_complementary_fn_t>(args...);
+  } 
+
+ private:
+  std::shared_ptr<typename z_complementary_fn_t::base_fn_t> calc_fn;
 };
 
 }  // namespace nnoops

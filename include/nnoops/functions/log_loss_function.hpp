@@ -15,6 +15,9 @@ struct LogLossFunction : public BaseFunction<double> {
 
   LogLossFunction() = default;
 
+  LogLossFunction(const Argument<double>& coef) : y(get_arg<0>(coef)) {
+    assert((y == 0 || y == 1) && " y should be equal to 0.0 or to 1.0");
+  }
   LogLossFunction(double y) : y(y) {
     assert((y == 0 || y == 1) && " y should be equal to 0.0 or to 1.0");
   }

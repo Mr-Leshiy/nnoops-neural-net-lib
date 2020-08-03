@@ -4,6 +4,18 @@
 
 using namespace nnoops;
 
+TEST(Point, CommonPoints_test) {
+  Point<3> point = {1, 1, 1};
+
+  EXPECT_EQ(point, Point<3>::unit_point());
+  EXPECT_NE(point, Point<3>::zero_point());
+
+  point = {0, 0, 0};
+
+  EXPECT_EQ(point, Point<3>::zero_point());
+  EXPECT_NE(point, Point<3>::unit_point());
+}
+
 TEST(Point, Basic_test) {
   Point<3> point1 = {1, 2, 3};
   Point<3> point2 = {2, 3, 5};

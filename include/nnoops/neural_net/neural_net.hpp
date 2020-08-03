@@ -8,6 +8,7 @@
 #include "nnoops/algorithms/gradient_descent.hpp"
 #include "nnoops/functions/base_function.hpp"
 #include "nnoops/functions/complex_function.hpp"
+#include "nnoops/functions/linear_function.hpp"
 #include "nnoops/functions/linear_function2.hpp"
 #include "nnoops/functions/point.hpp"
 #include "nnoops/functions/sigmoid_function.hpp"
@@ -51,6 +52,8 @@ struct NeuralNet {
     double alpha = 0.0001;
     Argument<Point<N>, double> res_coef =
         gradient_descent(cost_function, start_point, alpha, iterations);
+        
+    neuron.update(get_arg<0>(res_coef), get_arg<1>(res_coef));
   }
 
  private:

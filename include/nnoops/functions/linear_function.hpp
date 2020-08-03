@@ -18,7 +18,9 @@ struct LinearFunction : public BaseFunction<Point<N>> {
   using arg_t = typename BaseFunction<Point<N>>::arg_t;
   using complementary_fn_t = LinearFunction2<N>;
 
-  LinearFunction(Point<N> a, double b) : a(a), b(b) {}
+  LinearFunction(const Point<N>& a, double b) : a(a), b(b) {}
+  LinearFunction(const Argument<Point<N>, double>& coef)
+      : a(get_arg<0>(coef)), b(get_arg<1>(coef)) {}
 
   ~LinearFunction() override = default;
 
