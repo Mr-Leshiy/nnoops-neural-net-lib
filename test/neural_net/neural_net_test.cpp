@@ -8,7 +8,10 @@
 using namespace nnoops;
 
 TEST(Neuron, Basic_test) {
-  Neuron<1, LinearFunction2<1>, SigmoidFunction> neuron;
+  using neuron_func_types =
+      NeuronFuncTypes<1, LinearFunction2<1>, SigmoidFunction>;
+
+  Neuron<neuron_func_types> neuron;
 
   auto activation_func = neuron.get_activation_function(Point<1>{1.0});
 

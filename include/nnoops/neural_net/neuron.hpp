@@ -13,28 +13,39 @@
 
 namespace nnoops {
 
-// N - size of the argument
-template <
-    uint64_t N,
-    typename z_func_t,
-    typename g_func_t,
-    typename = typename std::enable_if<
-        std::is_base_of<BaseFunction<Point<N>, double>, z_func_t>::value &&
-        std::is_base_of<BaseFunction<double>, g_func_t>::value>::type>
+template <uint64_t ArgsSize, typename ZFuncType, typename GFuncType>
+struct NeuronFuncTypes {
+  using z_func_t = ZFuncType;
+  using g_func_t = GFuncType;
+  const static uint64_t N = ArgsSize;
+
+  using check_type = typename std::enable_if<
+      std::is_base_of<BaseFunction<double>, g_func_t>::value>::type;
+};
+
+template <typename NeuronFuncTypes>
 struct Neuron : public BaseNeuron {
+  using z_func_t = typename NeuronFuncTypes::z_func_t;
+  using g_func_t = typename NeuronFuncTypes::g_func_t;
+  using z_base_fn_t = typename z_func_t::base_fn_t;
+  using g_base_fn_t = typename g_func_t::base_fn_t;
+  const static uint64_t N = NeuronFuncTypes::N;
+
   Neuron() = default;
   ~Neuron() override = default;
 
-  std::shared_ptr<BaseFunction<Point<N>, double>> get_activation_function(
-      const Point<N>& val) const {
-    return std::make_shared<ComplexFunction<Point<N>, double>>(
-        std::make_shared<g_func_t>(), std::make_shared<z_func_t>(val));
+  template <typename... Args>
+  std::shared_ptr<z_base_fn_t> get_activation_function(Args... args) const {
+    std::shared_ptr<g_base_fn_t> g_fn = std::make_shared<g_func_t>();
+    std::shared_ptr<z_base_fn_t> z_fn = std::make_shared<z_func_t>(args...);
+    return constructComplexFunction(g_fn, z_fn);
   }
 
-  std::shared_ptr<BaseFunction<Point<N>, double>> get_activation_function(
-      const Point<N>& val, std::shared_ptr<g_func_t> g_func) const {
-    return std::make_shared<ComplexFunction<Point<N>, double>>(
-        g_func, std::make_shared<z_func_t>(val));
+  template <typename... Args>
+  std::shared_ptr<z_base_fn_t> get_activation_function(
+      std::shared_ptr<g_func_t> g_func, Args... args) const {
+    std::shared_ptr<z_base_fn_t> z_fn = std::make_shared<z_func_t>(args...);
+    return constructComplexFunction(g_func, z_fn);
   }
 };
 

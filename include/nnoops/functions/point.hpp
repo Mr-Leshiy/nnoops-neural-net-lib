@@ -15,8 +15,11 @@ struct CheckPoint {
   virtual ~CheckPoint() = default;
 };
 
-template <uint32_t N, typename = typename std::enable_if<N != 0>::type>
+template <uint64_t ArgSize,
+          typename = typename std::enable_if<ArgSize != 0>::type>
 struct Point : public CheckPoint {
+  const static uint64_t N = ArgSize;
+
   Point() = default;
 
   Point(const Point<N>& point) : x(point.x) {}
@@ -176,13 +179,9 @@ struct Point : public CheckPoint {
     return std::move(Point(point) *= val);
   }
 
-  bool operator==(const Point<N>& point) const {
-    return this->x == point.x;
-  }
+  bool operator==(const Point<N>& point) const { return this->x == point.x; }
 
-  bool operator!=(const Point<N>& point) const {
-    return this->x != point.x;
-  }
+  bool operator!=(const Point<N>& point) const { return this->x != point.x; }
 
  private:
   std::array<double, N> x{};
