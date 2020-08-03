@@ -34,17 +34,18 @@ struct Neuron : public BaseNeuron {
   Neuron() = default;
   ~Neuron() override = default;
 
-  std::shared_ptr<z_base_fn_t> get_activation_function(
-      const Point<N>& val) const {
-    return constructComplexFunction(
-        (std::shared_ptr<g_base_fn_t>)std::make_shared<g_func_t>(),
-        (std::shared_ptr<z_base_fn_t>)std::make_shared<z_func_t>(val));
+  template <typename... Args>
+  std::shared_ptr<z_base_fn_t> get_activation_function(Args... args) const {
+    std::shared_ptr<g_base_fn_t> g_fn = std::make_shared<g_func_t>();
+    std::shared_ptr<z_base_fn_t> z_fn = std::make_shared<z_func_t>(args...);
+    return constructComplexFunction(g_fn, z_fn);
   }
 
+  template <typename... Args>
   std::shared_ptr<z_base_fn_t> get_activation_function(
-      const Point<N>& val, std::shared_ptr<g_func_t> g_func) const {
-    return constructComplexFunction(
-        g_func, (std::shared_ptr<z_base_fn_t>)std::make_shared<z_func_t>(val));
+      std::shared_ptr<g_func_t> g_func, Args... args) const {
+    std::shared_ptr<z_base_fn_t> z_fn = std::make_shared<z_func_t>(args...);
+    return constructComplexFunction(g_func, z_fn);
   }
 };
 
