@@ -34,7 +34,12 @@ struct Neuron : public BaseNeuron {
 
   const static uint64_t N = NeuronFuncTypes::N;
 
-  Neuron() = default;
+  Neuron() {
+    std::shared_ptr<typename z_complementary_fn_t::base_fn_t> z_compl_fn =
+        std::make_shared<z_complementary_fn_t>();
+    std::shared_ptr<g_base_fn_t> g_fn = std::make_shared<g_func_t>();
+    calc_fn = constructComplexFunction(g_fn, z_compl_fn);
+  };
   ~Neuron() override = default;
 
   template <typename... Args>
@@ -46,19 +51,26 @@ struct Neuron : public BaseNeuron {
 
   template <typename... Args>
   std::shared_ptr<z_base_fn_t> get_activation_function(
-      std::shared_ptr<g_func_t> g_func, Args... args) const {
+      std::shared_ptr<g_func_t> g_fn, Args... args) const {
     std::shared_ptr<z_base_fn_t> z_fn = std::make_shared<z_func_t>(args...);
-    return constructComplexFunction(g_func, z_fn);
+    return constructComplexFunction(g_fn, z_fn);
   }
 
-  template<typename... Args>
+  template <typename... Args>
   void update(Args... args) {
-    calc_fn = std::make_shared<z_complementary_fn_t>(args...);
-  } 
+    std::shared_ptr<typename z_complementary_fn_t::base_fn_t> z_compl_fn =
+        std::make_shared<z_complementary_fn_t>(args...);
+    std::shared_ptr<g_base_fn_t> g_fn = std::make_shared<g_func_t>();
+    calc_fn = constructComplexFunction(g_fn, z_compl_fn);
+  }
+
+  double calculate(const typename z_complementary_fn_t::arg_t& arg) {
+    return calc_fn->function(arg);
+  }
 
  private:
   std::shared_ptr<typename z_complementary_fn_t::base_fn_t> calc_fn;
-};
+};  // namespace nnoops
 
 }  // namespace nnoops
 

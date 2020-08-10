@@ -1,6 +1,7 @@
 #ifndef NNOOPS_LIB_CPP_NEURAL_NET_NEURAL_NET_HPP_
 #define NNOOPS_LIB_CPP_NEURAL_NET_NEURAL_NET_HPP_
 
+#include <iostream>
 #include <map>
 #include <memory>
 #include <type_traits>
@@ -28,7 +29,7 @@ struct NeuralNet {
   NeuralNet() = default;
 
   void train(const std::map<Point<N>, double>& train_set, uint64_t iterations) {
-    std::vector<BaseFunction<Point<N>, double>> funcs;
+    std::vector<std::shared_ptr<BaseFunction<Point<N>, double>>> funcs;
     std::shared_ptr<SigmoidFunction> g_func =
         std::make_shared<SigmoidFunction>();
 
@@ -37,23 +38,25 @@ struct NeuralNet {
           std::make_shared<loss_function_t>(el.second);
 
       std::shared_ptr<BaseFunction<Point<N>, double>> activation_fn =
-          neuron.get_activation_function(el.first, g_func);
+          neuron.get_activation_function(g_func, el.first);
       funcs.push_back(std::make_shared<ComplexFunction<Point<N>, double>>(
           loss_fn, activation_fn));
     }
 
-    std::shared_ptr<SumFunction<Point<N>, double>> cost_function =
-        std::make_shared<SumFunction<Point<N>, double>>(funcs,
-                                                        1.0 / funcs.size());
-
-    Argument<Point<N>, double> start_point(
-        Point<N>(std::vector<double>(N, 1.0)), 0.0);
+    auto cost_function = std::make_shared<SumFunction<Point<N>, double>>(
+        funcs, 1.0 / funcs.size());
+    Argument<Point<N>, double> start_point(Point<N>::unit_point(), 0.0);
 
     double alpha = 0.0001;
     Argument<Point<N>, double> res_coef =
-        gradient_descent(cost_function, start_point, alpha, iterations);
-        
+        gradient_descent(*cost_function, start_point, alpha, iterations);
+
     neuron.update(get_arg<0>(res_coef), get_arg<1>(res_coef));
+  }
+
+  double calculate(const Point<N>& val) {
+    Argument<Point<N>> arg(val);
+    return neuron.calculate(arg);
   }
 
  private:

@@ -2,6 +2,7 @@
 #define NNOOPS_LIB_CPP_GRADIENT_DESCENT_HPP_
 
 #include <cstdint>
+#include <iostream>
 
 #include "nnoops/functions/argument.hpp"
 #include "nnoops/functions/base_function.hpp"
