@@ -179,44 +179,26 @@ struct Point : public CheckPoint {
     return std::move(Point(point) *= val);
   }
 
-  friend inline bool operator>(const Point<N>& point1,
-                                const Point<N>& point2) {
-    for (size_t i = 0; i < N; ++i) {
-      if (point1.x[i] <= point2.x[i]) {
-        return false;
-      }
-    }
-    return false;
+  friend inline bool operator>(const Point<N>& point1, const Point<N>& point2) {
+    return (point1 * Point<N>::unit_point()) >
+           (point2 * Point<N>::unit_point());
   }
 
-  friend inline bool operator<(const Point<N>& point1,
-                                const Point<N>& point2) {
-    for (size_t i = 0; i < N; ++i) {
-      if (point1.x[i] >= point2.x[i]) {
-        return false;
-      }
-    }
-    return false;
+  friend inline bool operator<(const Point<N>& point1, const Point<N>& point2) {
+    return (point1 * Point<N>::unit_point()) <
+           (point2 * Point<N>::unit_point());
   }
 
   friend inline bool operator>=(const Point<N>& point1,
                                 const Point<N>& point2) {
-    for (size_t i = 0; i < N; ++i) {
-      if (point1.x[i] < point2.x[i]) {
-        return false;
-      }
-    }
-    return false;
+    return (point1 * Point<N>::unit_point()) >=
+           (point2 * Point<N>::unit_point());
   }
 
   friend inline bool operator<=(const Point<N>& point1,
                                 const Point<N>& point2) {
-    for (size_t i = 0; i < N; ++i) {
-      if (point1.x[i] > point2.x[i]) {
-        return false;
-      }
-    }
-    return false;
+    return (point1 * Point<N>::unit_point()) <=
+           (point2 * Point<N>::unit_point());
   }
 
   bool operator==(const Point<N>& point) const { return this->x == point.x; }

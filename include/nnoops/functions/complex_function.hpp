@@ -32,6 +32,12 @@ struct ComplexFunction : public BaseFunction<Args...> {
            get_arg<0>(f1->gradient(f2->function(argument)));
   }
 
+  std::string name() const override {
+    std::string name =
+        "complex function \n contains: " + f1->name() + ", " + f2->name();
+    return name;
+  }
+
  private:
   std::shared_ptr<BaseFunction<double>> f1;
   std::shared_ptr<base_fn_t> f2;

@@ -2,6 +2,7 @@
 #define NNOOPS_LIB_CPP_FUNCTIONS_BASE_FUNCTION_HPP_
 
 #include <array>
+#include <string>
 #include <type_traits>
 
 #include "nnoops/functions/argument.hpp"
@@ -18,6 +19,8 @@ struct BaseFunction {
   virtual double function(const arg_t& argument) const = 0;
 
   virtual arg_t gradient(const arg_t& argument) const = 0;
+
+  virtual std::string name() const = 0;
 };
 
 }  // namespace nnoops

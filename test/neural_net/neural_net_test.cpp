@@ -39,17 +39,23 @@ TEST(NeuralNet, Basic_test) {
   // generate train set
   const static uint64_t M = 10000;
   std::map<Point<2>, double> train_set;
+
+  int zero_amount = 0;
+  int one_amount = 0;
   for (uint64_t i = 0; i < M; ++i) {
     double rand1 = fRand(0, 100);
 
     Point<2> p = {rand1, rand1};
     train_set[p] = 1.0;
+    ++one_amount;
 
     p = {fRand(0, 100), fRand(0, 100)};
     if (p[0] != p[1]) {
       train_set[p] = 0.0;
+      ++zero_amount;
     } else {
       train_set[p] = 1.0;
+      ++one_amount;
     }
   }
 

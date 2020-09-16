@@ -45,7 +45,7 @@ struct NeuralNet {
 
     auto cost_function = std::make_shared<SumFunction<Point<N>, double>>(
         funcs, 1.0 / funcs.size());
-    Argument<Point<N>, double> start_point(Point<N>::unit_point(), 0.0);
+    Argument<Point<N>, double> start_point(Point<N>::unit_point() * 0.5, 0.0);
 
     double alpha = 0.0001;
     Argument<Point<N>, double> res_coef =

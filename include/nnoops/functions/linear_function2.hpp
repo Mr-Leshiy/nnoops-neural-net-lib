@@ -29,6 +29,8 @@ struct LinearFunction2 : public BaseFunction<Point<N>, double> {
 
   arg_t gradient(const arg_t&) const override { return arg_t(x, 1.0); }
 
+  std::string name() const override { return "linear function2"; }
+
  private:
   Point<N> x{Point<N>::unit_point()};
 };
