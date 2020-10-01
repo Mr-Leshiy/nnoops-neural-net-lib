@@ -28,6 +28,7 @@ Argument<Args...> gradient_descent(const BaseFunction<Args...>& function,
   Argument<Args...> value = do_gradient_descent(function, start_point, alpha);
 
   for (uint64_t i = 0; i < num_iterations; ++i) {
+    printf("train interation: %d \n", (int)i);
     value = do_gradient_descent(function, value, alpha);
   }
 

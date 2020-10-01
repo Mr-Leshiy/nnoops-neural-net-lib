@@ -43,13 +43,13 @@ TEST(NeuralNet, Basic_test) {
   int zero_amount = 0;
   int one_amount = 0;
   for (uint64_t i = 0; i < M; ++i) {
-    double rand1 = fRand(0, 100);
+    double rand1 = fRand(0, 20);
 
     Point<2> p = {rand1, rand1};
     train_set[p] = 1.0;
     ++one_amount;
 
-    p = {fRand(0, 100), fRand(0, 100)};
+    p = {fRand(0, 20), fRand(0, 20)};
     if (p[0] != p[1]) {
       train_set[p] = 0.0;
       ++zero_amount;

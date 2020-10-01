@@ -1,6 +1,7 @@
 #ifndef NNOOPS_LIB_CPP_FUNCTIONS_SIGMOID_FUNCTION_HPP_
 #define NNOOPS_LIB_CPP_FUNCTIONS_SIGMOID_FUNCTION_HPP_
 
+#include <limits.h>
 #include <math.h>
 
 #include "nnoops/functions/base_function.hpp"
@@ -14,13 +15,13 @@ struct SigmoidFunction : public BaseFunction<double> {
   ~SigmoidFunction() override = default;
 
   double function(const arg_t& argument) const override {
-    return 1.0 / (1.0 + exp(-get_arg<0>(argument)));
+    double e = exp(-get_arg<0>(argument));
+    return 1.0 / (1.0 + e);
   }
 
   arg_t gradient(const arg_t& argument) const override {
-    // use 0.99999999999999999 instead of the 1.0 because of the double
-    double val = exp(-get_arg<0>(argument));
-    return val / ((1.0 + val) * (1.0 + val));
+    double e = exp(-get_arg<0>(argument));
+    return e / ((1.0 + e) * (1.0 + e));
   }
 
   std::string name() const override { return "sigmoid_function"; }

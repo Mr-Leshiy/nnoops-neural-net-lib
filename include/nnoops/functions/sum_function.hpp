@@ -40,8 +40,6 @@ struct SumFunction : public BaseFunction<Args...> {
     arg_t res = funcs[0]->gradient(argument);
 
     for (uint64_t i = 1; i < funcs.size(); ++i) {
-      printf(
-          "iteration: %d, func name: %s \n", (int)i, funcs[i]->name().c_str());
       res += funcs[i]->gradient(argument);
     }
 
