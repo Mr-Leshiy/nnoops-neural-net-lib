@@ -48,22 +48,27 @@ TEST(NeuralNet, Basic_test) {
     return a * point[0] + b * point[1] + c;
   };
 
+  auto is_above_line = [&line](const Point<2>& point) -> bool {
+    if (line(point) > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   for (uint64_t i = 0; i < M; ++i) {
     Point<2> p = {fRand(0, 20), fRand(0, 20)};
-
-    if (line(p) <= 0) {
-      train_set[p] = 0.0;
-    } else {
-      train_set[p] = 1.0;
-    }
+    train_set[p] = is_above_line(p);
   }
 
-  neural_net.train(train_set, 10000);
+  neural_net.train(train_set, 1000);
 
-  double val = neural_net.calculate(Point<2>{0.1, 15});
-  EXPECT_EQ(val, 0);
-
-  val = neural_net.calculate(Point<2>{0.2, 0.2});
-
-  EXPECT_EQ(val, 1);
+  int index = 0;
+  for (const auto& el : train_set) {
+    double val = neural_net.calculate(el.first);
+    EXPECT_EQ(val, el.second);
+    if (index++ == 100) {
+      break;
+    }
+  }
 }
