@@ -37,31 +37,33 @@ TEST(NeuralNet, Basic_test) {
   NeuralNet<2, LogLossFunction> neural_net;
 
   // generate train set
-  const static uint64_t M = 10000;
+  const static uint64_t M = 100000;
   std::map<Point<2>, double> train_set;
 
-  int zero_amount = 0;
-  int one_amount = 0;
+  // equation of a line
+  auto line = [](const Point<2>& point) -> double {
+    double a = 2;
+    double b = -3;
+    double c = 1;
+    return a * point[0] + b * point[1] + c;
+  };
+
   for (uint64_t i = 0; i < M; ++i) {
-    double rand1 = fRand(0, 20);
+    Point<2> p = {fRand(0, 20), fRand(0, 20)};
 
-    Point<2> p = {rand1, rand1};
-    train_set[p] = 1.0;
-    ++one_amount;
-
-    p = {fRand(0, 20), fRand(0, 20)};
-    if (p[0] != p[1]) {
+    if (line(p) <= 0) {
       train_set[p] = 0.0;
-      ++zero_amount;
     } else {
       train_set[p] = 1.0;
-      ++one_amount;
     }
   }
 
   neural_net.train(train_set, 10000);
 
   double val = neural_net.calculate(Point<2>{0.1, 15});
-
   EXPECT_EQ(val, 0);
+
+  val = neural_net.calculate(Point<2>{0.2, 0.2});
+
+  EXPECT_EQ(val, 1);
 }
