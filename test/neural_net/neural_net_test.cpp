@@ -76,5 +76,22 @@ TEST(NeuralNet, Basic_test) {
 
   double percentage = (double)correct_predictions / train_set.size();
 
-  EXPECT_EQ(percentage, 0);
+  EXPECT_GT(percentage, 98);
+
+  correct_predictions = 0;
+  for (uint64_t i = 0; i < M; ++i) {
+    Point<2> p = {fRand(0, 20), fRand(0, 20)};
+    double val = neural_net.calculate(p);
+
+    if (val < 0.5 && is_above_line(p) == 0) {
+      ++correct_predictions;
+    }
+
+    if (val >= 0.5 && is_above_line(p) == 1) {
+      ++correct_predictions;
+    }
+  }
+
+  percentage = (double)correct_predictions / train_set.size();
+  EXPECT_GT(percentage, 98);
 }
