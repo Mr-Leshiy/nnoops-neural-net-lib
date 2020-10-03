@@ -46,6 +46,14 @@ struct SumFunction : public BaseFunction<Args...> {
     return k * res;
   }
 
+  std::string name() const override {
+    std::string name = "sum function \n contains: \n";
+    for (const auto& func : funcs) {
+      name += func->name() + "\n";
+    }
+    return name;
+  }
+
  private:
   // Sum elements
   std::vector<std::shared_ptr<base_fn_t>> funcs;

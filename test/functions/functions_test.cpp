@@ -57,7 +57,8 @@ static std::vector<FunctionValueTestCase> f_value_test_cases = {
         arg_t(Point<1>{0.0}),
         std::make_shared<ComplexFunction<Point<1>>>(
             std::make_shared<SigmoidFunction>(),
-            std::make_shared<LinearFunction<1>>(Point<1>{1.0}, 0)),
+            std::make_shared<LinearFunction<1>>(
+                LinearFunction<1>(Point<1>{1.0}, 0))),
 
     },
 };

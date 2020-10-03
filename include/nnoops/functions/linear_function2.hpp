@@ -17,7 +17,9 @@ struct LinearFunction2 : public BaseFunction<Point<N>, double> {
   using arg_t = typename BaseFunction<Point<N>, double>::arg_t;
   using complementary_fn_t = LinearFunction<N>;
 
-  LinearFunction2(Point<N> x) : x(x) {}
+  LinearFunction2() = default;
+  LinearFunction2(const Argument<Point<N>>& coef) : x(get_arg<0>(coef)) {}
+  LinearFunction2(const Point<N>& x) : x(x) {}
 
   ~LinearFunction2() override = default;
 
@@ -27,8 +29,10 @@ struct LinearFunction2 : public BaseFunction<Point<N>, double> {
 
   arg_t gradient(const arg_t&) const override { return arg_t(x, 1.0); }
 
+  std::string name() const override { return "linear function2"; }
+
  private:
-  Point<N> x{};
+  Point<N> x{Point<N>::unit_point()};
 };
 
 }  // namespace nnoops

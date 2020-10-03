@@ -4,6 +4,8 @@
 #include <math.h>
 #include <stdint.h>
 
+#include <limits>
+
 #include "nnoops/functions/base_function.hpp"
 #include "nnoops/functions/point.hpp"
 
@@ -15,6 +17,9 @@ struct LogLossFunction : public BaseFunction<double> {
 
   LogLossFunction() = default;
 
+  LogLossFunction(const Argument<double>& coef) : y(get_arg<0>(coef)) {
+    assert((y == 0 || y == 1) && " y should be equal to 0.0 or to 1.0");
+  }
   LogLossFunction(double y) : y(y) {
     assert((y == 0 || y == 1) && " y should be equal to 0.0 or to 1.0");
   }
@@ -24,16 +29,18 @@ struct LogLossFunction : public BaseFunction<double> {
   double function(const arg_t& argument) const override {
     const double& val = get_arg<0>(argument);
     assert((val < 1.0 && val > 0.0) &&
-           "argument value should be in the interval of (0, 1)");
+           "argument value should be in the interval of [0, 1]");
     return -(y * log(val) + (1 - y) * log(1 - val));
   }
 
   arg_t gradient(const arg_t& argument) const override {
     const double& val = get_arg<0>(argument);
     assert((val < 1.0 && val > 0.0) &&
-           "argument value should be in the interval of (0, 1)");
+           "argument value should be in the interval of [0, 1]");
     return -(y - val) / (val * (1 - val));
   }
+
+  std::string name() const override { return "log loss function"; }
 
  private:
   double y{0.0};

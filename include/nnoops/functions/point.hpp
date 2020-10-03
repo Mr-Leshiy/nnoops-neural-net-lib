@@ -71,6 +71,13 @@ struct Point : public CheckPoint {
     return this->x[index];
   }
 
+  const double& operator[](uint32_t index) const {
+    if (index >= N) {
+      throw std::out_of_range("index out of range");
+    }
+    return this->x[index];
+  }
+
   Point<N>& operator+=(double val) {
     for (uint32_t i = 0; i < N; ++i) {
       this->x[i] += val;
@@ -179,9 +186,45 @@ struct Point : public CheckPoint {
     return std::move(Point(point) *= val);
   }
 
+  friend inline bool operator>(const Point<N>& point1, const Point<N>& point2) {
+    return (point1 * Point<N>::unit_point()) >
+           (point2 * Point<N>::unit_point());
+  }
+
+  friend inline bool operator<(const Point<N>& point1, const Point<N>& point2) {
+    return (point1 * Point<N>::unit_point()) <
+           (point2 * Point<N>::unit_point());
+  }
+
+  friend inline bool operator>=(const Point<N>& point1,
+                                const Point<N>& point2) {
+    return (point1 * Point<N>::unit_point()) >=
+           (point2 * Point<N>::unit_point());
+  }
+
+  friend inline bool operator<=(const Point<N>& point1,
+                                const Point<N>& point2) {
+    return (point1 * Point<N>::unit_point()) <=
+           (point2 * Point<N>::unit_point());
+  }
+
   bool operator==(const Point<N>& point) const { return this->x == point.x; }
 
   bool operator!=(const Point<N>& point) const { return this->x != point.x; }
+
+  // return zero point {0, 0, ... , 0};
+  static Point<N> zero_point() {
+    Point<N> point;
+    point.x.fill(0.0);
+    return point;
+  }
+
+  // return zero point {1, 1, ... , 1};
+  static Point<N> unit_point() {
+    Point<N> point;
+    point.x.fill(1.0);
+    return point;
+  }
 
  private:
   std::array<double, N> x{};
