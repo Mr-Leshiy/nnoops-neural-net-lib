@@ -61,14 +61,20 @@ TEST(NeuralNet, Basic_test) {
     train_set[p] = is_above_line(p);
   }
 
-  neural_net.train(train_set, 1000);
+  neural_net.train(train_set, 10000);
 
-  int index = 0;
+  uint32_t correct_predictions = 0;
   for (const auto& el : train_set) {
     double val = neural_net.calculate(el.first);
-    EXPECT_EQ(val, el.second);
-    if (index++ == 100) {
-      break;
+    if (val < 0.5 && el.second == 0) {
+      ++correct_predictions;
+    }
+    if (val >= 0.5 && el.second == 1) {
+      ++correct_predictions;
     }
   }
+
+  double percentage = (double)correct_predictions / train_set.size();
+
+  EXPECT_EQ(percentage, 0);
 }
