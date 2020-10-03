@@ -1,0 +1,1 @@
+addtest(big_decimal_test big_decimal_test.cpp)
