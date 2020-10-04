@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "nnoops/functions/utils.hpp"
+#include "nnoops/strutil.hpp"
 
 namespace nnoops {
 

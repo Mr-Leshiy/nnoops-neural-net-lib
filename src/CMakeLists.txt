@@ -6,6 +6,7 @@ add_subdirectory(long_arithmetic)
 set(SOURCES
         $<TARGET_OBJECTS:algorithms>
         $<TARGET_OBJECTS:long_arithmetic>
+        strutil.cpp
         )
 
 
