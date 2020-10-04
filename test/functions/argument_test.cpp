@@ -98,3 +98,14 @@ TEST(Argument, Operations_between_two_arguments) {
 
   EXPECT_EQ(arg1, arg2);
 }
+
+TEST(Argument, toPrettyString_test) {
+  Argument<double, double, Point<2>> arg1 = {4, 10, Point<2>{-1.2, 2.5}};
+  EXPECT_EQ(toPrettyString(arg1),
+            "4.000000; 10.000000; (-1.200000, 2.500000); ");
+
+  Argument<Point<2>, double, Point<2>> arg2 = {
+      Point<2>{-1.2, 2.5}, 15, Point<2>{13.5, 2.5}};
+  EXPECT_EQ(toPrettyString(arg2),
+            "(-1.200000, 2.500000); 15.000000; (13.500000, 2.500000); ");
+}

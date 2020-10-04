@@ -105,3 +105,11 @@ TEST(Point, addition_substraction_test) {
   point3 = {4, 7, 11};
   EXPECT_EQ(point3, point1 + point2 + point1);
 }
+
+TEST(Point, toPrettyString_test) {
+  Point<3> point = {2.0, 3.6, 5};
+  EXPECT_EQ(toPrettyString(point), "(2.000000, 3.600000, 5.000000)");
+
+  point = {3.6, 2.7, -1.3};
+  EXPECT_EQ(toPrettyString(point), "(3.600000, 2.700000, -1.300000)");
+}

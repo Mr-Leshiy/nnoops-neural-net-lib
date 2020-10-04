@@ -1,11 +1,12 @@
-#ifndef NNOOPS_LIB_FUNCTIONS_CPP_POINT_HPP_
-#define NNOOPS_LIB_FUNCTIONS_CPP_POINT_HPP_
+#ifndef NNOOPS_LIB_CPP_FUNCTIONS_POINT_HPP_
+#define NNOOPS_LIB_CPP_FUNCTIONS_POINT_HPP_
 
 #include <stdint.h>
 
 #include <array>
 #include <cassert>
 #include <stdexcept>
+#include <string>
 #include <type_traits>
 
 namespace nnoops {
@@ -224,6 +225,17 @@ struct Point : public CheckPoint {
     Point<N> point;
     point.x.fill(1.0);
     return point;
+  }
+
+  friend std::string toPrettyString(const Point<N>& point) {
+    std::string result = "(";
+
+    for (size_t i = 0; i < (point.x.size() - 1); ++i) {
+      result += std::to_string(point.x[i]) + ", ";
+    }
+
+    result += std::to_string(point.x[point.x.size() - 1]) + ")";
+    return result;
   }
 
  private:

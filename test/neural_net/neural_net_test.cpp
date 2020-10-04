@@ -92,7 +92,7 @@ TEST(NeuralNet, Basic_test_1) {
     }
   }
 
-  percentage = (double)correct_predictions / train_set.size();
+  percentage = (double)correct_predictions / M;
   printf("percentage: %f \n", percentage);
   EXPECT_GT(percentage, 0.98);
 }
@@ -163,7 +163,7 @@ TEST(NeuralNet, Basic_test_2) {
     }
   }
 
-  percentage = (double)correct_predictions / train_set.size();
+  percentage = (double)correct_predictions / M;
   printf("percentage: %f \n", percentage);
   EXPECT_GT(percentage, 0.98);
 }
