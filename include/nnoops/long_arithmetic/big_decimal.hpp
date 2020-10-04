@@ -11,12 +11,14 @@ namespace nnoops {
 struct BigDecimal {
   BigDecimal() = default;
 
+  BigDecimal(const std::string& val);
+
   BigDecimal(const double& val);
 
   friend std::string toPrettyString(const BigDecimal& val);
 
  private:
-  bool sign;
+  bool sign{true};
   uint64_t integer_part{0};
   uint64_t decimal_part{0};
 };
