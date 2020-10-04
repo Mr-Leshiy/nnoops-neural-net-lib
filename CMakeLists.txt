@@ -23,6 +23,7 @@ option(UBSAN        "Enable Undefined Behavior Sanitizer" OFF)
 option(WERROR       "Treat warnings as errors" ON)
 option(TESTING      "Build tests" ON)
 option(SHARED       "Build shared lib" OFF)
+option(NEURAL_NET_TESTING "Build neural net tests" ON)
 
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

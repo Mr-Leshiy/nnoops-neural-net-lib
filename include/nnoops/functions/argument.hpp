@@ -7,6 +7,8 @@
 #include <type_traits>
 #include <utility>
 
+#include "nnoops/functions/utils.hpp"
+
 namespace nnoops {
 
 struct CheckPoint;
@@ -48,6 +50,8 @@ struct Argument {
   bool operator!=(const Argument<Ts...>&&) const { return true; }
 
   bool operator!=(const Argument<Ts...>&) const { return true; }
+
+  friend std::string toPrettyString(const Argument<Ts...>&) { return ""; }
 };
 
 template <typename T, typename... Ts>
@@ -258,6 +262,13 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
   friend inline Argument<T, Ts...> operator-(const Argument<T, Ts...>& arg1,
                                              const Argument<T, Ts...>&& arg2) {
     return std::move(Argument<T, Ts...>(arg1) -= arg2);
+  }
+
+  friend std::string toPrettyString(const Argument<T, Ts...>& arg) {
+    std::string result =
+        toPrettyString(arg.arg) + "; " + toPrettyString(Argument<Ts...>(arg));
+
+    return result;
   }
 
   T arg;
