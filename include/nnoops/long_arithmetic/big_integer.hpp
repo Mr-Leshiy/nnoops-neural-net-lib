@@ -36,35 +36,35 @@ struct BigInteger {
   }
 
   BigInteger(uint8_t val) : sign(true) {
-    assert(data.size() >= 1 && "BigInteger has a small type");
+    assert(SIZE >= 1 && "BigInteger has a small type");
     data[0] = (uint8_t)(val);
-    for (size_t i = 1; i < data.size(); ++i) {
+    for (size_t i = 1; i < SIZE; ++i) {
       data[i] = 0;
     }
   }
 
   BigInteger(uint16_t val) : sign(true) {
-    assert(data.size() >= 2 && "BigInteger has a small type");
+    assert(SIZE >= 2 && "BigInteger has a small type");
     data[0] = (uint8_t)(val);
     data[1] = (uint8_t)(val >> 8);
-    for (size_t i = 2; i < data.size(); ++i) {
+    for (size_t i = 2; i < SIZE; ++i) {
       data[i] = 0;
     }
   }
 
   BigInteger(uint32_t val) : sign(true) {
-    assert(data.size() >= 4 && "BigInteger has a small type");
+    assert(SIZE >= 4 && "BigInteger has a small type");
     data[0] = (uint8_t)(val);
     data[1] = (uint8_t)(val >> 8);
     data[2] = (uint8_t)(val >> 16);
     data[3] = (uint8_t)(val >> 24);
-    for (size_t i = 4; i < data.size(); ++i) {
+    for (size_t i = 4; i < SIZE; ++i) {
       data[i] = 0;
     }
   }
 
   BigInteger(uint64_t val) : sign(true) {
-    assert(data.size() >= 8 && "BigInteger has a small type");
+    assert(SIZE >= 8 && "BigInteger has a small type");
     data[0] = (uint8_t)(val);
     data[1] = (uint8_t)(val >> 8);
     data[2] = (uint8_t)(val >> 16);
@@ -73,44 +73,44 @@ struct BigInteger {
     data[5] = (uint8_t)(val >> 40);
     data[6] = (uint8_t)(val >> 48);
     data[7] = (uint8_t)(val >> 56);
-    for (size_t i = 8; i < data.size(); ++i) {
+    for (size_t i = 8; i < SIZE; ++i) {
       data[i] = 0;
     }
   }
 
   BigInteger(int8_t val) : sign(val >= 0 ? sign = true : sign = false) {
-    assert(data.size() >= 1 && "BigInteger has a small type");
+    assert(SIZE >= 1 && "BigInteger has a small type");
     val = abs(val);
     data[0] = (uint8_t)(val);
-    for (size_t i = 1; i < data.size(); ++i) {
+    for (size_t i = 1; i < SIZE; ++i) {
       data[i] = 0;
     }
   }
 
   BigInteger(int16_t val) : sign(val >= 0 ? sign = true : sign = false) {
-    assert(data.size() >= 2 && "BigInteger has a small type");
+    assert(SIZE >= 2 && "BigInteger has a small type");
     val = abs(val);
     data[0] = (uint8_t)(val);
     data[1] = (uint8_t)(val >> 8);
-    for (size_t i = 2; i < data.size(); ++i) {
+    for (size_t i = 2; i < SIZE; ++i) {
       data[i] = 0;
     }
   }
 
   BigInteger(int32_t val) : sign(val >= 0 ? sign = true : sign = false) {
-    assert(data.size() >= 4 && "BigInteger has a small type");
+    assert(SIZE >= 4 && "BigInteger has a small type");
     val = abs(val);
     data[0] = (uint8_t)(val);
     data[1] = (uint8_t)(val >> 8);
     data[2] = (uint8_t)(val >> 16);
     data[3] = (uint8_t)(val >> 24);
-    for (size_t i = 4; i < data.size(); ++i) {
+    for (size_t i = 4; i < SIZE; ++i) {
       data[i] = 0;
     }
   }
 
   BigInteger(int64_t val) : sign(val >= 0 ? sign = true : sign = false) {
-    assert(data.size() >= 8 && "BigInteger has a small type");
+    assert(SIZE >= 8 && "BigInteger has a small type");
     val = abs(val);
     data[0] = (uint8_t)(val);
     data[1] = (uint8_t)(val >> 8);
@@ -120,7 +120,7 @@ struct BigInteger {
     data[5] = (uint8_t)(val >> 40);
     data[6] = (uint8_t)(val >> 48);
     data[7] = (uint8_t)(val >> 56);
-    for (size_t i = 8; i < data.size(); ++i) {
+    for (size_t i = 8; i < SIZE; ++i) {
       data[i] = 0;
     }
   }
@@ -129,13 +129,37 @@ struct BigInteger {
 
   bool isNegative() const { return !sign; }
 
+  BigInteger<SIZE> operator-() const {
+    BigInteger<SIZE> ret = *this;
+    ret.sign = this->sign == true ? false : true;
+    return ret;
+  }
+
+  BigInteger<SIZE>& operator+=(const BigInteger<SIZE>& b) {
+    uint64_t carry = 0;
+    bool sign;
+    for (size_t i = 0; i < SIZE; ++i) {
+      int64_t n = carry + this->data[i] * this->sign == false
+                      ? -1
+                      : 1 + b.data[i] * b.sign == false ? -1 : 1;
+      sign = n < 0 ? false : true;
+      this->data[i] = n & 0xff;
+      carry = n >> 8;
+    }
+    this->sign = sign;
+    return *this;
+  }
+
+  friend inline const BigInteger<SIZE> operator+(const BigInteger<SIZE>& a,
+                                                 const BigInteger<SIZE>& b) {
+    return BigInteger<SIZE>(a) += b;
+  }
+
   bool operator==(const BigInteger<SIZE>& val) const {
     return this->sign == val.sign && this->data == val.data;
   }
 
-  bool operator!=(const BigInteger<SIZE>& val) const {
-    return this->sign != val.sign && this->data != val.data;
-  }
+  bool operator!=(const BigInteger<SIZE>& val) const { return !(*this == val); }
 
   // return -1 if this less than b,
   // return 1 if this bigger than b
@@ -148,7 +172,7 @@ struct BigInteger {
       return -1;
     }
 
-    for (int i = this->value.size() - 1; i != 0; --i) {
+    for (int i = SIZE - 1; i != 0; --i) {
       if (this->data[i] < b.data[i]) {
         return this->sign == true ? -1 : 1;
       }
