@@ -5,8 +5,8 @@
 using namespace nnoops;
 
 TEST(BigInteger, comparison_test) {
-  BigInteger<32> val1(-1234);
-  BigInteger<32> val2(1234);
+  BigInteger val1(-1234);
+  BigInteger val2(1234);
 
   EXPECT_TRUE(val1 == val1);
   EXPECT_FALSE(val1 == val2);
@@ -35,13 +35,14 @@ TEST(BigInteger, comparison_test) {
 }
 
 TEST(BigInteger, addition_test) {
-  BigInteger<32> val1(-1234);
-  BigInteger<32> val2(1234);
+  BigInteger val1(-1234);
+  BigInteger val2(1234);
 
-  BigInteger<32> res;
+  BigInteger res;
 
   res = val1 + val1;
-  EXPECT_EQ(toPrettyString(res), "2468");
+
+  EXPECT_EQ(toPrettyString(res), toPrettyString(BigInteger(-2468)));
 }
 
 TEST(BigInteger, toPrettyString_test) {
