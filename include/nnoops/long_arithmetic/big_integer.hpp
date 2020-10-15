@@ -35,94 +35,28 @@ struct BigInteger {
     return *this;
   }
 
-  BigInteger(uint8_t val) : sign(true) {
-    assert(data.size() >= 1 && "BigInteger has a small type");
-    data[0] = (uint8_t)(val);
-    for (size_t i = 1; i < data.size(); ++i) {
-      data[i] = 0;
-    }
-  }
+  BigInteger(uint8_t val) : sign(true) { init(val); }
 
-  BigInteger(uint16_t val) : sign(true) {
-    assert(data.size() >= 2 && "BigInteger has a small type");
-    data[0] = (uint8_t)(val);
-    data[1] = (uint8_t)(val >> 8);
-    for (size_t i = 2; i < data.size(); ++i) {
-      data[i] = 0;
-    }
-  }
+  BigInteger(uint16_t val) : sign(true) { init(val); }
 
-  BigInteger(uint32_t val) : sign(true) {
-    assert(data.size() >= 4 && "BigInteger has a small type");
-    data[0] = (uint8_t)(val);
-    data[1] = (uint8_t)(val >> 8);
-    data[2] = (uint8_t)(val >> 16);
-    data[3] = (uint8_t)(val >> 24);
-    for (size_t i = 4; i < data.size(); ++i) {
-      data[i] = 0;
-    }
-  }
+  BigInteger(uint32_t val) : sign(true) { init(val); }
 
-  BigInteger(uint64_t val) : sign(true) {
-    assert(data.size() >= 8 && "BigInteger has a small type");
-    data[0] = (uint8_t)(val);
-    data[1] = (uint8_t)(val >> 8);
-    data[2] = (uint8_t)(val >> 16);
-    data[3] = (uint8_t)(val >> 24);
-    data[4] = (uint8_t)(val >> 32);
-    data[5] = (uint8_t)(val >> 40);
-    data[6] = (uint8_t)(val >> 48);
-    data[7] = (uint8_t)(val >> 56);
-    for (size_t i = 8; i < data.size(); ++i) {
-      data[i] = 0;
-    }
-  }
+  BigInteger(uint64_t val) : sign(true) { init(val); }
 
   BigInteger(int8_t val) : sign(val >= 0 ? sign = true : sign = false) {
-    assert(data.size() >= 1 && "BigInteger has a small type");
-    val = abs(val);
-    data[0] = (uint8_t)(val);
-    for (size_t i = 1; i < data.size(); ++i) {
-      data[i] = 0;
-    }
+    init((uint8_t)abs(val));
   }
 
   BigInteger(int16_t val) : sign(val >= 0 ? sign = true : sign = false) {
-    assert(data.size() >= 2 && "BigInteger has a small type");
-    val = abs(val);
-    data[0] = (uint8_t)(val);
-    data[1] = (uint8_t)(val >> 8);
-    for (size_t i = 2; i < data.size(); ++i) {
-      data[i] = 0;
-    }
+    init((uint16_t)abs(val));
   }
 
   BigInteger(int32_t val) : sign(val >= 0 ? sign = true : sign = false) {
-    assert(data.size() >= 4 && "BigInteger has a small type");
-    val = abs(val);
-    data[0] = (uint8_t)(val);
-    data[1] = (uint8_t)(val >> 8);
-    data[2] = (uint8_t)(val >> 16);
-    data[3] = (uint8_t)(val >> 24);
-    for (size_t i = 4; i < data.size(); ++i) {
-      data[i] = 0;
-    }
+    init((uint32_t)abs(val));
   }
 
   BigInteger(int64_t val) : sign(val >= 0 ? sign = true : sign = false) {
-    assert(data.size() >= 8 && "BigInteger has a small type");
-    val = abs(val);
-    data[0] = (uint8_t)(val);
-    data[1] = (uint8_t)(val >> 8);
-    data[2] = (uint8_t)(val >> 16);
-    data[3] = (uint8_t)(val >> 24);
-    data[4] = (uint8_t)(val >> 32);
-    data[5] = (uint8_t)(val >> 40);
-    data[6] = (uint8_t)(val >> 48);
-    data[7] = (uint8_t)(val >> 56);
-    for (size_t i = 8; i < data.size(); ++i) {
-      data[i] = 0;
-    }
+    init((uint64_t)abs(val));
   }
 
   bool isPositive() const { return sign; }
@@ -216,6 +150,21 @@ struct BigInteger {
   }
 
  private:
+  template <typename T,
+            typename = typename std::enable_if<
+                std::is_integral<T>::value && std::is_unsigned<T>::value>::type>
+  void init(T value) {
+    size_t val_size = sizeof(value);
+    assert(data.size() >= val_size && "BigInteger has a small type");
+    for (size_t i = 0; i < data.size(); ++i) {
+      if (i < val_size) {
+        data[i] = (uint8_t)(value >> 8 * i);
+      } else {
+        data[i] = 0;
+      }
+    }
+  }
+
   bool sign{false};
   std::array<uint8_t, SIZE / 8> data{};
 };
