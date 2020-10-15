@@ -43,6 +43,11 @@ TEST(BigInteger, addition_test) {
   res = val1 + val1;
 
   EXPECT_EQ(toPrettyString(res), toPrettyString(BigInteger(-2468)));
+
+  res += 1234;
+
+  EXPECT_EQ(toPrettyString(res), toPrettyString(BigInteger(-1234)));
+
 }
 
 TEST(BigInteger, toPrettyString_test) {

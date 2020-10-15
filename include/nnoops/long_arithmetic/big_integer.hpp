@@ -91,7 +91,30 @@ struct BigInteger {
     return *this;
   }
 
+  template <
+      typename T,
+      typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  BigInteger<SIZE>& operator+=(T b) {
+    return *this += BigInteger<SIZE>(b);
+  }
+
   friend inline const BigInteger<SIZE> operator+(const BigInteger<SIZE>& a,
+                                                 const BigInteger<SIZE>& b) {
+    return BigInteger<SIZE>(a) += b;
+  }
+
+  template <
+      typename T,
+      typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  friend inline const BigInteger<SIZE> operator+(const BigInteger<SIZE>& a,
+                                                 T b) {
+    return BigInteger<SIZE>(b) += a;
+  }
+
+  template <
+      typename T,
+      typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  friend inline const BigInteger<SIZE> operator+(T a,
                                                  const BigInteger<SIZE>& b) {
     return BigInteger<SIZE>(a) += b;
   }
