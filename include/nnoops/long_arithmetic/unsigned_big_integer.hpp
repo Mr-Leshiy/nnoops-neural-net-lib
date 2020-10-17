@@ -91,7 +91,7 @@ struct UBigInteger {
     return *this;
   }
 
-  UBigInteger<SIZE> operator-=(const UBigInteger<SIZE>& b) {
+  UBigInteger<SIZE>& operator-=(const UBigInteger<SIZE>& b) {
     return *this += -b;
   }
 
