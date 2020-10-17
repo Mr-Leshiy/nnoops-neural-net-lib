@@ -39,9 +39,9 @@ TEST(UBigInteger, addition_test) {}
 TEST(UBigInteger, toPrettyString_test) {
   UBigInteger<32> val(1234);
 
-  EXPECT_EQ(toPrettyString(val), "000004d2");
+  EXPECT_EQ(toPrettyString(val), "4d2");
 
   val = UBigInteger<32>(1235);
 
-  EXPECT_EQ(toPrettyString(val), "000004d3");
+  EXPECT_EQ(toPrettyString(val), "4d3");
 }

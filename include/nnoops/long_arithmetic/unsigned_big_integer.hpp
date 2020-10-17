@@ -150,7 +150,9 @@ struct UBigInteger {
   }
 
   friend std::string toPrettyString(const UBigInteger<SIZE>& val) {
-    return HexStr(val.data.rbegin(), val.data.rend());
+    std::string ret = HexStr(val.data.rbegin(), val.data.rend());
+    removeZeros(ret);
+    return ret;
   }
 
  protected:
