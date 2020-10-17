@@ -59,6 +59,17 @@ bool IsHex(const std::string& str) {
   return (!str.empty()) && (str.size() % 2 == 0);
 }
 
+void removeZeros(std::string& str) {
+  for (auto it = str.begin(); it != str.end();) {
+    char val = *it;
+    if (val == '0') {
+      it = str.erase(it);
+      continue;
+    }
+    break;
+  }
+}
+
 std::vector<uint8_t> toBytes(const std::string& str) {
   return std::vector<uint8_t>(str.begin(), str.end());
 }
