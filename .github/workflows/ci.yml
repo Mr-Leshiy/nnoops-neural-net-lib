@@ -44,6 +44,7 @@ jobs:
     env:
       CC: gcc
       CXX: g++
+      CTEST_OUTPUT_ON_FAILURE: 1
     steps:
       - uses: actions/checkout@v1
         name: checkout
