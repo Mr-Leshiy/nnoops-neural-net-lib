@@ -23,7 +23,7 @@ BigDecimal::BigDecimal(const std::string& val) {
       continue;
     }
 
-    assert(isdigit(*ch) || *ch == '.' && "string has invalid character");
+    assert((isdigit(*ch) || *ch == '.') && "string has invalid character");
 
     if (*ch == '.') {
       int_part = false;
