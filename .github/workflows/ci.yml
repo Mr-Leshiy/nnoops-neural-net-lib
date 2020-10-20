@@ -39,6 +39,22 @@ jobs:
       - name: test
         run: cd build && ctest
 
+  linux-gcc:
+    runs-on: ubuntu-18.04
+    env:
+      CC: gcc
+      CXX: g++
+    steps:
+      - uses: actions/checkout@v1
+        name: checkout
+        with:
+          submodules: recursive
+          clean: true
+      - name: cmake
+        run: cmake . -Bbuild
+      - name: build
+        run: cmake --build build -- -j2 install
+
   windows:
     runs-on: windows-latest
     env:
