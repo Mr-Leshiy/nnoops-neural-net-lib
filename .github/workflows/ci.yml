@@ -44,7 +44,6 @@ jobs:
     env:
       CC: gcc
       CXX: g++
-      CTEST_OUTPUT_ON_FAILURE: 1
     steps:
       - uses: actions/checkout@v1
         name: checkout
@@ -54,7 +53,7 @@ jobs:
       - name: cmake
         run: cmake . -Bbuild
       - name: build
-        run: cmake --build build -- -j2 install
+        run: cmake --build build -- -j2
 
   windows:
     runs-on: windows-latest
@@ -67,7 +66,6 @@ jobs:
         with:
           submodules: recursive
           clean: true
-          fetch-depth: 1
 
       - name: cmake
         run: cmake . -Bbuild -A x64
