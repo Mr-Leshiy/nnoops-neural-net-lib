@@ -12,9 +12,9 @@
 namespace nnoops {
 
 // Representation on the unsigned integer with the arbitrary size
-// SIZE should be multiple of 8 (1 byte)
+// SIZE should be multiple of 8 (bit) (1 byte)
 template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
+          typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type> 
 struct UBigInteger {
   UBigInteger() = default;
 
