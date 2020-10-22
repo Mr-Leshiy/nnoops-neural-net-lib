@@ -1,3 +1,5 @@
+![CI](https://github.com/VeriBlock/alt-integration-cpp/workflows/CI/badge.svg)
+
 # Nnoops library
 Library for building, training neural networks.
 
