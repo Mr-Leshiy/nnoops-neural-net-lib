@@ -110,6 +110,18 @@ struct UBigInteger {
     return *this += -UBigInteger(b);
   }
 
+  UBigInteger<SIZE>& operator*=(const UBigInteger<SIZE>& b) {
+    uint64_t carry = 0;
+    for (size_t i = 0; i < data.size(); ++i) {
+      for (size_t j = 0; j < data.size(); ++j) {
+        uint64_t n = carry + this->data[i] * b.data[i];
+        this->data[i] = n & 0xff;
+        carry = n >> 8;
+      }
+    }
+    return *this;
+  }
+
   friend inline UBigInteger<SIZE> operator+(const UBigInteger<SIZE>& a,
                                             const UBigInteger<SIZE>& b) {
     return UBigInteger<SIZE>(a) += b;
@@ -118,6 +130,11 @@ struct UBigInteger {
   friend inline UBigInteger<SIZE> operator-(const UBigInteger<SIZE>& a,
                                             const UBigInteger<SIZE>& b) {
     return UBigInteger<SIZE>(a) -= b;
+  }
+
+  friend inline UBigInteger<SIZE> operator*(const UBigInteger<SIZE>& a,
+                                            const UBigInteger<SIZE>& b) {
+    return UBigInteger<SIZE>(a) *= b;
   }
 
   bool operator==(const UBigInteger<SIZE>& val) const {
