@@ -65,13 +65,15 @@ struct UBigInteger {
     for (size_t i = 0; i < data.size(); ++i) {
       ret.data[i] = ~this->data[i];
     }
-    return ++ret;
+    ++ret;
+    return ret;
   }
 
-  UBigInteger<SIZE> operator++() {
+  UBigInteger<SIZE>& operator++() {
     // prefix operator
     for (size_t i = 0; i < data.size() && ++data[i] == 0; ++i) {
     }
+    return *this;
   }
 
   UBigInteger<SIZE> operator++(int) {
@@ -92,7 +94,7 @@ struct UBigInteger {
   }
 
   UBigInteger<SIZE>& operator-=(const UBigInteger<SIZE>& b) {
-    return *this += -b;
+    return *this += -UBigInteger(b);
   }
 
   friend inline UBigInteger<SIZE> operator+(const UBigInteger<SIZE>& a,
