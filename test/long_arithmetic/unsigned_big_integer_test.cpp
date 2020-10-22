@@ -34,7 +34,7 @@ TEST(UBigInteger, comparison_test) {
   EXPECT_TRUE(val2 >= val2);
 }
 
-TEST(UBigInteger, addition_test) {
+TEST(UBigInteger, addition_substraction_test) {
   UBigInteger val1(66576);
   UBigInteger val2(53648);
 
@@ -60,10 +60,21 @@ TEST(UBigInteger, addition_test) {
   EXPECT_EQ(++val1, UBigInteger(66578));
   EXPECT_EQ(val1, UBigInteger(66578));
 
+  EXPECT_EQ(val1--, UBigInteger(66578));
+  EXPECT_EQ(val1, UBigInteger(66577));
+
+  EXPECT_EQ(--val1, UBigInteger(66576));
+  EXPECT_EQ(val1, UBigInteger(66576));
+
   UBigInteger<8> val3((uint8_t)254);
   EXPECT_EQ(-val3, UBigInteger<8>((uint8_t)2));
   val3 = (uint8_t)3;
   EXPECT_EQ(-val3, UBigInteger<8>((uint8_t)253));
+
+  UBigInteger val4(255);
+
+  EXPECT_EQ(++val4, UBigInteger(256));
+  EXPECT_EQ(--val4, UBigInteger(255));
 }
 
 TEST(UBigInteger, toPrettyString_test) {

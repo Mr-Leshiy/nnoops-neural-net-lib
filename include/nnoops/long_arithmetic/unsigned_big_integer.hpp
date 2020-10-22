@@ -83,6 +83,19 @@ struct UBigInteger {
     return ret;
   }
 
+  UBigInteger<SIZE>& operator--() {
+    // prefix operator
+    for (size_t i = 0; i < data.size() && --data[i] == 0xff; ++i) {
+    }
+    return *this;
+  }
+
+  UBigInteger<SIZE> operator--(int) {
+    UBigInteger<SIZE> ret = *this;
+    --(*this);
+    return ret;
+  }
+
   UBigInteger<SIZE>& operator+=(const UBigInteger<SIZE>& b) {
     uint64_t carry = 0;
     for (size_t i = 0; i < data.size(); ++i) {
