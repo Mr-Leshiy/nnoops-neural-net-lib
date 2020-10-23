@@ -46,13 +46,11 @@ TEST(UBigInteger, addition_substraction_test) {
 
   EXPECT_EQ(val1, UBigInteger(66576));
 
-  val1 = val1 + val2;
+  EXPECT_EQ(val1 + val2, UBigInteger(120224));
+  EXPECT_EQ(val2 + val1, UBigInteger(120224));
 
-  EXPECT_EQ(val1, UBigInteger(120224));
-
-  val1 = val1 - val2;
-
-  EXPECT_EQ(val1, UBigInteger(66576));
+  EXPECT_EQ(val1 - val2, UBigInteger(12928));
+  EXPECT_EQ(-(val2 - val1), UBigInteger(12928));
 
   EXPECT_EQ(val1++, UBigInteger(66576));
   EXPECT_EQ(val1, UBigInteger(66577));
@@ -75,6 +73,20 @@ TEST(UBigInteger, addition_substraction_test) {
 
   EXPECT_EQ(++val4, UBigInteger(256));
   EXPECT_EQ(--val4, UBigInteger(255));
+}
+
+TEST(UBigInteger, multiplication_test) {
+  UBigInteger val1 = 1234;
+  UBigInteger val2 = 4321;
+
+  val1 *= val2;
+
+  EXPECT_EQ(val1, UBigInteger(5332114));
+
+  val1 = 1234;
+
+  EXPECT_EQ(val1 * val2, UBigInteger(5332114));
+  EXPECT_EQ(val2 * val1, UBigInteger(5332114));
 }
 
 TEST(UBigInteger, toPrettyString_test) {

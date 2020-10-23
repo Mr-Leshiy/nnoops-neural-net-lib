@@ -107,18 +107,26 @@ struct UBigInteger {
   }
 
   UBigInteger<SIZE>& operator-=(const UBigInteger<SIZE>& b) {
-    return *this += -UBigInteger(b);
+    uint64_t carry = 0;
+    for (size_t i = 0; i < data.size(); ++i) {
+      uint64_t n = carry + this->data[i] - b.data[i];
+      this->data[i] = n & 0xff;
+      carry = n >> 8;
+    }
+    return *this;
   }
 
   UBigInteger<SIZE>& operator*=(const UBigInteger<SIZE>& b) {
-    uint64_t carry = 0;
+    UBigInteger<SIZE> a;
     for (size_t i = 0; i < data.size(); ++i) {
+      uint64_t carry = 0;
       for (size_t j = 0; j < data.size(); ++j) {
-        uint64_t n = carry + this->data[i] * b.data[i];
-        this->data[i] = n & 0xff;
+        uint64_t n = carry + a.data[i + j] + this->data[i] * b.data[j];
+        a.data[i + j] = n & 0xff;
         carry = n >> 8;
       }
     }
+    this->data = std::move(a.data);
     return *this;
   }
 
