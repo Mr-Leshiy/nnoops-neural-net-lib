@@ -120,7 +120,7 @@ struct UBigInteger {
     UBigInteger<SIZE> a;
     for (size_t i = 0; i < data.size(); ++i) {
       uint64_t carry = 0;
-      for (size_t j = 0; j < data.size(); ++j) {
+      for (size_t j = 0; i + j < data.size(); ++j) {
         uint64_t n = carry + a.data[i + j] + this->data[i] * b.data[j];
         a.data[i + j] = n & 0xff;
         carry = n >> 8;
@@ -128,6 +128,21 @@ struct UBigInteger {
     }
     this->data = std::move(a.data);
     return *this;
+  }
+
+  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) {
+    UBigInteger<SIZE> result = 0;
+    UBigInteger<SIZE> remainder = 0;
+
+    if (b > *this) {
+      return result;
+    }
+
+    if (b == 0) {
+      return remainder = 0;
+    }
+
+    return result;
   }
 
   friend inline UBigInteger<SIZE> operator+(const UBigInteger<SIZE>& a,
