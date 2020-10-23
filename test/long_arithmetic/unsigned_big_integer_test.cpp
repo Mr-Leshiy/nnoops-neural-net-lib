@@ -87,6 +87,22 @@ TEST(UBigInteger, multiplication_test) {
 
   EXPECT_EQ(val1 * val2, UBigInteger(5332114));
   EXPECT_EQ(val2 * val1, UBigInteger(5332114));
+
+  UBigInteger<8> val3 = (uint8_t)125;
+  UBigInteger<8> val4 = (uint8_t)2;
+
+  EXPECT_EQ(val3 * val4, UBigInteger<8>((uint8_t)250));
+  EXPECT_EQ(val4 * val3, UBigInteger<8>((uint8_t)250));
+
+  val4++;
+
+  EXPECT_EQ(val3 * val4, UBigInteger<8>((uint8_t)119));
+  EXPECT_EQ(val4 * val3, UBigInteger<8>((uint8_t)119));
+
+  val4 = (uint8_t)125;
+
+  EXPECT_EQ(val3 * val4, UBigInteger<8>((uint8_t)9));
+  EXPECT_EQ(val4 * val3, UBigInteger<8>((uint8_t)9));
 }
 
 TEST(UBigInteger, toPrettyString_test) {
