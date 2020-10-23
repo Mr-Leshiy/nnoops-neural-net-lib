@@ -7,6 +7,7 @@
 #include <string>
 #include <type_traits>
 
+#include "nnoops/long_arithmetic/arith_error.hpp"
 #include "nnoops/strutil.hpp"
 
 namespace nnoops {
@@ -130,7 +131,7 @@ struct UBigInteger {
     return *this;
   }
 
-  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) {
+  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) throw {
     UBigInteger<SIZE> result = 0;
     UBigInteger<SIZE> remainder = 0;
 
@@ -139,7 +140,7 @@ struct UBigInteger {
     }
 
     if (b == 0) {
-      return remainder = 0;
+      throw arith_error("devide by zero");
     }
 
     return result;
