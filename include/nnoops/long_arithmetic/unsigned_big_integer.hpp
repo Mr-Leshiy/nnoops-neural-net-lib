@@ -135,17 +135,16 @@ struct UBigInteger {
     return *this;
   }
 
-  UBigInteger<SIZE> operator/=(const UBigInteger<SIZE>& b) noexcept(false) {
+  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) noexcept(false) {
     UBigInteger<SIZE> divisor = b;
     UBigInteger<SIZE> dividend = *this;
-    UBigInteger<SIZE> result;
-    UBigInteger<SIZE> remainder;
+    *this = 0;
 
-    if (b > *this) {
-      return result;
+    if (divisor > dividend) {
+      return *this;
     }
 
-    if (b == 0) {
+    if (divisor == 0) {
       throw arith_error("devide by zero");
     }
 
@@ -201,11 +200,11 @@ struct UBigInteger {
 
       // Test reminder
       if (tmp1 >= tmp2) {
-        tmp1 -= q * divisor;
-        result.data[j] = q;
+        tmp1 -= tmp2;
+        this->data[j] = q;
       } else {
-        tmp1 -= (q - 1) * divisor;
-        result.data[j] = q - 1;
+        tmp1 -= tmp2 - divisor;
+        this->data[j] = q - 1;
       }
 
       for (size_t i = j, k = 0; i <= j + n + 1; ++i, ++k) {
@@ -217,7 +216,7 @@ struct UBigInteger {
       }
     }
 
-    return result;
+    return *this;
   }
 
   friend inline UBigInteger<SIZE> operator+(const UBigInteger<SIZE>& a,
