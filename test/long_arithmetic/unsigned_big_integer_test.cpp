@@ -105,6 +105,32 @@ TEST(UBigInteger, multiplication_test) {
   EXPECT_EQ(val4 * val3, UBigInteger<8>((uint8_t)9));
 }
 
+TEST(UBigInteger, division_test) {
+  UBigInteger val1 = 41351;
+  UBigInteger val2 = 5423;
+
+  EXPECT_EQ(val1 / val2, UBigInteger(7));
+  EXPECT_EQ(val2 / val1, UBigInteger(0));
+
+  val1 = 357;
+  val2 = 2;
+
+  EXPECT_EQ(val1 / val2, UBigInteger(178));
+  EXPECT_EQ(val2 / val1, UBigInteger(0));
+
+  val1 = 13452;
+  val2 = 2;
+
+  EXPECT_EQ(val1 / val2, UBigInteger(6726));
+  EXPECT_EQ(val2 / val1, UBigInteger(0));
+
+  val1 = 12412511;
+  val2 = 2;
+
+  EXPECT_EQ(val1 / val2, UBigInteger(6206255));
+  EXPECT_EQ(val2 / val1, UBigInteger(0));
+}
+
 TEST(UBigInteger, toPrettyString_test) {
   UBigInteger<32> val(1234);
 

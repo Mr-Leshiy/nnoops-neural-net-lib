@@ -17,7 +17,11 @@ namespace nnoops {
 template <uint64_t SIZE = 64,
           typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
 struct UBigInteger {
-  UBigInteger() = default;
+  UBigInteger() {
+    for (size_t i = 0; i < data.size(); ++i) {
+      this->data[i] = 0;
+    }
+  };
 
   UBigInteger(const UBigInteger<SIZE>& val) : data(val.data) {}
 
@@ -131,11 +135,11 @@ struct UBigInteger {
     return *this;
   }
 
-  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) noexcept(false) {
+  UBigInteger<SIZE> operator/=(const UBigInteger<SIZE>& b) noexcept(false) {
     UBigInteger<SIZE> divisor = b;
     UBigInteger<SIZE> dividend = *this;
-    UBigInteger<SIZE> result = 0;
-    UBigInteger<SIZE> remainder = 0;
+    UBigInteger<SIZE> result;
+    UBigInteger<SIZE> remainder;
 
     if (b > *this) {
       return result;
@@ -147,20 +151,22 @@ struct UBigInteger {
 
     // normalize
     size_t m = 0, n = 0, d = 0;
-    for (size_t i = SIZE - 1;; --i) {
-      if (divisor.data[i] != 0 && m == 0) {
+    for (size_t i = data.size() - 1;; --i) {
+      if (divisor.data[i] != 0 && n == 0) {
         d = divisor.data[i];
         n = i;
       }
 
-      if (dividend.data[i] != 0 && n == 0) {
-        n = i - m;
+      if (dividend.data[i] != 0 && m == 0) {
+        m = i;
       }
 
-      if ((m == 0 && n == 0) || i == 0) {
+      if ((m != 0 && n != 0) || i == 0) {
         break;
       }
     }
+
+    m -= n;
 
     d = BASE / d;
     if (d != 1) {
@@ -170,13 +176,40 @@ struct UBigInteger {
 
     for (int64_t j = m;; --j) {
       // Calculate q
-      uint64_t el1 = dividend.data[j + n + 1] * BASE + dividend.data[j + n];
-      uint64_t r = el1 & divisor.data[n];
+      uint64_t el1 =
+          dividend.data[j + n + 1] * (BASE + 1) + dividend.data[j + n];
+      uint64_t r = el1 % divisor.data[n];
       uint64_t q = el1 / divisor.data[n];
 
       // Test
-      if (q == BASE ||
-          q * divisor.data[n - 1] > (b * r + dividend.data[j + n - 1])) {
+      if (q == (BASE + 1) ||
+          (n >= 1 && q * divisor.data[n - 1] >
+                         ((BASE + 1) * r + dividend.data[j + n - 1]))) {
+        while (r <= BASE) {
+          ++q;
+          r += divisor.data[n];
+        }
+      }
+
+      // Multiply and substract
+      UBigInteger<SIZE> tmp1 = 0;
+      for (size_t i = j, k = 0; i <= j + n + 1; ++i, ++k) {
+        tmp1.data[k] = dividend.data[i];
+      }
+
+      auto tmp2 = q * divisor;
+
+      // Test reminder
+      if (tmp1 >= tmp2) {
+        tmp1 -= q * divisor;
+        result.data[j] = q;
+      } else {
+        tmp1 -= (q - 1) * divisor;
+        result.data[j] = q - 1;
+      }
+
+      for (size_t i = j, k = 0; i <= j + n + 1; ++i, ++k) {
+        dividend.data[i] = tmp1.data[k];
       }
 
       if (j == 0) {
@@ -200,6 +233,11 @@ struct UBigInteger {
   friend inline UBigInteger<SIZE> operator*(const UBigInteger<SIZE>& a,
                                             const UBigInteger<SIZE>& b) {
     return UBigInteger<SIZE>(a) *= b;
+  }
+
+  friend inline UBigInteger<SIZE> operator/(const UBigInteger<SIZE>& a,
+                                            const UBigInteger<SIZE>& b) {
+    return UBigInteger<SIZE>(a) /= b;
   }
 
   bool operator==(const UBigInteger<SIZE>& val) const {
