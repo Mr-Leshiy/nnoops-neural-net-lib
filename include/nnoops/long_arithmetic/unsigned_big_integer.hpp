@@ -86,7 +86,7 @@ struct UBigInteger {
 
   UBigInteger<SIZE>& operator--() {
     // prefix operator
-    for (size_t i = 0; i < data.size() && --data[i] == 0xff; ++i) {
+    for (size_t i = 0; i < data.size() && --data[i] == BASE; ++i) {
     }
     return *this;
   }
@@ -101,7 +101,7 @@ struct UBigInteger {
     uint64_t carry = 0;
     for (size_t i = 0; i < data.size(); ++i) {
       uint64_t n = carry + this->data[i] + b.data[i];
-      this->data[i] = n & 0xff;
+      this->data[i] = n & BASE;
       carry = n >> 8;
     }
     return *this;
@@ -111,7 +111,7 @@ struct UBigInteger {
     uint64_t carry = 0;
     for (size_t i = 0; i < data.size(); ++i) {
       uint64_t n = carry + this->data[i] - b.data[i];
-      this->data[i] = n & 0xff;
+      this->data[i] = n & BASE;
       carry = n >> 8;
     }
     return *this;
@@ -123,7 +123,7 @@ struct UBigInteger {
       uint64_t carry = 0;
       for (size_t j = 0; i + j < data.size(); ++j) {
         uint64_t n = carry + a.data[i + j] + this->data[i] * b.data[j];
-        a.data[i + j] = n & 0xff;
+        a.data[i + j] = n & BASE;
         carry = n >> 8;
       }
     }
@@ -131,7 +131,9 @@ struct UBigInteger {
     return *this;
   }
 
-  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) throw {
+  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) noexcept(false) {
+    UBigInteger<SIZE> divisor = b;
+    UBigInteger<SIZE> dividend = *this;
     UBigInteger<SIZE> result = 0;
     UBigInteger<SIZE> remainder = 0;
 
@@ -141,6 +143,45 @@ struct UBigInteger {
 
     if (b == 0) {
       throw arith_error("devide by zero");
+    }
+
+    // normalize
+    size_t m = 0, n = 0, d = 0;
+    for (size_t i = SIZE - 1;; --i) {
+      if (divisor.data[i] != 0 && m == 0) {
+        d = divisor.data[i];
+        n = i;
+      }
+
+      if (dividend.data[i] != 0 && n == 0) {
+        n = i - m;
+      }
+
+      if ((m == 0 && n == 0) || i == 0) {
+        break;
+      }
+    }
+
+    d = BASE / d;
+    if (d != 1) {
+      dividend *= d;
+      divisor *= d;
+    }
+
+    for (int64_t j = m;; --j) {
+      // Calculate q
+      uint64_t el1 = dividend.data[j + n + 1] * BASE + dividend.data[j + n];
+      uint64_t r = el1 & divisor.data[n];
+      uint64_t q = el1 / divisor.data[n];
+
+      // Test
+      if (q == BASE ||
+          q * divisor.data[n - 1] > (b * r + dividend.data[j + n - 1])) {
+      }
+
+      if (j == 0) {
+        break;
+      }
     }
 
     return result;
@@ -228,6 +269,7 @@ struct UBigInteger {
   }
 
  private:
+  static const uint8_t BASE = 0xff;
   std::array<uint8_t, SIZE / 8> data{};
 };
 
