@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <limits>
+
 #include "nnoops/long_arithmetic/unsigned_big_integer.hpp"
 
 using namespace nnoops;
@@ -135,6 +137,70 @@ TEST(UBigInteger, division_test) {
 
   EXPECT_EQ(val1 / val2, UBigInteger(60729370787));
   EXPECT_EQ(val2 / val1, UBigInteger(0));
+
+  val1 = 16156165131561652;
+  val2 = 6553614;
+
+  EXPECT_EQ(val1 / val2, UBigInteger(2465229891));
+  EXPECT_EQ(val2 / val1, UBigInteger(0));
+
+  EXPECT_EQ(val1 / val1, UBigInteger(1));
+  EXPECT_EQ(val2 / val2, UBigInteger(1));
+
+  val1 = 123;
+  val2 = 12;
+  val2 = -val2;
+
+  EXPECT_EQ(val1 / val1, UBigInteger(1));
+  EXPECT_EQ(val2 / val2, UBigInteger(1));
+}
+
+TEST(UBigInteger, division_test2) {
+  UBigInteger val1 = 41351;
+  UBigInteger val2 = 5423;
+
+  EXPECT_EQ(val1 % val2, UBigInteger(7));
+  EXPECT_EQ(val2 % val1, UBigInteger(5423));
+
+  val1 = 357;
+  val2 = 2;
+
+  EXPECT_EQ(val1 % val2, UBigInteger(178));
+  EXPECT_EQ(val2 % val1, UBigInteger(2));
+
+  val1 = 13452;
+  val2 = 2;
+
+  EXPECT_EQ(val1 % val2, UBigInteger(0));
+  EXPECT_EQ(val2 % val1, UBigInteger(2));
+
+  val1 = 12412511;
+  val2 = 2;
+
+  EXPECT_EQ(val1 % val2, UBigInteger(1));
+  EXPECT_EQ(val2 % val1, UBigInteger(2));
+
+  val1 = 121458741574;
+  val2 = 2;
+
+  EXPECT_EQ(val1 % val2, UBigInteger(0));
+  EXPECT_EQ(val2 % val1, UBigInteger(2));
+
+  val1 = 16156165131561652;
+  val2 = 6553614;
+
+  EXPECT_EQ(val1 % val2, UBigInteger(0));
+  EXPECT_EQ(val2 % val1, UBigInteger(6553614));
+
+  EXPECT_EQ(val1 % val1, UBigInteger(0));
+  EXPECT_EQ(val2 % val2, UBigInteger(0));
+
+  val1 = 123;
+  val2 = 12;
+  val2 = -val2;
+
+  EXPECT_EQ(val1 % val1, UBigInteger(0));
+  EXPECT_EQ(val2 % val2, UBigInteger(0));
 }
 
 TEST(UBigInteger, toPrettyString_test) {

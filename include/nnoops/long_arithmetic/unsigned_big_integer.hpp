@@ -17,8 +17,8 @@ namespace nnoops {
 template <uint64_t SIZE = 64,
           typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
 struct UBigInteger {
-  UBigInteger() {
-    for (size_t i = 0; i < data.size(); ++i) {
+  UBigInteger() noexcept {
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
       this->data[i] = 0;
     }
   };
@@ -67,7 +67,7 @@ struct UBigInteger {
 
   UBigInteger<SIZE> operator-() const {
     UBigInteger<SIZE> ret = *this;
-    for (size_t i = 0; i < data.size(); ++i) {
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
       ret.data[i] = ~this->data[i];
     }
     ++ret;
@@ -76,7 +76,7 @@ struct UBigInteger {
 
   UBigInteger<SIZE>& operator++() {
     // prefix operator
-    for (size_t i = 0; i < data.size() && ++data[i] == 0; ++i) {
+    for (size_t i = 0; i < ARRAY_LEN && ++data[i] == 0; ++i) {
     }
     return *this;
   }
@@ -90,7 +90,7 @@ struct UBigInteger {
 
   UBigInteger<SIZE>& operator--() {
     // prefix operator
-    for (size_t i = 0; i < data.size() && --data[i] == BASE; ++i) {
+    for (size_t i = 0; i < ARRAY_LEN && --data[i] == BASE; ++i) {
     }
     return *this;
   }
@@ -102,141 +102,69 @@ struct UBigInteger {
   }
 
   UBigInteger<SIZE>& operator+=(const UBigInteger<SIZE>& b) {
-    uint64_t carry = 0;
-    for (size_t i = 0; i < data.size(); ++i) {
-      uint64_t n = carry + this->data[i] + b.data[i];
-      this->data[i] = n & BASE;
-      carry = n >> 8;
-    }
+    classical_addition(*this, b, *this);
     return *this;
   }
 
   UBigInteger<SIZE>& operator-=(const UBigInteger<SIZE>& b) {
-    uint64_t carry = 0;
-    for (size_t i = 0; i < data.size(); ++i) {
-      uint64_t n = carry + this->data[i] - b.data[i];
-      this->data[i] = n & BASE;
-      carry = n >> 8;
-    }
+    classical_substraction(*this, b, *this);
     return *this;
   }
 
   UBigInteger<SIZE>& operator*=(const UBigInteger<SIZE>& b) {
-    UBigInteger<SIZE> a;
-    for (size_t i = 0; i < data.size(); ++i) {
-      uint64_t carry = 0;
-      for (size_t j = 0; i + j < data.size(); ++j) {
-        uint64_t n = carry + a.data[i + j] + this->data[i] * b.data[j];
-        a.data[i + j] = n & BASE;
-        carry = n >> 8;
-      }
-    }
-    this->data = std::move(a.data);
+    UBigInteger<SIZE> res;
+    classical_multiplication(*this, b, res);
+    this->data = std::move(res.data);
     return *this;
   }
 
   UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) noexcept(false) {
-    UBigInteger<SIZE> divisor = b;
-    UBigInteger<SIZE> dividend = *this;
-    *this = 0;
+    UBigInteger<SIZE> r;
+    classical_division(*this, b, *this, r);
+    return *this;
+  }
 
-    if (divisor > dividend) {
-      return *this;
-    }
-
-    if (divisor == 0) {
-      throw arith_error("devide by zero");
-    }
-
-    // normalize
-    size_t m = 0, n = 0, d = 0;
-    for (size_t i = data.size() - 1;; --i) {
-      if (divisor.data[i] != 0 && n == 0) {
-        d = divisor.data[i];
-        n = i;
-      }
-
-      if (dividend.data[i] != 0 && m == 0) {
-        m = i;
-      }
-
-      if ((m != 0 && n != 0) || i == 0) {
-        break;
-      }
-    }
-
-    m -= n;
-
-    d = BASE / d;
-    if (d != 1) {
-      dividend *= d;
-      divisor *= d;
-    }
-
-    for (int64_t j = m;; --j) {
-      // Calculate q
-      uint64_t el1 =
-          dividend.data[j + n + 1] * (BASE + 1) + dividend.data[j + n];
-      uint64_t r = el1 % divisor.data[n];
-      uint64_t q = el1 / divisor.data[n];
-
-      // Test
-      if (q == (BASE + 1) ||
-          (n >= 1 && q * divisor.data[n - 1] >
-                         ((BASE + 1) * r + dividend.data[j + n - 1]))) {
-        while (r <= BASE) {
-          ++q;
-          r += divisor.data[n];
-        }
-      }
-
-      // Multiply and substract
-      UBigInteger<SIZE> tmp1 = 0;
-      for (size_t i = j, k = 0; i <= j + n + 1; ++i, ++k) {
-        tmp1.data[k] = dividend.data[i];
-      }
-
-      auto tmp2 = q * divisor;
-
-      // Test reminder
-      if (tmp1 >= tmp2) {
-        tmp1 -= tmp2;
-        this->data[j] = q;
-      } else {
-        tmp1 -= tmp2 - divisor;
-        this->data[j] = q - 1;
-      }
-
-      for (size_t i = j, k = 0; i <= j + n + 1; ++i, ++k) {
-        dividend.data[i] = tmp1.data[k];
-      }
-
-      if (j == 0) {
-        break;
-      }
-    }
-
+  UBigInteger<SIZE>& operator%=(const UBigInteger<SIZE>& b) {
+    UBigInteger<SIZE> q;
+    classical_division(*this, b, q, *this);
     return *this;
   }
 
   friend inline UBigInteger<SIZE> operator+(const UBigInteger<SIZE>& a,
                                             const UBigInteger<SIZE>& b) {
-    return UBigInteger<SIZE>(a) += b;
+    UBigInteger<SIZE> res;
+    classical_addition(a, b, res);
+    return res;
   }
 
   friend inline UBigInteger<SIZE> operator-(const UBigInteger<SIZE>& a,
                                             const UBigInteger<SIZE>& b) {
-    return UBigInteger<SIZE>(a) -= b;
+    UBigInteger<SIZE> res;
+    classical_substraction(a, b, res);
+    return res;
   }
 
   friend inline UBigInteger<SIZE> operator*(const UBigInteger<SIZE>& a,
                                             const UBigInteger<SIZE>& b) {
-    return UBigInteger<SIZE>(a) *= b;
+    UBigInteger<SIZE> res;
+    classical_multiplication(a, b, res);
+    return res;
   }
 
   friend inline UBigInteger<SIZE> operator/(const UBigInteger<SIZE>& a,
                                             const UBigInteger<SIZE>& b) {
-    return UBigInteger<SIZE>(a) /= b;
+    UBigInteger<SIZE> q;
+    UBigInteger<SIZE> r;
+    classical_division(a, b, q, r);
+    return q;
+  }
+
+  friend inline UBigInteger<SIZE> operator%(const UBigInteger<SIZE>& a,
+                                            UBigInteger<SIZE>& b) {
+    UBigInteger<SIZE> q;
+    UBigInteger<SIZE> r;
+    classical_division(a, b, q, r);
+    return r;
   }
 
   bool operator==(const UBigInteger<SIZE>& val) const {
@@ -251,7 +179,7 @@ struct UBigInteger {
   // return 1 if this bigger than b
   // return 0 if this equal to b
   int compareTo(const UBigInteger<SIZE>& b) const {
-    for (int64_t i = (int64_t)(data.size() - 1); i != 0; --i) {
+    for (int64_t i = (int64_t)(ARRAY_LEN - 1); i != 0; --i) {
       if (this->data[i] < b.data[i]) {
         return -1;
       }
@@ -289,14 +217,145 @@ struct UBigInteger {
     return ret;
   }
 
+  // reference to the 'result' argument CAN BE THE SAME !!! with the 'a' or
+  // 'b' arguments
+  friend void classical_addition(const UBigInteger<SIZE>& a,
+                                 const UBigInteger<SIZE>& b,
+                                 UBigInteger<SIZE>& result) {
+    uint64_t carry = 0;
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+      uint64_t n = carry + a.data[i] + b.data[i];
+      result.data[i] = n & BASE;
+      carry = n >> 8;
+    }
+  }
+
+  // reference to the 'result' argument CAN BE THE SAME !!! with the 'a' or
+  // 'b' arguments
+  friend void classical_substraction(const UBigInteger<SIZE>& a,
+                                     const UBigInteger<SIZE>& b,
+                                     UBigInteger<SIZE>& result) {
+    uint64_t carry = 0;
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+      uint64_t n = carry + a.data[i] - b.data[i];
+      result.data[i] = n & BASE;
+      carry = n >> 8;
+    }
+  }
+
+  // reference to the 'result' argument SHOULD NOT BE THE SAME !!! with the 'a'
+  // or 'b' arguments
+  friend void classical_multiplication(const UBigInteger<SIZE>& a,
+                                       const UBigInteger<SIZE>& b,
+                                       UBigInteger<SIZE>& result) {
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+      uint64_t carry = 0;
+      for (size_t j = 0; i + j < ARRAY_LEN; ++j) {
+        uint64_t n =
+            carry + result.data[i + j] + (uint64_t)(a.data[i] * b.data[j]);
+        result.data[i + j] = n & BASE;
+        carry = n >> 8;
+      }
+    }
+  }
+
+  friend void classical_division(UBigInteger<SIZE> dividend,
+                                 UBigInteger<SIZE> divisor,
+                                 UBigInteger<SIZE>& quotient,
+                                 UBigInteger<SIZE>& remainder) {
+    if (divisor == 0) {
+      throw arith_error("devide by zero");
+    }
+
+    quotient = 0;
+
+    if (divisor > dividend) {
+      remainder = dividend;
+      return;
+    }
+
+    size_t m = 0, n = 0, d = 0;
+    for (size_t i = ARRAY_LEN - 1;; --i) {
+      if (divisor.data[i] != 0 && n == 0) {
+        d = divisor.data[i];
+        n = i;
+      }
+
+      if (dividend.data[i] != 0 && m == 0) {
+        m = i;
+      }
+
+      if ((m != 0 && n != 0) || i == 0) {
+        break;
+      }
+    }
+
+    m -= n;
+
+    // Normalize
+    d = BASE / d;
+    if (d != 1) {
+      dividend *= d;
+      divisor *= d;
+    }
+
+    for (int64_t j = m;; --j) {
+      // Calculate q
+      uint64_t el1 =
+          j + n + 1 >= ARRAY_LEN
+              ? dividend.data[j + n]
+              : (uint64_t)(dividend.data[j + n + 1] * (uint64_t)(BASE + 1)) +
+                    dividend.data[j + n];
+      uint64_t r = el1 % divisor.data[n];
+      uint64_t q = el1 / divisor.data[n];
+
+      // Test
+      if (q == (BASE + 1) ||
+          (n >= 1 && q * divisor.data[n - 1] >
+                         ((BASE + 1) * r + dividend.data[j + n - 1]))) {
+        while (r <= BASE) {
+          ++q;
+          r += divisor.data[n];
+        }
+      }
+
+      // Multiply and substract
+      UBigInteger<SIZE> tmp1 = 0;
+      for (size_t i = j, k = 0; i <= j + n + 1 && i < ARRAY_LEN; ++i, ++k) {
+        tmp1.data[k] = dividend.data[i];
+      }
+
+      auto tmp2 = q * divisor;
+
+      // Test reminder
+      if (tmp1 >= tmp2) {
+        tmp1 -= tmp2;
+        quotient.data[j] = q;
+      } else {
+        tmp1 -= tmp2 - divisor;
+        quotient.data[j] = q - 1;
+      }
+
+      for (size_t i = j, k = 0; i <= j + n + 1 && i < ARRAY_LEN; ++i, ++k) {
+        dividend.data[i] = tmp1.data[k];
+      }
+
+      if (j == 0) {
+        break;
+      }
+    }
+
+    remainder = dividend;
+  }
+
  protected:
   template <typename T,
             typename = typename std::enable_if<
                 std::is_integral<T>::value && std::is_unsigned<T>::value>::type>
   void init(T value) {
     size_t val_size = sizeof(value);
-    assert(data.size() >= val_size && "data has a small size");
-    for (size_t i = 0; i < data.size(); ++i) {
+    assert(ARRAY_LEN >= val_size && "data has a small size");
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (i < val_size) {
         data[i] = (uint8_t)(value >> 8 * i);
       } else {
@@ -307,6 +366,7 @@ struct UBigInteger {
 
  private:
   static const uint8_t BASE = 0xff;
+  static constexpr uint64_t ARRAY_LEN = SIZE / 8;
   std::array<uint8_t, SIZE / 8> data{};
 };
 
