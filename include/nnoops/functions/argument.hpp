@@ -142,126 +142,126 @@ struct Argument<T, Ts...> : public Argument<Ts...> {
 
   friend inline Argument<T, Ts...> operator*(const Argument<T, Ts...>&& arg,
                                              double val) {
-    return std::move(Argument<T, Ts...>(arg) *= val);
+    return Argument<T, Ts...>(arg) *= val;
   }
 
   friend inline Argument<T, Ts...> operator*(const Argument<T, Ts...>& arg,
                                              double val) {
-    return std::move(Argument<T, Ts...>(arg) *= val);
+    return Argument<T, Ts...>(arg) *= val;
   }
 
   friend inline Argument<T, Ts...> operator*(double val,
                                              const Argument<T, Ts...>&& arg) {
-    return std::move(Argument<T, Ts...>(arg) *= val);
+    return Argument<T, Ts...>(arg) *= val;
   }
 
   friend inline Argument<T, Ts...> operator*(double val,
                                              const Argument<T, Ts...>& arg) {
-    return std::move(Argument<T, Ts...>(arg) *= val);
+    return Argument<T, Ts...>(arg) *= val;
   }
 
   friend inline Argument<T, Ts...> operator*(const Argument<T, Ts...>&& arg1,
                                              const Argument<T, Ts...>&& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) *= arg2);
+    return Argument<T, Ts...>(arg1) *= arg2;
   }
 
   friend inline Argument<T, Ts...> operator*(const Argument<T, Ts...>& arg1,
                                              const Argument<T, Ts...>& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) *= arg2);
+    return Argument<T, Ts...>(arg1) *= arg2;
   }
 
   friend inline Argument<T, Ts...> operator*(const Argument<T, Ts...>&& arg1,
                                              const Argument<T, Ts...>& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) *= arg2);
+    return Argument<T, Ts...>(arg1) *= arg2;
   }
 
   friend inline Argument<T, Ts...> operator*(const Argument<T, Ts...>& arg1,
                                              const Argument<T, Ts...>&& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) *= arg2);
+    return Argument<T, Ts...>(arg1) *= arg2;
   }
 
   // operator+
 
   friend inline Argument<T, Ts...> operator+(const Argument<T, Ts...>&& arg,
                                              double val) {
-    return std::move(Argument<T, Ts...>(arg) += val);
+    return Argument<T, Ts...>(arg) += val;
   }
 
   friend inline Argument<T, Ts...> operator+(const Argument<T, Ts...>& arg,
                                              double val) {
-    return std::move(Argument<T, Ts...>(arg) += val);
+    return Argument<T, Ts...>(arg) += val;
   }
 
   friend inline Argument<T, Ts...> operator+(double val,
                                              const Argument<T, Ts...>&& arg) {
-    return std::move(Argument<T, Ts...>(arg) += val);
+    return Argument<T, Ts...>(arg) += val;
   }
 
   friend inline Argument<T, Ts...> operator+(double val,
                                              const Argument<T, Ts...>& arg) {
-    return std::move(Argument<T, Ts...>(arg) += val);
+    return Argument<T, Ts...>(arg) += val;
   }
 
   friend inline Argument<T, Ts...> operator+(const Argument<T, Ts...>&& arg1,
                                              const Argument<T, Ts...>&& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) += arg2);
+    return Argument<T, Ts...>(arg1) += arg2;
   }
 
   friend inline Argument<T, Ts...> operator+(const Argument<T, Ts...>& arg1,
                                              const Argument<T, Ts...>& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) += arg2);
+    return Argument<T, Ts...>(arg1) += arg2;
   }
 
   friend inline Argument<T, Ts...> operator+(const Argument<T, Ts...>&& arg1,
                                              const Argument<T, Ts...>& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) += arg2);
+    return Argument<T, Ts...>(arg1) += arg2;
   }
 
   friend inline Argument<T, Ts...> operator+(const Argument<T, Ts...>& arg1,
                                              const Argument<T, Ts...>&& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) += arg2);
+    return Argument<T, Ts...>(arg1) += arg2;
   }
 
   // operator-
 
   friend inline Argument<T, Ts...> operator-(const Argument<T, Ts...>&& arg,
                                              double val) {
-    return std::move(Argument<T, Ts...>(arg) -= val);
+    return Argument<T, Ts...>(arg) -= val;
   }
 
   friend inline Argument<T, Ts...> operator-(const Argument<T, Ts...>& arg,
                                              double val) {
-    return std::move(Argument<T, Ts...>(arg) -= val);
+    return Argument<T, Ts...>(arg) -= val;
   }
 
   friend inline Argument<T, Ts...> operator-(double val,
                                              const Argument<T, Ts...>&& arg) {
-    return std::move(Argument<T, Ts...>(arg) -= val);
+    return Argument<T, Ts...>(arg) -= val;
   }
 
   friend inline Argument<T, Ts...> operator-(double val,
                                              const Argument<T, Ts...>& arg) {
-    return std::move(Argument<T, Ts...>(arg) -= val);
+    return Argument<T, Ts...>(arg) -= val;
   }
 
   friend inline Argument<T, Ts...> operator-(const Argument<T, Ts...>&& arg1,
                                              const Argument<T, Ts...>&& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) -= arg2);
+    return Argument<T, Ts...>(arg1) -= arg2;
   }
 
   friend inline Argument<T, Ts...> operator-(const Argument<T, Ts...>& arg1,
                                              const Argument<T, Ts...>& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) -= arg2);
+    return Argument<T, Ts...>(arg1) -= arg2;
   }
 
   friend inline Argument<T, Ts...> operator-(const Argument<T, Ts...>&& arg1,
                                              const Argument<T, Ts...>& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) -= arg2);
+    return Argument<T, Ts...>(arg1) -= arg2;
   }
 
   friend inline Argument<T, Ts...> operator-(const Argument<T, Ts...>& arg1,
                                              const Argument<T, Ts...>&& arg2) {
-    return std::move(Argument<T, Ts...>(arg1) -= arg2);
+    return Argument<T, Ts...>(arg1) -= arg2;
   }
 
   friend std::string toPrettyString(const Argument<T, Ts...>& arg) {

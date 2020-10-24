@@ -146,28 +146,28 @@ struct Point : public CheckPoint {
 
   friend inline Point<N> operator+(const Point<N>& point1,
                                    const Point<N>& point2) {
-    return std::move(Point(point1) += point2);
+    return Point(point1) += point2;
   }
 
   friend inline Point<N> operator+(double val, const Point<N>& point) {
-    return std::move(Point(point) += val);
+    return Point(point) += val;
   }
 
   friend inline Point<N> operator+(const Point<N>& point, double val) {
-    return std::move(Point(point) += val);
+    return Point(point) += val;
   }
 
   friend inline Point<N> operator-(const Point<N>& point1,
                                    const Point<N>& point2) {
-    return std::move(Point(point1) -= point2);
+    return Point(point1) -= point2;
   }
 
   friend inline Point<N> operator-(double val, const Point<N>& point) {
-    return std::move(Point(point) -= -val);
+    return Point(point) -= -val;
   }
 
   friend inline Point<N> operator-(const Point<N>& point, double val) {
-    return std::move(Point(point) -= val);
+    return Point(point) -= val;
   }
 
   friend inline double operator*(const Point<N>& point1,
@@ -180,11 +180,11 @@ struct Point : public CheckPoint {
   }
 
   friend inline Point<N> operator*(double val, const Point<N>& point) {
-    return std::move(Point(point) *= val);
+    return Point(point) *= val;
   }
 
   friend inline Point<N> operator*(const Point<N>& point, double val) {
-    return std::move(Point(point) *= val);
+    return Point(point) *= val;
   }
 
   friend inline bool operator>(const Point<N>& point1, const Point<N>& point2) {
