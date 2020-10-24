@@ -129,6 +129,12 @@ TEST(UBigInteger, division_test) {
 
   EXPECT_EQ(val1 / val2, UBigInteger(6206255));
   EXPECT_EQ(val2 / val1, UBigInteger(0));
+
+  val1 = 121458741574;
+  val2 = 2;
+
+  EXPECT_EQ(val1 / val2, UBigInteger(60729370787));
+  EXPECT_EQ(val2 / val1, UBigInteger(0));
 }
 
 TEST(UBigInteger, toPrettyString_test) {
