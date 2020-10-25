@@ -119,14 +119,13 @@ struct UBigInteger {
   }
 
   UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) noexcept(false) {
-    UBigInteger<SIZE> r;
-    classical_division(*this, b, *this, r);
+    classical_division(*this, b, *this);
     return *this;
   }
 
   UBigInteger<SIZE>& operator%=(const UBigInteger<SIZE>& b) {
     UBigInteger<SIZE> q;
-    classical_division(*this, b, q, *this);
+    classical_division(*this, b, q, this);
     return *this;
   }
 
@@ -154,8 +153,7 @@ struct UBigInteger {
   friend inline UBigInteger<SIZE> operator/(const UBigInteger<SIZE>& a,
                                             const UBigInteger<SIZE>& b) {
     UBigInteger<SIZE> q;
-    UBigInteger<SIZE> r;
-    classical_division(a, b, q, r);
+    classical_division(a, b, q);
     return q;
   }
 
@@ -163,7 +161,7 @@ struct UBigInteger {
                                             UBigInteger<SIZE>& b) {
     UBigInteger<SIZE> q;
     UBigInteger<SIZE> r;
-    classical_division(a, b, q, r);
+    classical_division(a, b, q, &r);
     return r;
   }
 
@@ -262,7 +260,7 @@ struct UBigInteger {
   friend void classical_division(UBigInteger<SIZE> dividend,
                                  UBigInteger<SIZE> divisor,
                                  UBigInteger<SIZE>& quotient,
-                                 UBigInteger<SIZE>& remainder) {
+                                 UBigInteger<SIZE>* remainder = nullptr) {
     if (divisor == 0) {
       throw arith_error("devide by zero");
     }
@@ -270,7 +268,9 @@ struct UBigInteger {
     quotient = 0;
 
     if (divisor > dividend) {
-      remainder = dividend;
+      if (remainder != nullptr) {
+        *remainder = dividend;
+      }
       return;
     }
 
@@ -293,11 +293,13 @@ struct UBigInteger {
     m -= n;
 
     // Normalize
-    // d = BASE / d;
-    // if (d != 1) {
-    //   dividend *= d;
-    //   divisor *= d;
-    // }
+    if (remainder == nullptr) {
+      d = BASE / d;
+      if (d != 1) {
+        dividend *= d;
+        divisor *= d;
+      }
+    }
 
     for (int64_t j = m;; --j) {
       // Calculate q
@@ -345,7 +347,9 @@ struct UBigInteger {
       }
     }
 
-    remainder = dividend;
+    if (remainder != nullptr) {
+      *remainder = dividend;
+    }
   }
 
  protected:
