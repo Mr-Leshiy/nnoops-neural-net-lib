@@ -215,20 +215,20 @@ struct UBigInteger {
     return ret;
   }
 
-  // reference to the 'result' argument CAN BE THE SAME !!! with the 'a' or
+  // reference to the 'result' argument CAN BE THE SAME with the 'a' or
   // 'b' arguments
   friend void classical_addition(const UBigInteger<SIZE>& a,
                                  const UBigInteger<SIZE>& b,
                                  UBigInteger<SIZE>& result) {
     uint64_t carry = 0;
-    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+    for (size_t i = 0; i < UBigInteger<SIZE>::ARRAY_LEN; ++i) {
       uint64_t n = carry + a.data[i] + b.data[i];
-      result.data[i] = n & BASE;
+      result.data[i] = n & UBigInteger<SIZE>::BASE;
       carry = n >> 8;
     }
   }
 
-  // reference to the 'result' argument CAN BE THE SAME !!! with the 'a' or
+  // reference to the 'result' argument CAN BE THE SAME with the 'a' or
   // 'b' arguments
   friend void classical_substraction(const UBigInteger<SIZE>& a,
                                      const UBigInteger<SIZE>& b,
@@ -241,7 +241,7 @@ struct UBigInteger {
     }
   }
 
-  // reference to the 'result' argument SHOULD NOT BE THE SAME !!! with the 'a'
+  // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
   // or 'b' arguments
   friend void classical_multiplication(const UBigInteger<SIZE>& a,
                                        const UBigInteger<SIZE>& b,

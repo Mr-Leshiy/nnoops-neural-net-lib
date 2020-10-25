@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <limits>
-
 #include "nnoops/long_arithmetic/unsigned_big_integer.hpp"
 
 using namespace nnoops;
