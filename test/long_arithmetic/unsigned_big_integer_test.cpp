@@ -132,16 +132,16 @@ TEST(UBigInteger, division_test) {
   EXPECT_EQ(val1 / val2, UBigInteger(6206255));
   EXPECT_EQ(val2 / val1, UBigInteger(0));
 
-  val1 = 121458741574;
+  val1 = (uint64_t)121458741574;
   val2 = 2;
 
-  EXPECT_EQ(val1 / val2, UBigInteger(60729370787));
+  EXPECT_EQ(val1 / val2, UBigInteger((uint64_t)60729370787));
   EXPECT_EQ(val2 / val1, UBigInteger(0));
 
-  val1 = 16156165131561652;
+  val1 = (uint64_t)16156165131561652;
   val2 = 6553614;
 
-  EXPECT_EQ(val1 / val2, UBigInteger(2465229891));
+  EXPECT_EQ(val1 / val2, UBigInteger((uint64_t)2465229891));
   EXPECT_EQ(val2 / val1, UBigInteger(0));
 
   EXPECT_EQ(val1 / val1, UBigInteger(1));
@@ -180,13 +180,13 @@ TEST(UBigInteger, division_test2) {
   EXPECT_EQ(val1 % val2, UBigInteger(1));
   EXPECT_EQ(val2 % val1, UBigInteger(2));
 
-  val1 = 121458741574;
+  val1 = (uint64_t)121458741574;
   val2 = 2;
 
   EXPECT_EQ(val1 % val2, UBigInteger(0));
   EXPECT_EQ(val2 % val1, UBigInteger(2));
 
-  val1 = 16156165131561652;
+  val1 = (uint64_t)16156165131561652;
   val2 = 6553614;
 
   EXPECT_EQ(val1 % val2, UBigInteger(4685578));
