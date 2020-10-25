@@ -159,13 +159,13 @@ TEST(UBigInteger, division_test2) {
   UBigInteger val1 = 41351;
   UBigInteger val2 = 5423;
 
-  EXPECT_EQ(val1 % val2, UBigInteger(7));
+  EXPECT_EQ(val1 % val2, UBigInteger(3390));
   EXPECT_EQ(val2 % val1, UBigInteger(5423));
 
   val1 = 357;
   val2 = 2;
 
-  EXPECT_EQ(val1 % val2, UBigInteger(178));
+  EXPECT_EQ(val1 % val2, UBigInteger(1));
   EXPECT_EQ(val2 % val1, UBigInteger(2));
 
   val1 = 13452;
@@ -189,7 +189,7 @@ TEST(UBigInteger, division_test2) {
   val1 = 16156165131561652;
   val2 = 6553614;
 
-  EXPECT_EQ(val1 % val2, UBigInteger(0));
+  EXPECT_EQ(val1 % val2, UBigInteger(4685578));
   EXPECT_EQ(val2 % val1, UBigInteger(6553614));
 
   EXPECT_EQ(val1 % val1, UBigInteger(0));

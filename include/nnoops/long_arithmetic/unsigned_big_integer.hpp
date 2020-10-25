@@ -293,11 +293,11 @@ struct UBigInteger {
     m -= n;
 
     // Normalize
-    d = BASE / d;
-    if (d != 1) {
-      dividend *= d;
-      divisor *= d;
-    }
+    // d = BASE / d;
+    // if (d != 1) {
+    //   dividend *= d;
+    //   divisor *= d;
+    // }
 
     for (int64_t j = m;; --j) {
       // Calculate q
