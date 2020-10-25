@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include <array>
+#include <cassert>
 #include <string>
 #include <type_traits>
 
@@ -373,6 +374,11 @@ struct UBigInteger {
   static constexpr uint64_t ARRAY_LEN = SIZE / 8;
   std::array<uint8_t, SIZE / 8> data{};
 };
+
+extern template struct UBigInteger<8>;
+extern template struct UBigInteger<16>;
+extern template struct UBigInteger<32>;
+extern template struct UBigInteger<64>;
 
 }  // namespace nnoops
 
