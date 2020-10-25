@@ -23,6 +23,7 @@ option(UBSAN        "Enable Undefined Behavior Sanitizer" OFF)
 option(WERROR       "Treat warnings as errors" ON)
 option(TESTING      "Build tests" ON)
 option(SHARED       "Build shared lib" OFF)
+option(BENCH        "Build benchmarks" OFF)
 option(NEURAL_NET_TESTING "Build neural net tests" ON)
 
 
@@ -112,6 +113,10 @@ if(TESTING)
     include(cmake/gtest.cmake)
     enable_testing()
     add_subdirectory(test)
+endif()
+
+if(BENCH)
+    add_subdirectory(benchmark)
 endif()
 
 if(CLANG_TIDY)
