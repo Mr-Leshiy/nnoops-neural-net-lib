@@ -1,5 +1,5 @@
-#ifndef NNOOPS_LIB_CPP_LONG_ARITHMETIC_BIG_INTEGER_HPP_
-#define NNOOPS_LIB_CPP_LONG_ARITHMETIC_BIG_INTEGER_HPP_
+#ifndef NNOOPS_LIB_CPP_LONG_ARITHMETIC_UNSIGNED_BIG_INTEGER_HPP_
+#define NNOOPS_LIB_CPP_LONG_ARITHMETIC_UNSIGNED_BIG_INTEGER_HPP_
 
 #include <stdint.h>
 
@@ -18,6 +18,8 @@ namespace nnoops {
 template <uint64_t SIZE = 64,
           typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
 struct UBigInteger {
+  virtual ~UBigInteger() = default;
+
   UBigInteger() noexcept {
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       this->data[i] = 0;
@@ -210,12 +212,6 @@ struct UBigInteger {
     return a.compareTo(b) <= 0;
   }
 
-  friend std::string toPrettyString(const UBigInteger<SIZE>& val) {
-    std::string ret = HexStr(val.data.rbegin(), val.data.rend());
-    removeZeros(ret);
-    return ret;
-  }
-
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
   // 'b' arguments
   friend void classical_addition(const UBigInteger<SIZE>& a,
@@ -353,6 +349,12 @@ struct UBigInteger {
     }
   }
 
+  friend std::string toPrettyString(const UBigInteger<SIZE>& val) {
+    std::string ret = HexStr(val.data.rbegin(), val.data.rend());
+    removeZeros(ret);
+    return ret;
+  }
+
  protected:
   template <typename T,
             typename = typename std::enable_if<
@@ -379,6 +381,10 @@ extern template struct UBigInteger<8>;
 extern template struct UBigInteger<16>;
 extern template struct UBigInteger<32>;
 extern template struct UBigInteger<64>;
+extern template struct UBigInteger<128>;
+extern template struct UBigInteger<256>;
+extern template struct UBigInteger<512>;
+extern template struct UBigInteger<1024>;
 
 }  // namespace nnoops
 
