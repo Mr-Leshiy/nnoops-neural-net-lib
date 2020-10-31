@@ -218,8 +218,7 @@ static std::vector<FunctionValueTestCase3> f_value_test_cases3 = {
 TEST_P(FunctionValueTest3, function_test) {
   auto value = GetParam();
 
-  EXPECT_EQ(value.f->function(value.argument) - value.expected_function_value,
-            0);
+  EXPECT_EQ(value.f->function(value.argument), value.expected_function_value);
 }
 
 TEST_P(FunctionValueTest3, derivative_test) {
