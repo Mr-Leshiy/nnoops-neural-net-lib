@@ -35,7 +35,7 @@ void BM_classical_multiplication(benchmark::State& state) {
 
 void BM_classical_division(benchmark::State& state) {
   UBigInteger val1 = 1241412;
-  UBigInteger val2 = 123211;
+  UBigInteger val2 = 12;
   UBigInteger result;
 
   for (auto _ : state) {
