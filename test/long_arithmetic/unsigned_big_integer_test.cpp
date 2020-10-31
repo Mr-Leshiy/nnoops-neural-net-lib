@@ -206,7 +206,7 @@ TEST(UBigInteger, toPrettyString_test) {
 
   EXPECT_EQ(toPrettyString(val), "4d2");
 
-  val = UBigInteger<32>(1235);
+  val = 1235;
 
   EXPECT_EQ(toPrettyString(val), "4d3");
 }
