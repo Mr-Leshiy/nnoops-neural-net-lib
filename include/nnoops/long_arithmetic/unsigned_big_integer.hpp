@@ -117,11 +117,11 @@ struct UBigInteger {
   UBigInteger<SIZE>& operator*=(const UBigInteger<SIZE>& b) {
     UBigInteger<SIZE> res;
     classical_multiplication(*this, b, res);
-    this->data = std::move(res.data);
+    *this = std::move(res);
     return *this;
   }
 
-  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) noexcept(false) {
+  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) {
     classical_division(*this, b, *this);
     return *this;
   }
@@ -176,22 +176,6 @@ struct UBigInteger {
     return !(*this == val);
   }
 
-  // return -1 if this less than b,
-  // return 1 if this bigger than b
-  // return 0 if this equal to b
-  int compareTo(const UBigInteger<SIZE>& b) const {
-    for (int64_t i = (int64_t)(ARRAY_LEN - 1); i != 0; --i) {
-      if (this->data[i] < b.data[i]) {
-        return -1;
-      }
-      if (this->data[i] > b.data[i]) {
-        return 1;
-      }
-    }
-
-    return 0;
-  }
-
   friend bool operator>(const UBigInteger<SIZE>& a,
                         const UBigInteger<SIZE>& b) {
     return a.compareTo(b) > 0;
@@ -210,6 +194,22 @@ struct UBigInteger {
   friend bool operator<=(const UBigInteger<SIZE>& a,
                          const UBigInteger<SIZE>& b) {
     return a.compareTo(b) <= 0;
+  }
+
+  // return -1 if this less than b,
+  // return 1 if this bigger than b
+  // return 0 if this equal to b
+  int compareTo(const UBigInteger<SIZE>& b) const {
+    for (int64_t i = (int64_t)(ARRAY_LEN - 1); i != 0; --i) {
+      if (this->data[i] < b.data[i]) {
+        return -1;
+      }
+      if (this->data[i] > b.data[i]) {
+        return 1;
+      }
+    }
+
+    return 0;
   }
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
