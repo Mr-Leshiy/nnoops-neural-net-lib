@@ -54,6 +54,43 @@ struct BigInteger : public UBigInteger<SIZE> {
   BigInteger(int64_t val)
       : UBigInteger<SIZE>(abs(val)), sign(val >= 0 ? true : false) {}
 
+  bool operator==(const BigInteger<SIZE>& val) const {
+    return this->sign == val.sign && UBigInteger<SIZE>::operator==(val);
+  }
+
+  bool operator!=(const BigInteger<SIZE>& val) const { return !(*this == val); }
+
+  friend bool operator>(const BigInteger<SIZE>& a, const BigInteger<SIZE>& b) {
+    return a.compareTo(b) > 0;
+  }
+
+  friend bool operator<(const BigInteger<SIZE>& a, const BigInteger<SIZE>& b) {
+    return a.compareTo(b) < 0;
+  }
+
+  friend bool operator>=(const BigInteger<SIZE>& a, const BigInteger<SIZE>& b) {
+    return a.compareTo(b) >= 0;
+  }
+
+  friend bool operator<=(const BigInteger<SIZE>& a, const BigInteger<SIZE>& b) {
+    return a.compareTo(b) <= 0;
+  }
+
+  // return -1 if this less than b,
+  // return 1 if this bigger than b
+  // return 0 if this equal to b
+  int compareTo(const BigInteger<SIZE>& b) const {
+    if (this->sign == false && b.sign == true) {
+      return -1;
+    }
+    if (this->sign == true && b.sign == false) {
+      return 1;
+    }
+
+    return b.sign == false ? -1 * UBigInteger<SIZE>::compareTo(b)
+                           : UBigInteger<SIZE>::compareTo(b);
+  }
+
   friend std::string toPrettyString(const BigInteger<SIZE>& val) {
     if (val.sign == true) {
       return toPrettyString(UBigInteger<SIZE>(val));
