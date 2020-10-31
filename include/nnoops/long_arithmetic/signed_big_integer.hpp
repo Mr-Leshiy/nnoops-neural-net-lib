@@ -54,6 +54,70 @@ struct BigInteger : public UBigInteger<SIZE> {
   BigInteger(int64_t val)
       : UBigInteger<SIZE>(abs(val)), sign(val >= 0 ? true : false) {}
 
+  BigInteger<SIZE>& operator+=(const BigInteger<SIZE>& b) {
+    classical_addition(*this, b, *this);
+    return *this;
+  }
+
+  BigInteger<SIZE>& operator-=(const BigInteger<SIZE>& b) {
+    classical_division(*this, b, *this);
+    return *this;
+  }
+
+  BigInteger<SIZE>& operator*=(const BigInteger<SIZE>& b) {
+    BigInteger<SIZE> res;
+    classical_multiplication(*this, b, res);
+    *this = std::move(res);
+    return *this;
+  }
+
+  BigInteger<SIZE>& operator/=(const BigInteger<SIZE>& b) {
+    classical_division(*this, b, *this);
+    return *this;
+  }
+
+  BigInteger<SIZE>& operator%=(const BigInteger<SIZE>& b) {
+    BigInteger<SIZE> q;
+    classical_division(*this, b, q, this);
+    return *this;
+  }
+
+  friend inline BigInteger<SIZE> operator+(const BigInteger<SIZE>& a,
+                                           const BigInteger<SIZE>& b) {
+    BigInteger<SIZE> res;
+    classical_addition(a, b, res);
+    return res;
+  }
+
+  friend inline BigInteger<SIZE> operator-(const BigInteger<SIZE>& a,
+                                           const BigInteger<SIZE>& b) {
+    BigInteger<SIZE> res;
+    classical_substraction(a, b, res);
+    return res;
+  }
+
+  friend inline BigInteger<SIZE> operator*(const BigInteger<SIZE>& a,
+                                           const BigInteger<SIZE>& b) {
+    BigInteger<SIZE> res;
+    classical_multiplication(a, b, res);
+    return res;
+  }
+
+  friend inline BigInteger<SIZE> operator/(const BigInteger<SIZE>& a,
+                                           BigInteger<SIZE>& b) {
+    BigInteger<SIZE> q;
+    classical_division(a, b, q);
+    return q;
+  }
+
+  friend inline BigInteger<SIZE> operator%(const BigInteger<SIZE>& a,
+                                           const BigInteger<SIZE>& b) {
+    BigInteger<SIZE> q;
+    BigInteger<SIZE> r;
+    classical_division(a, b, q, &r);
+    return r;
+  }
+
   bool operator==(const BigInteger<SIZE>& val) const {
     return this->sign == val.sign && UBigInteger<SIZE>::operator==(val);
   }
@@ -89,6 +153,46 @@ struct BigInteger : public UBigInteger<SIZE> {
 
     return b.sign == false ? -1 * UBigInteger<SIZE>::compareTo(b)
                            : UBigInteger<SIZE>::compareTo(b);
+  }
+
+  // reference to the 'result' argument CAN BE THE SAME with the 'a' or
+  // 'b' arguments
+  friend void classical_addition(const BigInteger<SIZE>& a,
+                                 const BigInteger<SIZE>& b,
+                                 BigInteger<SIZE>& result) {
+    (void)a;
+    (void)b;
+    (void)result;
+  }
+
+  // reference to the 'result' argument CAN BE THE SAME with the 'a' or
+  // 'b' arguments
+  friend void classical_substraction(const BigInteger<SIZE>& a,
+                                     const BigInteger<SIZE>& b,
+                                     BigInteger<SIZE>& result) {
+    (void)a;
+    (void)b;
+    (void)result;
+  }
+
+  // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
+  // or 'b' arguments
+  friend void classical_multiplication(BigInteger<SIZE>& a,
+                                       BigInteger<SIZE>& b,
+                                       BigInteger<SIZE>& result) {
+    (void)a;
+    (void)b;
+    (void)result;
+  }
+
+  friend void classical_division(BigInteger<SIZE> dividend,
+                                 BigInteger<SIZE> divisor,
+                                 BigInteger<SIZE>& quotient,
+                                 BigInteger<SIZE>* remainder = nullptr) {
+    (void)dividend;
+    (void)divisor;
+    (void)quotient;
+    (void)remainder;
   }
 
   friend std::string toPrettyString(const BigInteger<SIZE>& val) {

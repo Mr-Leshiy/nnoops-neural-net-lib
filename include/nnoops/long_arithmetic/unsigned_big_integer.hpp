@@ -117,11 +117,11 @@ struct UBigInteger {
   UBigInteger<SIZE>& operator*=(const UBigInteger<SIZE>& b) {
     UBigInteger<SIZE> res;
     classical_multiplication(*this, b, res);
-    this->data = std::move(res.data);
+    *this = std::move(res);
     return *this;
   }
 
-  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) noexcept(false) {
+  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) {
     classical_division(*this, b, *this);
     return *this;
   }

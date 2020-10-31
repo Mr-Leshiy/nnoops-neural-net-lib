@@ -69,10 +69,14 @@ TEST(UBigInteger, addition_substraction_test) {
   val3 = (uint8_t)3;
   EXPECT_EQ(-val3, UBigInteger<8>((uint8_t)253));
 
-  UBigInteger val4(255);
+  UBigInteger<8> val4((uint8_t)255);
+  EXPECT_EQ(val3 - val4, UBigInteger<8>((uint8_t)4));
+  EXPECT_EQ(-(val4 - val3), UBigInteger<8>((uint8_t)4));
 
-  EXPECT_EQ(++val4, UBigInteger(256));
-  EXPECT_EQ(--val4, UBigInteger(255));
+  UBigInteger val5(255);
+
+  EXPECT_EQ(++val5, UBigInteger(256));
+  EXPECT_EQ(--val5, UBigInteger(255));
 }
 
 TEST(UBigInteger, multiplication_test) {
