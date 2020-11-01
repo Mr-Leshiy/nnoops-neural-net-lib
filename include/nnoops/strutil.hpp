@@ -42,8 +42,6 @@ std::string HexStr(const T& itbegin, const T& itend) {
   return rv;
 }
 
-void removeZeros(std::string& str);
-
 template <typename T>
 std::string HexStr(const T& vch) {
   return HexStr(vch.begin(), vch.end());

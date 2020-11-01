@@ -349,10 +349,17 @@ struct UBigInteger {
     }
   }
 
+  static UBigInteger<SIZE> min_value() { return UBigInteger<SIZE>(); }
+
+  static UBigInteger<SIZE> max_value() {
+    UBigInteger<SIZE> ret;
+    return --ret;
+  }
+
+  static UBigInteger<SIZE> zero_value() { return UBigInteger<SIZE>(); }
+
   friend std::string toPrettyString(const UBigInteger<SIZE>& val) {
-    std::string ret = HexStr(val.data.rbegin(), val.data.rend());
-    removeZeros(ret);
-    return ret;
+    return HexStr(val.data.rbegin(), val.data.rend());
   }
 
  protected:
@@ -371,7 +378,6 @@ struct UBigInteger {
     }
   }
 
- private:
   static const uint8_t BASE = 0xff;
   static constexpr uint64_t ARRAY_LEN = SIZE / 8;
   std::array<uint8_t, SIZE / 8> data{};

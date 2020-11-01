@@ -18,8 +18,4 @@ TEST(StrUtil, basic_test) {
   hex_str = HexStr(data);
 
   EXPECT_EQ(hex_str, "000000000020417b360cbe");
-
-  removeZeros(hex_str);
-
-  EXPECT_EQ(hex_str, "20417b360cbe");
 }
