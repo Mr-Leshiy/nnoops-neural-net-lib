@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 #include <array>
-#include <cassert>
 #include <string>
 #include <type_traits>
 
@@ -49,22 +48,22 @@ struct UBigInteger {
   UBigInteger(uint64_t val) { init(val); }
 
   UBigInteger(int8_t val) {
-    assert(val >= 0 && "value should be positive");
+    THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive")
     init((uint8_t)val);
   }
 
   UBigInteger(int16_t val) {
-    assert(val >= 0 && "value should be positive");
+    THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive");
     init((uint16_t)val);
   }
 
   UBigInteger(int32_t val) {
-    assert(val >= 0 && "value should be positive");
+    THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive");
     init((uint32_t)val);
   }
 
   UBigInteger(int64_t val) {
-    assert(val >= 0 && "value should be positive");
+    THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive");
     init((uint64_t)val);
   }
 
@@ -258,9 +257,7 @@ struct UBigInteger {
                                  UBigInteger<SIZE> divisor,
                                  UBigInteger<SIZE>& quotient,
                                  UBigInteger<SIZE>* remainder = nullptr) {
-    if (divisor == 0) {
-      throw arith_error("devide by zero");
-    }
+    THROW_ARITH_ERROR(divisor != 0, "devide by zero");
 
     quotient = 0;
 
@@ -368,7 +365,7 @@ struct UBigInteger {
                 std::is_integral<T>::value && std::is_unsigned<T>::value>::type>
   void init(T value) {
     size_t val_size = sizeof(value);
-    assert(ARRAY_LEN >= val_size && "data has a small size");
+    THROW_ARITH_ERROR(ARRAY_LEN >= val_size, "data has a small size")
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (i < val_size) {
         data[i] = (uint8_t)(value >> 8 * i);
