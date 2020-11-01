@@ -107,7 +107,6 @@ TEST(BigInteger, addition_substraction_test) {
 
   EXPECT_EQ(val1 - val2, BigInteger(12928));
   EXPECT_EQ(val2 - val1, BigInteger(-12928));
-  EXPECT_EQ(toPrettyString(val2 - val1), "");
 
   EXPECT_EQ(val1++, BigInteger(66576));
   EXPECT_EQ(val1, BigInteger(66577));
@@ -118,38 +117,38 @@ TEST(BigInteger, addition_substraction_test) {
   EXPECT_EQ(val1--, BigInteger(66578));
   EXPECT_EQ(val1, BigInteger(66577));
 
-  EXPECT_EQ(--val1, BigInteger(66578));
-  EXPECT_EQ(val1, BigInteger(66577));
+  EXPECT_EQ(--val1, BigInteger(66576));
+  EXPECT_EQ(val1, BigInteger(66576));
 
   val1 = -12928;
 
   EXPECT_EQ(val1--, BigInteger(-12928));
   EXPECT_EQ(val1, BigInteger(-12929));
 
-  EXPECT_EQ(--val1, BigInteger(-12929));
+  EXPECT_EQ(--val1, BigInteger(-12930));
+  EXPECT_EQ(val1, BigInteger(-12930));
+
+  EXPECT_EQ(val1++, BigInteger(-12930));
   EXPECT_EQ(val1, BigInteger(-12929));
 
-  EXPECT_EQ(val1++, BigInteger(-12929));
+  EXPECT_EQ(++val1, BigInteger(-12928));
   EXPECT_EQ(val1, BigInteger(-12928));
-
-  EXPECT_EQ(++val1, BigInteger(-12927));
-  EXPECT_EQ(val1, BigInteger(-12927));
 
   val1 += val1;
 
-  EXPECT_EQ(val1, BigInteger(-25854));
+  EXPECT_EQ(val1, BigInteger(-25856));
 
-  val1 -= BigInteger(-12927);
+  val1 -= BigInteger(-12928);
 
-  EXPECT_EQ(val1, BigInteger(-12927));
+  EXPECT_EQ(val1, BigInteger(-12928));
 
-  EXPECT_EQ(val1 + val1, BigInteger(-25854));
+  EXPECT_EQ(val1 + val1, BigInteger(-25856));
   EXPECT_EQ(val1 - val1, BigInteger(0));
 
-  val2 = 12927 * 2;
+  val2 = 12928 * 2;
 
-  EXPECT_EQ(val1 - val2, BigInteger(-38781));
-  EXPECT_EQ(val1 + val2, BigInteger(12927));
+  EXPECT_EQ(val1 - val2, BigInteger(-38784));
+  EXPECT_EQ(val1 + val2, BigInteger(12928));
 }
 
 TEST(BigInteger, multiplication_test) {}

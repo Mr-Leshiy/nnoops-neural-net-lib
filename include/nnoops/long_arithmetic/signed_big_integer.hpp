@@ -99,7 +99,7 @@ struct BigInteger : public UBigInteger<SIZE> {
 
   BigInteger<SIZE> operator--(int) {
     // postfix operator
-    BigInteger<SIZE> ret;
+    BigInteger<SIZE> ret = *this;
     --(*this);
     return ret;
   }
@@ -210,31 +210,28 @@ struct BigInteger : public UBigInteger<SIZE> {
   friend void classical_addition(const BigInteger<SIZE>& a,
                                  const BigInteger<SIZE>& b,
                                  BigInteger<SIZE>& result) {
-    if (a.sign == true && b.sign == true) {
-      classical_addition((UBigInteger<SIZE>&)a,
-                         (UBigInteger<SIZE>&)b,
-                         (UBigInteger<SIZE>&)result);
-      result.sign = true;
-      return;
-    }
-    if (a.sign == false && b.sign == false) {
-      classical_addition((UBigInteger<SIZE>&)a,
-                         (UBigInteger<SIZE>&)b,
-                         (UBigInteger<SIZE>&)result);
-      result.sign = false;
-      return;
-    }
-    if (a >= b) {
-      classical_substraction((UBigInteger<SIZE>&)a,
-                             (UBigInteger<SIZE>&)b,
-                             (UBigInteger<SIZE>&)result);
-      result.sign = true;
+    bool sign = a.sign;
+    if (a.sign == b.sign) {
+      // a + b == a + b
+      // (-a) + (-b) == -(a + b)
+      classical_addition(
+          a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
     } else {
-      classical_substraction((UBigInteger<SIZE>&)a,
-                             (UBigInteger<SIZE>&)b,
-                             (UBigInteger<SIZE>&)result);
-      result.sign = false;
+      // a + (-y) == x - y == -(y - x)
+      // (-x) + y == y - x == -(x - y)
+      if (a.get_unsigned() >= b.get_unsigned()) {
+        classical_substraction(
+            a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+      } else {
+        sign = !sign;
+        classical_substraction(
+            b.get_unsigned(), a.get_unsigned(), result.get_unsigned());
+      }
     }
+
+    // 0 has the positive sign
+    result.sign =
+        result.get_unsigned() == UBigInteger<SIZE>::zero_value() ? true : sign;
   }
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
@@ -282,6 +279,12 @@ struct BigInteger : public UBigInteger<SIZE> {
   }
 
   static BigInteger<SIZE> zero_value() { return BigInteger<SIZE>(); }
+
+  UBigInteger<SIZE>& get_unsigned() { return (UBigInteger<SIZE>&)*this; }
+
+  const UBigInteger<SIZE>& get_unsigned() const {
+    return (UBigInteger<SIZE>&)*this;
+  }
 
   friend std::string toPrettyString(const BigInteger<SIZE>& val) {
     if (val.sign == true) {
