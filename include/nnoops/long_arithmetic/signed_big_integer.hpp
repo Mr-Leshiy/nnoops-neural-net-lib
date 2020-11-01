@@ -54,13 +54,63 @@ struct BigInteger : public UBigInteger<SIZE> {
   BigInteger(int64_t val)
       : UBigInteger<SIZE>(abs(val)), sign(val >= 0 ? true : false) {}
 
+  BigInteger<SIZE> operator-() const {
+    BigInteger<SIZE> ret = *this;
+    ret.sign = this->sign == true ? false : true;
+    return ret;
+  }
+
+  BigInteger<SIZE>& operator++() {
+    // prefix operator
+    if (sign == true) {
+      UBigInteger<SIZE>::operator++();
+    } else {
+      UBigInteger<SIZE>::operator--();
+    }
+
+    if (*this == BigInteger<SIZE>::zero_value()) {
+      this->sign = true;
+    }
+
+    return *this;
+  }
+
+  BigInteger<SIZE> operator++(int) {
+    // postfix operator
+    BigInteger<SIZE> ret = *this;
+    ++(*this);
+    return ret;
+  }
+
+  BigInteger<SIZE>& operator--() {
+    // prefix operator
+    if (*this == BigInteger<SIZE>::zero_value()) {
+      this->sign = false;
+      UBigInteger<SIZE>::operator++();
+      return *this;
+    }
+    if (sign == true) {
+      UBigInteger<SIZE>::operator--();
+    } else {
+      UBigInteger<SIZE>::operator++();
+    }
+    return *this;
+  }
+
+  BigInteger<SIZE> operator--(int) {
+    // postfix operator
+    BigInteger<SIZE> ret;
+    --(*this);
+    return ret;
+  }
+
   BigInteger<SIZE>& operator+=(const BigInteger<SIZE>& b) {
     classical_addition(*this, b, *this);
     return *this;
   }
 
   BigInteger<SIZE>& operator-=(const BigInteger<SIZE>& b) {
-    classical_division(*this, b, *this);
+    classical_substraction(*this, b, *this);
     return *this;
   }
 
@@ -160,9 +210,31 @@ struct BigInteger : public UBigInteger<SIZE> {
   friend void classical_addition(const BigInteger<SIZE>& a,
                                  const BigInteger<SIZE>& b,
                                  BigInteger<SIZE>& result) {
-    (void)a;
-    (void)b;
-    (void)result;
+    if (a.sign == true && b.sign == true) {
+      classical_addition((UBigInteger<SIZE>&)a,
+                         (UBigInteger<SIZE>&)b,
+                         (UBigInteger<SIZE>&)result);
+      result.sign = true;
+      return;
+    }
+    if (a.sign == false && b.sign == false) {
+      classical_addition((UBigInteger<SIZE>&)a,
+                         (UBigInteger<SIZE>&)b,
+                         (UBigInteger<SIZE>&)result);
+      result.sign = false;
+      return;
+    }
+    if (a >= b) {
+      classical_substraction((UBigInteger<SIZE>&)a,
+                             (UBigInteger<SIZE>&)b,
+                             (UBigInteger<SIZE>&)result);
+      result.sign = true;
+    } else {
+      classical_substraction((UBigInteger<SIZE>&)a,
+                             (UBigInteger<SIZE>&)b,
+                             (UBigInteger<SIZE>&)result);
+      result.sign = false;
+    }
   }
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
@@ -170,9 +242,7 @@ struct BigInteger : public UBigInteger<SIZE> {
   friend void classical_substraction(const BigInteger<SIZE>& a,
                                      const BigInteger<SIZE>& b,
                                      BigInteger<SIZE>& result) {
-    (void)a;
-    (void)b;
-    (void)result;
+    classical_addition(a, -b, result);
   }
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
@@ -195,6 +265,24 @@ struct BigInteger : public UBigInteger<SIZE> {
     (void)remainder;
   }
 
+  static BigInteger<SIZE> min_value() {
+    BigInteger<SIZE> ret;
+    ret.sign = false;
+    UBigInteger<SIZE>& tmp = ret;
+    --tmp;
+    return ret;
+  }
+
+  static BigInteger<SIZE> max_value() {
+    BigInteger<SIZE> ret;
+    ret.sign = true;
+    UBigInteger<SIZE>& tmp = ret;
+    --tmp;
+    return ret;
+  }
+
+  static BigInteger<SIZE> zero_value() { return BigInteger<SIZE>(); }
+
   friend std::string toPrettyString(const BigInteger<SIZE>& val) {
     if (val.sign == true) {
       return toPrettyString(UBigInteger<SIZE>(val));
@@ -206,7 +294,7 @@ struct BigInteger : public UBigInteger<SIZE> {
  private:
   // sign == true means positive number
   // sign == false means negative number
-  bool sign = false;
+  bool sign = true;
 };
 
 extern template struct BigInteger<8>;
