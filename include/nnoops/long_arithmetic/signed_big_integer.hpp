@@ -239,7 +239,28 @@ struct BigInteger : public UBigInteger<SIZE> {
   friend void classical_substraction(const BigInteger<SIZE>& a,
                                      const BigInteger<SIZE>& b,
                                      BigInteger<SIZE>& result) {
-    classical_addition(a, -b, result);
+    bool sign = a.sign;
+    if (a.sign != b.sign) {
+      // a - (-b) == a + b
+      // (-a) - b == -(a + b)
+      classical_addition(
+          a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+    } else {
+      // a - b == -(b - a)
+      // (-a) - (-b) == b - a == -(a - b)
+      if (a.get_unsigned() >= b.get_unsigned()) {
+        classical_substraction(
+            a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+      } else {
+        sign = !sign;
+        classical_substraction(
+            b.get_unsigned(), a.get_unsigned(), result.get_unsigned());
+      }
+    }
+
+    // 0 has the positive sign
+    result.sign =
+        result.get_unsigned() == UBigInteger<SIZE>::zero_value() ? true : sign;
   }
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
