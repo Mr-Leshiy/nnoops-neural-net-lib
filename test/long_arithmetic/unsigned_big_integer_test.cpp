@@ -231,6 +231,14 @@ INSTANTIATE_TYPED_TEST_SUITE_P(UBigIntegerTestSuite,
                                UBigIntegerTest,
                                UBigIntegerTestCases);
 
+TEST(UBigInteger, small_multiplication_test) {}
+
+TEST(UBigInteger, small_addition_substraction_test) {}
+
+TEST(UBigInteger, small_division_test) {}
+
+TEST(UBigInteger, small_division_test2) {}
+
 TEST(UBigInteger, toPrettyString_test) {
   UBigInteger<32> val(1234);
 
