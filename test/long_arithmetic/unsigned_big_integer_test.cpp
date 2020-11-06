@@ -218,12 +218,13 @@ REGISTER_TYPED_TEST_SUITE_P(UBigIntegerTest,
                             division_test2,
                             exception_handling_test);
 
-typedef ::testing::Types<UBigIntegerTestCase<32>,
-                         UBigIntegerTestCase<64>,
+typedef ::testing::Types<UBigIntegerTestCase<64>,
                          UBigIntegerTestCase<128>,
                          UBigIntegerTestCase<256>,
                          UBigIntegerTestCase<512>,
-                         UBigIntegerTestCase<1024>>
+                         UBigIntegerTestCase<1024>,
+                         UBigIntegerTestCase<2048>,
+                         UBigIntegerTestCase<4096>>
     UBigIntegerTestCases;
 
 INSTANTIATE_TYPED_TEST_SUITE_P(UBigIntegerTestSuite,
@@ -231,34 +232,37 @@ INSTANTIATE_TYPED_TEST_SUITE_P(UBigIntegerTestSuite,
                                UBigIntegerTestCases);
 
 TEST(UBigInteger, toPrettyString_test) {
-  UBigInteger<32> val(1234);
+  UBigInteger val(1234);
 
-  EXPECT_EQ(toPrettyString(val), "000004d2");
+  EXPECT_EQ(toPrettyString(val), "00000000000004d2");
 
   val = 1235;
 
-  EXPECT_EQ(toPrettyString(val), "000004d3");
+  EXPECT_EQ(toPrettyString(val), "00000000000004d3");
 }
 
 TEST(UBigInteger, basic_values_test) {
-  UBigInteger<8> val1 = UBigInteger<8>::max_value();
-  EXPECT_EQ(toPrettyString(val1), "ff");
-  val1 = UBigInteger<8>::zero_value();
-  EXPECT_EQ(toPrettyString(val1), "00");
-  val1 = UBigInteger<8>::min_value();
-  EXPECT_EQ(toPrettyString(val1), "00");
+  UBigInteger<64> val1 = UBigInteger<64>::max_value();
+  EXPECT_EQ(toPrettyString(val1), "ffffffffffffffff");
+  val1 = UBigInteger<64>::zero_value();
+  EXPECT_EQ(toPrettyString(val1), "0000000000000000");
+  val1 = UBigInteger<64>::min_value();
+  EXPECT_EQ(toPrettyString(val1), "0000000000000000");
 
-  UBigInteger<16> val2 = UBigInteger<16>::max_value();
-  EXPECT_EQ(toPrettyString(val2), "ffff");
-  val2 = UBigInteger<16>::zero_value();
-  EXPECT_EQ(toPrettyString(val2), "0000");
-  val2 = UBigInteger<16>::min_value();
-  EXPECT_EQ(toPrettyString(val2), "0000");
+  UBigInteger<128> val2 = UBigInteger<128>::max_value();
+  EXPECT_EQ(toPrettyString(val2), "ffffffffffffffffffffffffffffffff");
+  val2 = UBigInteger<128>::zero_value();
+  EXPECT_EQ(toPrettyString(val2), "00000000000000000000000000000000");
+  val2 = UBigInteger<128>::min_value();
+  EXPECT_EQ(toPrettyString(val2), "00000000000000000000000000000000");
 
-  UBigInteger<32> val3 = UBigInteger<32>::max_value();
-  EXPECT_EQ(toPrettyString(val3), "ffffffff");
-  val3 = UBigInteger<32>::zero_value();
-  EXPECT_EQ(toPrettyString(val3), "00000000");
-  val3 = UBigInteger<32>::min_value();
-  EXPECT_EQ(toPrettyString(val3), "00000000");
+  UBigInteger<256> val3 = UBigInteger<256>::max_value();
+  EXPECT_EQ(toPrettyString(val3),
+            "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+  val3 = UBigInteger<256>::zero_value();
+  EXPECT_EQ(toPrettyString(val3),
+            "0000000000000000000000000000000000000000000000000000000000000000");
+  val3 = UBigInteger<256>::min_value();
+  EXPECT_EQ(toPrettyString(val3),
+            "0000000000000000000000000000000000000000000000000000000000000000");
 }

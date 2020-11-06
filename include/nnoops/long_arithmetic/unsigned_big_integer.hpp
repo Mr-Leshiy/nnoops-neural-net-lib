@@ -15,7 +15,8 @@ namespace nnoops {
 // Representation on the unsigned integer with the arbitrary size
 // SIZE should be multiple of 8 (1 byte)
 template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
+          typename = typename std::enable_if<SIZE != 0 && SIZE % 8 == 0 &&
+                                             SIZE >= 64>::type>
 struct UBigInteger {
   virtual ~UBigInteger() = default;
 
@@ -288,30 +289,30 @@ struct UBigInteger {
 
     // Normalize
     if (remainder == nullptr) {
-      d = BASE / d;
+      /*d = BASE / d;
       if (d != 1) {
         dividend *= d;
         divisor *= d;
-      }
+      }*/
     }
 
     for (int64_t j = m;; --j) {
       // Calculate q
       uint64_t el1 =
-          j + n + 1 >= ARRAY_LEN
-              ? dividend.data[j + n]
-              : (uint64_t)(dividend.data[j + n + 1] * (uint64_t)(BASE + 1)) +
-                    dividend.data[j + n];
+          (uint64_t)(dividend.data[j + n + 1] * (uint64_t)(BASE + 1)) +
+          dividend.data[j + n];
+
       uint64_t r = el1 % divisor.data[n];
       uint64_t q = el1 / divisor.data[n];
 
       // Test
-      if (q == (BASE + 1) ||
-          (n >= 1 && q * divisor.data[n - 1] >
-                         ((BASE + 1) * r + dividend.data[j + n - 1]))) {
-        while (r <= BASE) {
-          ++q;
-          r += divisor.data[n];
+      while (q == (BASE + 1) ||
+             (n >= 1 && q * divisor.data[n - 1] >
+                            ((BASE + 1) * r + dividend.data[j + n - 1]))) {
+        --q;
+        r += divisor.data[n];
+        if (r > BASE) {
+          break;
         }
       }
 
@@ -328,8 +329,9 @@ struct UBigInteger {
         tmp1 -= tmp2;
         quotient.data[j] = q;
       } else {
-        tmp1 -= tmp2 - divisor;
+        tmp1 -= tmp2;
         quotient.data[j] = q - 1;
+        tmp1 += divisor;
       }
 
       for (size_t i = j, k = 0; i <= j + n + 1 && i < ARRAY_LEN; ++i, ++k) {
@@ -365,7 +367,7 @@ struct UBigInteger {
                 std::is_integral<T>::value && std::is_unsigned<T>::value>::type>
   void init(T value) {
     size_t val_size = sizeof(value);
-    THROW_ARITH_ERROR(ARRAY_LEN >= val_size, "data has a small size")
+    THROW_ARITH_ERROR(ARRAY_LEN >= val_size, "data has a small size");
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (i < val_size) {
         data[i] = (uint8_t)(value >> 8 * i);
@@ -377,17 +379,16 @@ struct UBigInteger {
 
   static const uint8_t BASE = 0xff;
   static constexpr uint64_t ARRAY_LEN = SIZE / 8;
-  std::array<uint8_t, SIZE / 8> data{};
+  std::array<uint8_t, ARRAY_LEN> data{};
 };
 
-extern template struct UBigInteger<8>;
-extern template struct UBigInteger<16>;
-extern template struct UBigInteger<32>;
 extern template struct UBigInteger<64>;
 extern template struct UBigInteger<128>;
 extern template struct UBigInteger<256>;
 extern template struct UBigInteger<512>;
 extern template struct UBigInteger<1024>;
+extern template struct UBigInteger<2048>;
+extern template struct UBigInteger<4096>;
 
 }  // namespace nnoops
 
