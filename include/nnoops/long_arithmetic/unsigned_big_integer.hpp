@@ -15,8 +15,7 @@ namespace nnoops {
 // Representation on the unsigned integer with the arbitrary size
 // SIZE should be multiple of 8 (1 byte)
 template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE != 0 && SIZE % 8 == 0 &&
-                                             SIZE >= 64>::type>
+          typename = typename std::enable_if<SIZE != 0 && SIZE % 8 == 0>::type>
 struct UBigInteger {
   virtual ~UBigInteger() = default;
 
@@ -220,8 +219,8 @@ struct UBigInteger {
     uint64_t carry = 0;
     for (size_t i = 0; i < UBigInteger<SIZE>::ARRAY_LEN; ++i) {
       uint64_t n = carry + a.data[i] + b.data[i];
-      result.data[i] = n & UBigInteger<SIZE>::BASE;
-      carry = n >> 8;
+      result.data[i] = n & BASE;  // same to the n % (BASE + 1)
+      carry = n >> 8;             // same to the [n / (BASE + 1)]
     }
   }
 
@@ -230,11 +229,11 @@ struct UBigInteger {
   friend void classical_substraction(const UBigInteger<SIZE>& a,
                                      const UBigInteger<SIZE>& b,
                                      UBigInteger<SIZE>& result) {
-    uint64_t carry = 0;
+    int64_t carry = 0;
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
-      uint64_t n = carry + a.data[i] - b.data[i];
-      result.data[i] = n & BASE;
-      carry = n >> 8;
+      int64_t n = carry + a.data[i] - b.data[i];
+      result.data[i] = n % (BASE + 1);
+      carry = n >= 0 ? 0 : -1;  // same to the [n / (BASE + 1)]
     }
   }
 
