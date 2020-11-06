@@ -10,8 +10,7 @@ namespace nnoops {
 // Representation on the signed integer with the arbitrary size
 // SIZE should be multiple of 8 (1 byte)
 template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0 &&
-                                             SIZE >= 64>::type>
+          typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
 struct BigInteger : public UBigInteger<SIZE> {
   ~BigInteger() override = default;
 
