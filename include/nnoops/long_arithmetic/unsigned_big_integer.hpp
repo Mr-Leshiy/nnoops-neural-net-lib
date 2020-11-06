@@ -269,6 +269,7 @@ struct UBigInteger {
     }
 
     uint64_t m = 0, n = 0, d = 0;
+    (void)d;
     for (size_t i = ARRAY_LEN - 1;; --i) {
       if (divisor.data[i] != 0 && n == 0) {
         d = divisor.data[i];
