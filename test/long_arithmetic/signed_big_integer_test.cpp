@@ -158,13 +158,13 @@ TEST(BigInteger, division_test) {}
 TEST(BigInteger, division_test2) {}
 
 TEST(BigInteger, toPrettyString_test) {
-  BigInteger val(1234);
+  BigInteger<32> val(1234);
 
-  EXPECT_EQ(toPrettyString(val), "00000000000004d2");
+  EXPECT_EQ(toPrettyString(val), "000004d2");
 
   val = -1235;
 
-  EXPECT_EQ(toPrettyString(val), "-00000000000004d3");
+  EXPECT_EQ(toPrettyString(val), "-000004d3");
 }
 
 TEST(BigInteger, basic_values_test) {

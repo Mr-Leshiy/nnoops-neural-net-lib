@@ -2,13 +2,12 @@
 
 namespace nnoops {
 
-template struct BigInteger<8>;
-template struct BigInteger<16>;
-template struct BigInteger<32>;
 template struct BigInteger<64>;
 template struct BigInteger<128>;
 template struct BigInteger<256>;
 template struct BigInteger<512>;
 template struct BigInteger<1024>;
+template struct BigInteger<2048>;
+template struct BigInteger<4096>;
 
 }  // namespace nnoops

@@ -321,14 +321,13 @@ struct BigInteger : public UBigInteger<SIZE> {
   bool sign = true;
 };
 
-extern template struct BigInteger<8>;
-extern template struct BigInteger<16>;
-extern template struct BigInteger<32>;
 extern template struct BigInteger<64>;
 extern template struct BigInteger<128>;
 extern template struct BigInteger<256>;
 extern template struct BigInteger<512>;
 extern template struct BigInteger<1024>;
+extern template struct BigInteger<2048>;
+extern template struct BigInteger<4096>;
 
 }  // namespace nnoops
 

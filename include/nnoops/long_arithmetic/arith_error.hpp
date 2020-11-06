@@ -12,4 +12,6 @@ struct arith_error : public std::runtime_error {
 
 }  // namespace nnoops
 
+#define THROW_ARITH_ERROR(x, y) if (!(x)) throw nnoops::arith_error(y);
+
 #endif
