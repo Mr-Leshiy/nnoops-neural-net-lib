@@ -291,8 +291,10 @@ struct UBigInteger {
     for (int64_t j = m;; --j) {
       // Calculate q
       uint64_t el1 =
-          (uint64_t)(dividend.data[j + n + 1] * (uint64_t)(BASE + 1)) +
-          dividend.data[j + n];
+          j + n + 1 >= ARRAY_LEN
+              ? dividend.data[j + n]
+              : (uint64_t)(dividend.data[j + n + 1] * (uint64_t)(BASE + 1)) +
+                    dividend.data[j + n];
 
       uint64_t r = el1 % divisor.data[n];
       uint64_t q = el1 / divisor.data[n];
