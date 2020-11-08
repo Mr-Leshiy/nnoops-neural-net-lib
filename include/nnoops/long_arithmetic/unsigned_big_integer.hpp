@@ -271,11 +271,9 @@ struct UBigInteger {
       return;
     }
 
-    uint64_t m = 0, n = 0, d = 0;
-    (void)d;
+    uint64_t m = 0, n = 0;
     for (size_t i = ARRAY_LEN - 1;; --i) {
       if (divisor.data[i] != 0 && n == 0) {
-        d = divisor.data[i];
         n = i;
       }
 
@@ -289,15 +287,6 @@ struct UBigInteger {
     }
 
     m -= n;
-
-    // Normalize
-    if (remainder == nullptr) {
-      /*d = BASE / d;
-      if (d != 1) {
-        dividend *= d;
-        divisor *= d;
-      }*/
-    }
 
     for (int64_t j = m;; --j) {
       // Calculate q
