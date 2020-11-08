@@ -152,6 +152,14 @@ TYPED_TEST_P(UBigIntegerTest, division_test) {
   EXPECT_EQ(val2 / val1, UBigInteger<size>(0));
   EXPECT_EQ(val1 / val1, UBigInteger<size>(1));
   EXPECT_EQ(val2 / val2, UBigInteger<size>(1));
+
+  val1 = 999991;
+  val2 = 999990;
+
+  EXPECT_EQ(val1 / val2, UBigInteger<size>(1));
+  EXPECT_EQ(val2 / val1, UBigInteger<size>(0));
+  EXPECT_EQ(val1 / val1, UBigInteger<size>(1));
+  EXPECT_EQ(val2 / val2, UBigInteger<size>(1));
 }
 
 TYPED_TEST_P(UBigIntegerTest, division_test2) {
@@ -201,6 +209,14 @@ TYPED_TEST_P(UBigIntegerTest, division_test2) {
 
   EXPECT_EQ(val1 % val2, UBigInteger<size>(5100));
   EXPECT_EQ(val2 % val1, UBigInteger<size>(13699));
+  EXPECT_EQ(val1 % val1, UBigInteger<size>(0));
+  EXPECT_EQ(val2 % val2, UBigInteger<size>(0));
+
+  val1 = 999991;
+  val2 = 999990;
+
+  EXPECT_EQ(val1 % val2, UBigInteger<size>(1));
+  EXPECT_EQ(val2 % val1, UBigInteger<size>(999990));
   EXPECT_EQ(val1 % val1, UBigInteger<size>(0));
   EXPECT_EQ(val2 % val2, UBigInteger<size>(0));
 }

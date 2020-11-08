@@ -199,12 +199,15 @@ struct UBigInteger {
   // return 1 if this bigger than b
   // return 0 if this equal to b
   int compareTo(const UBigInteger<SIZE>& b) const {
-    for (int64_t i = (int64_t)(ARRAY_LEN - 1); i != 0; --i) {
+    for (uint64_t i = ARRAY_LEN - 1;; --i) {
       if (this->data[i] < b.data[i]) {
         return -1;
       }
       if (this->data[i] > b.data[i]) {
         return 1;
+      }
+      if (i == 0) {
+        break;
       }
     }
 
@@ -268,11 +271,9 @@ struct UBigInteger {
       return;
     }
 
-    uint64_t m = 0, n = 0, d = 0;
-    (void)d;
+    uint64_t m = 0, n = 0;
     for (size_t i = ARRAY_LEN - 1;; --i) {
       if (divisor.data[i] != 0 && n == 0) {
-        d = divisor.data[i];
         n = i;
       }
 
@@ -287,20 +288,13 @@ struct UBigInteger {
 
     m -= n;
 
-    // Normalize
-    if (remainder == nullptr) {
-      /*d = BASE / d;
-      if (d != 1) {
-        dividend *= d;
-        divisor *= d;
-      }*/
-    }
-
     for (int64_t j = m;; --j) {
       // Calculate q
       uint64_t el1 =
-          (uint64_t)(dividend.data[j + n + 1] * (uint64_t)(BASE + 1)) +
-          dividend.data[j + n];
+          j + n + 1 >= ARRAY_LEN
+              ? dividend.data[j + n]
+              : (uint64_t)(dividend.data[j + n + 1] * (uint64_t)(BASE + 1)) +
+                    dividend.data[j + n];
 
       uint64_t r = el1 % divisor.data[n];
       uint64_t q = el1 / divisor.data[n];
