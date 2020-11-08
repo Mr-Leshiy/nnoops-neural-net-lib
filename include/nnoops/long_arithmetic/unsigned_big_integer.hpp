@@ -199,12 +199,15 @@ struct UBigInteger {
   // return 1 if this bigger than b
   // return 0 if this equal to b
   int compareTo(const UBigInteger<SIZE>& b) const {
-    for (int64_t i = (int64_t)(ARRAY_LEN - 1); i != 0; --i) {
+    for (uint64_t i = ARRAY_LEN - 1;; --i) {
       if (this->data[i] < b.data[i]) {
         return -1;
       }
       if (this->data[i] > b.data[i]) {
         return 1;
+      }
+      if (i == 0) {
+        break;
       }
     }
 
