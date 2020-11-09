@@ -225,6 +225,10 @@ struct UBigInteger {
       result.data[i] = n & BASE;  // same to the n % (BASE + 1)
       carry = n >> 8;             // same to the [n / (BASE + 1)]
     }
+    THROW_ARITH_ERROR(
+        carry != 0,
+        "addition overflow",
+        "result should be in the interval [0, UBigInteger::max_value()]");
   }
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
@@ -238,6 +242,10 @@ struct UBigInteger {
       result.data[i] = n % (BASE + 1);
       carry = n >= 0 ? 0 : -1;  // same to the [n / (BASE + 1)]
     }
+    THROW_ARITH_ERROR(
+        carry != 0,
+        "substraction overflow",
+        "result should be in the interval [0, UBigInteger::max_value()]");
   }
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
@@ -245,8 +253,9 @@ struct UBigInteger {
   friend void classical_multiplication(const UBigInteger<SIZE>& a,
                                        const UBigInteger<SIZE>& b,
                                        UBigInteger<SIZE>& result) {
+    uint64_t carry = 0;
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
-      uint64_t carry = 0;
+      carry = 0;
       for (size_t j = 0; i + j < ARRAY_LEN; ++j) {
         uint64_t n =
             carry + result.data[i + j] + (uint64_t)(a.data[i] * b.data[j]);
@@ -254,6 +263,10 @@ struct UBigInteger {
         carry = n >> 8;
       }
     }
+    THROW_ARITH_ERROR(
+        carry != 0,
+        "multiplication overflow",
+        "result should be in the interval [0, UBigInteger::max_value()]");
   }
 
   friend void classical_division(UBigInteger<SIZE> dividend,
