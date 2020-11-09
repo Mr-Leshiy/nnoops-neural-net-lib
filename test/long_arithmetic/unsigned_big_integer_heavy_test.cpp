@@ -5,7 +5,30 @@
 
 using namespace nnoops;
 
-void addition_test(uint64_t a, uint64_t b) {
+void comparison_check(uint64_t a, uint64_t b) {
+  UBigInteger<64> val1 = a;
+  UBigInteger<64> val2 = b;
+
+  EXPECT_EQ(val1 == val2, a == b);
+  EXPECT_EQ(val2 == val1, b == a);
+
+  EXPECT_EQ(val1 != val2, a != b);
+  EXPECT_EQ(val2 != val1, b != a);
+
+  EXPECT_EQ(val1 > val2, a > b);
+  EXPECT_EQ(val2 > val1, b > a);
+
+  EXPECT_EQ(val1 >= val2, a >= b);
+  EXPECT_EQ(val2 >= val1, b >= a);
+
+  EXPECT_EQ(val1 < val2, a < b);
+  EXPECT_EQ(val2 < val1, b < a);
+
+  EXPECT_EQ(val1 <= val2, a <= b);
+  EXPECT_EQ(val2 <= val1, b <= a);
+}
+
+void addition_check(uint64_t a, uint64_t b) {
   a = (uint32_t)a;
   b = (uint32_t)b;
   UBigInteger<64> val1 = a;
@@ -15,7 +38,7 @@ void addition_test(uint64_t a, uint64_t b) {
   EXPECT_EQ(val2 + val1, UBigInteger<64>(c));
 }
 
-void substraction_test(uint64_t a, uint64_t b) {
+void substraction_check(uint64_t a, uint64_t b) {
   UBigInteger<64> val1 = a;
   UBigInteger<64> val2 = b;
   uint64_t c = a - b;
@@ -30,7 +53,7 @@ void substraction_test(uint64_t a, uint64_t b) {
   EXPECT_EQ(val2 - val2, UBigInteger<64>(0));
 }
 
-void multiplication_test(uint64_t a, uint64_t b) {
+void multiplication_check(uint64_t a, uint64_t b) {
   a = (uint32_t)a;
   b = (uint32_t)b;
   UBigInteger<64> val1 = a;
@@ -72,11 +95,20 @@ struct UBigIntegerHeavyTestCase {
 struct UBigIntegerHeavyTest
     : public testing::TestWithParam<UBigIntegerHeavyTestCase> {};
 
+TEST_P(UBigIntegerHeavyTest, heavy_comparison_test) {
+  auto value = GetParam();
+  for (uint64_t a = value.a_min; a < value.a_max; ++a) {
+    for (uint64_t b = value.b_min; b < value.b_max; ++b) {
+      comparison_check(a, b);
+    }
+  }
+}
+
 TEST_P(UBigIntegerHeavyTest, heavy_addition_test) {
   auto value = GetParam();
   for (uint64_t a = value.a_min; a < value.a_max; ++a) {
     for (uint64_t b = value.b_min; b < value.b_max; ++b) {
-      addition_test(a, b);
+      addition_check(a, b);
     }
   }
 }
@@ -85,7 +117,7 @@ TEST_P(UBigIntegerHeavyTest, heavy_substraction_test) {
   auto value = GetParam();
   for (uint64_t a = value.a_min; a < value.a_max; ++a) {
     for (uint64_t b = value.b_min; b < value.b_max; ++b) {
-      substraction_test(a, b);
+      substraction_check(a, b);
     }
   }
 }
@@ -94,7 +126,7 @@ TEST_P(UBigIntegerHeavyTest, heavy_multiplication_test) {
   auto value = GetParam();
   for (uint64_t a = value.a_min; a < value.a_max; ++a) {
     for (uint64_t b = value.b_min; b < value.b_max; ++b) {
-      multiplication_test(a, b);
+      multiplication_check(a, b);
     }
   }
 }
