@@ -223,6 +223,19 @@ TYPED_TEST_P(UBigIntegerTest, division_test2) {
 TYPED_TEST_P(UBigIntegerTest, exception_handling_test) {
   const static uint64_t size = TypeParam::size;
   EXPECT_THROW(UBigInteger<size> tmp(-12), arith_error);
+
+  UBigInteger<size> val1 = 21;
+  UBigInteger<size> val2 = 12;
+
+  EXPECT_THROW(val2 - val1, arith_error);
+
+  val1 = UBigInteger<size>::max_value();
+
+  EXPECT_THROW(val1 + 1, arith_error);
+  EXPECT_THROW(1 + val1, arith_error);
+
+  EXPECT_THROW(val2 * val1, arith_error);
+  EXPECT_THROW(val1 * val2, arith_error);
 }
 
 REGISTER_TYPED_TEST_SUITE_P(UBigIntegerTest,
