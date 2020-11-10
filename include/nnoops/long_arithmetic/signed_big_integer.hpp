@@ -265,12 +265,19 @@ struct BigInteger : public UBigInteger<SIZE> {
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
   // or 'b' arguments
-  friend void classical_multiplication(BigInteger<SIZE>& a,
-                                       BigInteger<SIZE>& b,
+  friend void classical_multiplication(const BigInteger<SIZE>& a,
+                                       const BigInteger<SIZE>& b,
                                        BigInteger<SIZE>& result) {
-    (void)a;
-    (void)b;
-    (void)result;
+    // x * y == x * y
+    // x * (-y) == -(x * y)
+    // (-x) * y == -(x * y)
+    // (-x) * (-y) == x * y
+    classical_multiplication(
+        a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+
+    result.sign = result.get_unsigned() == UBigInteger<SIZE>::zero_value()
+                      ? true
+                      : a.sign != b.sign;
   }
 
   friend void classical_division(BigInteger<SIZE> dividend,

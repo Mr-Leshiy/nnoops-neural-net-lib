@@ -162,7 +162,58 @@ TYPED_TEST_P(BigIntegerTest, addition_substraction_test) {
   EXPECT_EQ(val1 + val2, BigInteger<size>(12928));
 }
 
-TYPED_TEST_P(BigIntegerTest, multiplication_test) {}
+TYPED_TEST_P(BigIntegerTest, multiplication_test) {
+  const static uint64_t size = TypeParam::size;
+  BigInteger<size> val1 = 1234;
+  BigInteger<size> val2 = -4321;
+
+  val1 *= val2;
+
+  EXPECT_EQ(val1, BigInteger<size>(-5332114));
+
+  val1 = 1234;
+
+  EXPECT_EQ(val1 * val2, BigInteger<size>(-5332114));
+  EXPECT_EQ(val2 * val1, BigInteger<size>(-5332114));
+
+  val2 *= -1;
+  val1 = 1234;
+
+  EXPECT_EQ(val2, BigInteger<size>(4321));
+
+  val1 *= val2;
+
+  EXPECT_EQ(val1, BigInteger<size>(5332114));
+
+  val1 = 1234;
+
+  EXPECT_EQ(val1 * val2, BigInteger<size>(5332114));
+  EXPECT_EQ(val2 * val1, BigInteger<size>(5332114));
+
+  BigInteger<size> val3 = 125;
+  BigInteger<size> val4 = 2;
+
+  EXPECT_EQ(val3 * val4, BigInteger<size>(250));
+  EXPECT_EQ(val4 * val3, BigInteger<size>(250));
+
+  val3 = 125;
+  val4 = -2;
+
+  EXPECT_EQ(val3 * val4, BigInteger<size>(-250));
+  EXPECT_EQ(val4 * val3, BigInteger<size>(-250));
+
+  val3 = -125;
+  val4 = 2;
+
+  EXPECT_EQ(val3 * val4, BigInteger<size>(-250));
+  EXPECT_EQ(val4 * val3, BigInteger<size>(-250));
+
+  val3 = -125;
+  val4 = -2;
+
+  EXPECT_EQ(val3 * val4, BigInteger<size>(250));
+  EXPECT_EQ(val4 * val3, BigInteger<size>(250));
+}
 
 TYPED_TEST_P(BigIntegerTest, division_test) {}
 
