@@ -244,20 +244,19 @@ struct UBigInteger {
   friend void classical_multiplication(const UBigInteger<SIZE>& a,
                                        const UBigInteger<SIZE>& b,
                                        UBigInteger<SIZE>& result) {
-    uint64_t carry = 0;
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
-      carry = 0;
+      uint64_t carry = 0;
       for (size_t j = 0; i + j < ARRAY_LEN; ++j) {
         uint64_t n =
             carry + result.data[i + j] + (uint64_t)(a.data[i] * b.data[j]);
         result.data[i + j] = n & BASE;
         carry = n >> 8;
       }
+     THROW_ARITH_ERROR(
+          carry == 0,
+          "multiplication overflow",
+          "result should be in the interval [0, UBigInteger::max_value()]");
     }
-    THROW_ARITH_ERROR(
-        carry == 0,
-        "multiplication overflow",
-        "result should be in the interval [0, UBigInteger::max_value()]");
   }
 
   friend void classical_division(UBigInteger<SIZE> dividend,
