@@ -67,15 +67,6 @@ struct UBigInteger {
     init((uint64_t)val);
   }
 
-  UBigInteger<SIZE> operator-() const {
-    UBigInteger<SIZE> ret = *this;
-    for (size_t i = 0; i < ARRAY_LEN; ++i) {
-      ret.data[i] = ~this->data[i];
-    }
-    ++ret;
-    return ret;
-  }
-
   UBigInteger<SIZE>& operator++() {
     // prefix operator
     for (size_t i = 0; i < ARRAY_LEN && ++data[i] == 0; ++i) {
@@ -225,6 +216,10 @@ struct UBigInteger {
       result.data[i] = n & BASE;  // same to the n % (BASE + 1)
       carry = n >> 8;             // same to the [n / (BASE + 1)]
     }
+    THROW_ARITH_ERROR(
+        carry == 0,
+        "addition overflow",
+        "result should be in the interval [0, UBigInteger::max_value()]");
   }
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
@@ -238,6 +233,10 @@ struct UBigInteger {
       result.data[i] = n % (BASE + 1);
       carry = n >= 0 ? 0 : -1;  // same to the [n / (BASE + 1)]
     }
+    THROW_ARITH_ERROR(
+        carry == 0,
+        "substraction overflow",
+        "result should be in the interval [0, UBigInteger::max_value()]");
   }
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
@@ -253,6 +252,10 @@ struct UBigInteger {
         result.data[i + j] = n & BASE;
         carry = n >> 8;
       }
+     THROW_ARITH_ERROR(
+          carry == 0,
+          "multiplication overflow",
+          "result should be in the interval [0, UBigInteger::max_value()]");
     }
   }
 

@@ -41,13 +41,11 @@ void addition_check(uint64_t a, uint64_t b) {
 void substraction_check(uint64_t a, uint64_t b) {
   UBigInteger<64> val1 = a;
   UBigInteger<64> val2 = b;
-  uint64_t c = a - b;
-  EXPECT_EQ(val1 - val2, UBigInteger<64>(c));
-  EXPECT_EQ(-(val2 - val1), UBigInteger<64>(c));
-  c = b - a;
-  EXPECT_EQ(val2 - val1, UBigInteger<64>(c));
-  EXPECT_EQ(-(val1 - val2), UBigInteger<64>(c));
-  EXPECT_EQ(val2 -= val1, UBigInteger<64>(c));
+  if (a > b) {
+    EXPECT_EQ(val1 - val2, UBigInteger<64>(a - b));
+  } else {
+    EXPECT_EQ(val2 - val1, UBigInteger<64>(b - a));
+  }
 
   EXPECT_EQ(val1 - val1, UBigInteger<64>(0));
   EXPECT_EQ(val2 - val2, UBigInteger<64>(0));
