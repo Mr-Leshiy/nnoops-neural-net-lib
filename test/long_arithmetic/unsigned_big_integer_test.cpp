@@ -62,7 +62,6 @@ TYPED_TEST_P(UBigIntegerTest, addition_substraction_test) {
   EXPECT_EQ(val2 + val1, UBigInteger<size>(120224));
 
   EXPECT_EQ(val1 - val2, UBigInteger<size>(12928));
-  EXPECT_EQ(-(val2 - val1), UBigInteger<size>(12928));
 
   EXPECT_EQ(val1++, UBigInteger<size>(66576));
   EXPECT_EQ(val1, UBigInteger<size>(66577));
