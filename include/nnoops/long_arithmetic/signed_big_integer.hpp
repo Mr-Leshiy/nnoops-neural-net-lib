@@ -277,7 +277,7 @@ struct BigInteger : public UBigInteger<SIZE> {
 
     result.sign = result.get_unsigned() == UBigInteger<SIZE>::zero_value()
                       ? true
-                      : a.sign != b.sign;
+                      : a.sign == b.sign;
   }
 
   friend void classical_division(BigInteger<SIZE> dividend,
