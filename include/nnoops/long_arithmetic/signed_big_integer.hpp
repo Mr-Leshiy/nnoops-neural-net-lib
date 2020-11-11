@@ -280,14 +280,22 @@ struct BigInteger : public UBigInteger<SIZE> {
                       : a.sign == b.sign;
   }
 
-  friend void classical_division(BigInteger<SIZE> dividend,
-                                 BigInteger<SIZE> divisor,
+  friend void classical_division(const BigInteger<SIZE>& dividend,
+                                 const BigInteger<SIZE>& divisor,
                                  BigInteger<SIZE>& quotient,
                                  BigInteger<SIZE>* remainder = nullptr) {
-    (void)dividend;
-    (void)divisor;
-    (void)quotient;
-    (void)remainder;
+    classical_division(dividend.get_unsigned(),
+                       divisor.get_unsigned(),
+                       quotient.get_unsigned(),
+                       (UBigInteger<SIZE>*)remainder);
+
+    quotient.sign = quotient.get_unsigned() == UBigInteger<SIZE>::zero_value()
+                        ? true
+                        : dividend.sign == divisor.sign;
+
+    if (remainder != nullptr) {
+      remainder->sign = dividend.sign;
+    }
   }
 
   static BigInteger<SIZE> min_value() {
