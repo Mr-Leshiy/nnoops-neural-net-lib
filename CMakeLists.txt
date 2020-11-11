@@ -24,7 +24,7 @@ option(WERROR       "Treat warnings as errors" ON)
 option(TESTING      "Build tests" ON)
 option(SHARED       "Build shared lib" OFF)
 option(BENCH        "Build benchmarks" OFF)
-option(NEURAL_NET_TESTING "Build neural net tests" ON)
+option(NEURAL_NET_TESTING "Build neural net tests" OFF)
 
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
