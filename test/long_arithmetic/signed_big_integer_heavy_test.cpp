@@ -6,7 +6,6 @@
 using namespace nnoops;
 
 void comparison_check(int64_t a, int64_t b) {
-  printf("value a: %ld, value b: %ld \n", a, b);
   BigInteger<64> val1 = a;
   BigInteger<64> val2 = b;
 
