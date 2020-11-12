@@ -97,8 +97,8 @@ TEST_P(BigIntegerHeavyTest, heavy_complex_test) {
       addition_check(a, b);
       substraction_check(a, b);
       multiplication_check(a, b);
-      // division_check1(a, b);
-      // division_check2(a, b);
+      division_check1(a, b);
+      division_check2(a, b);
     }
   }
 }
