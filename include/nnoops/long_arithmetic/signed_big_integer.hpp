@@ -56,7 +56,9 @@ struct BigInteger : public UBigInteger<SIZE> {
 
   BigInteger<SIZE> operator-() const {
     BigInteger<SIZE> ret = *this;
-    ret.sign = this->sign == true ? false : true;
+    if (ret.get_unsigned() != UBigInteger<SIZE>::zero_value()) {
+      ret.sign = this->sign == true ? false : true;
+    }
     return ret;
   }
 
@@ -265,37 +267,53 @@ struct BigInteger : public UBigInteger<SIZE> {
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
   // or 'b' arguments
-  friend void classical_multiplication(BigInteger<SIZE>& a,
-                                       BigInteger<SIZE>& b,
+  friend void classical_multiplication(const BigInteger<SIZE>& a,
+                                       const BigInteger<SIZE>& b,
                                        BigInteger<SIZE>& result) {
-    (void)a;
-    (void)b;
-    (void)result;
+    // x * y == x * y
+    // x * (-y) == -(x * y)
+    // (-x) * y == -(x * y)
+    // (-x) * (-y) == x * y
+    classical_multiplication(
+        a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+
+    result.sign = result.get_unsigned() == UBigInteger<SIZE>::zero_value()
+                      ? true
+                      : a.sign == b.sign;
   }
 
-  friend void classical_division(BigInteger<SIZE> dividend,
-                                 BigInteger<SIZE> divisor,
+  friend void classical_division(const BigInteger<SIZE>& dividend,
+                                 const BigInteger<SIZE>& divisor,
                                  BigInteger<SIZE>& quotient,
                                  BigInteger<SIZE>* remainder = nullptr) {
-    (void)dividend;
-    (void)divisor;
-    (void)quotient;
-    (void)remainder;
+    classical_division(dividend.get_unsigned(),
+                       divisor.get_unsigned(),
+                       quotient.get_unsigned(),
+                       (UBigInteger<SIZE>*)remainder);
+
+    quotient.sign = quotient.get_unsigned() == UBigInteger<SIZE>::zero_value()
+                        ? true
+                        : dividend.sign == divisor.sign;
+
+    if (remainder != nullptr) {
+      remainder->sign =
+          remainder->get_unsigned() == UBigInteger<SIZE>::zero_value()
+              ? true
+              : dividend.sign;
+    }
   }
 
   static BigInteger<SIZE> min_value() {
     BigInteger<SIZE> ret;
+    ret.get_unsigned() = UBigInteger<SIZE>::max_value();
     ret.sign = false;
-    UBigInteger<SIZE>& tmp = ret;
-    --tmp;
     return ret;
   }
 
   static BigInteger<SIZE> max_value() {
     BigInteger<SIZE> ret;
+    ret.get_unsigned() = UBigInteger<SIZE>::max_value();
     ret.sign = true;
-    UBigInteger<SIZE>& tmp = ret;
-    --tmp;
     return ret;
   }
 

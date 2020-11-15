@@ -69,7 +69,15 @@ struct UBigInteger {
 
   UBigInteger<SIZE>& operator++() {
     // prefix operator
-    for (size_t i = 0; i < ARRAY_LEN && ++data[i] == 0; ++i) {
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+      if (++data[i] != 0) {
+        break;
+      } else {
+        THROW_ARITH_ERROR(
+            i != ARRAY_LEN - 1,
+            "increment overflow",
+            "result should be in the interval [0, UBigInteger::max_value()]");
+      }
     }
     return *this;
   }
@@ -83,7 +91,15 @@ struct UBigInteger {
 
   UBigInteger<SIZE>& operator--() {
     // prefix operator
-    for (size_t i = 0; i < ARRAY_LEN && --data[i] == BASE; ++i) {
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+      if (--data[i] != BASE) {
+        break;
+      } else {
+        THROW_ARITH_ERROR(
+            i != ARRAY_LEN - 1,
+            "decrement overflow",
+            "result should be in the interval [0, UBigInteger::max_value()]");
+      }
     }
     return *this;
   }
@@ -252,7 +268,7 @@ struct UBigInteger {
         result.data[i + j] = n & BASE;
         carry = n >> 8;
       }
-     THROW_ARITH_ERROR(
+      THROW_ARITH_ERROR(
           carry == 0,
           "multiplication overflow",
           "result should be in the interval [0, UBigInteger::max_value()]");
@@ -349,7 +365,10 @@ struct UBigInteger {
 
   static UBigInteger<SIZE> max_value() {
     UBigInteger<SIZE> ret;
-    return --ret;
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+      ret.data[i] = BASE;
+    }
+    return ret;
   }
 
   static UBigInteger<SIZE> zero_value() { return UBigInteger<SIZE>(); }
