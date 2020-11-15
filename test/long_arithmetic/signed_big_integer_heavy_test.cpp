@@ -89,15 +89,55 @@ struct BigIntegerHeavyTestCase {
 struct BigIntegerHeavyTest
     : public testing::TestWithParam<BigIntegerHeavyTestCase> {};
 
-TEST_P(BigIntegerHeavyTest, heavy_complex_test) {
+TEST_P(BigIntegerHeavyTest, heavy_comparison_test) {
   auto value = GetParam();
   for (int64_t a = value.a_min; a < value.a_max; ++a) {
     for (int64_t b = value.b_min; b < value.b_max; ++b) {
       comparison_check(a, b);
+    }
+  }
+}
+
+TEST_P(BigIntegerHeavyTest, heavy_addition_test) {
+  auto value = GetParam();
+  for (int64_t a = value.a_min; a < value.a_max; ++a) {
+    for (int64_t b = value.b_min; b < value.b_max; ++b) {
       addition_check(a, b);
+    }
+  }
+}
+
+TEST_P(BigIntegerHeavyTest, heavy_substraction_test) {
+  auto value = GetParam();
+  for (int64_t a = value.a_min; a < value.a_max; ++a) {
+    for (int64_t b = value.b_min; b < value.b_max; ++b) {
       substraction_check(a, b);
+    }
+  }
+}
+
+TEST_P(BigIntegerHeavyTest, heavy_multiplication_test) {
+  auto value = GetParam();
+  for (int64_t a = value.a_min; a < value.a_max; ++a) {
+    for (int64_t b = value.b_min; b < value.b_max; ++b) {
       multiplication_check(a, b);
+    }
+  }
+}
+
+TEST_P(BigIntegerHeavyTest, heavy_division1_test) {
+  auto value = GetParam();
+  for (int64_t a = value.a_min; a < value.a_max; ++a) {
+    for (int64_t b = value.b_min; b < value.b_max; ++b) {
       division_check1(a, b);
+    }
+  }
+}
+
+TEST_P(BigIntegerHeavyTest, heavy_division2_test) {
+  auto value = GetParam();
+  for (int64_t a = value.a_min; a < value.a_max; ++a) {
+    for (int64_t b = value.b_min; b < value.b_max; ++b) {
       division_check2(a, b);
     }
   }

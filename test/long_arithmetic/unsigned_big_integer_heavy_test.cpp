@@ -89,22 +89,62 @@ struct UBigIntegerHeavyTestCase {
 struct UBigIntegerHeavyTest
     : public testing::TestWithParam<UBigIntegerHeavyTestCase> {};
 
-TEST_P(UBigIntegerHeavyTest, heavy_complex_test) {
+TEST_P(UBigIntegerHeavyTest, heavy_comparison_test) {
   auto value = GetParam();
   for (uint64_t a = value.a_min; a < value.a_max; ++a) {
     for (uint64_t b = value.b_min; b < value.b_max; ++b) {
       comparison_check(a, b);
+    }
+  }
+}
+
+TEST_P(UBigIntegerHeavyTest, heavy_addition_test) {
+  auto value = GetParam();
+  for (uint64_t a = value.a_min; a < value.a_max; ++a) {
+    for (uint64_t b = value.b_min; b < value.b_max; ++b) {
       addition_check(a, b);
+    }
+  }
+}
+
+TEST_P(UBigIntegerHeavyTest, heavy_substraction_test) {
+  auto value = GetParam();
+  for (uint64_t a = value.a_min; a < value.a_max; ++a) {
+    for (uint64_t b = value.b_min; b < value.b_max; ++b) {
       substraction_check(a, b);
+    }
+  }
+}
+
+TEST_P(UBigIntegerHeavyTest, heavy_multiplication_test) {
+  auto value = GetParam();
+  for (uint64_t a = value.a_min; a < value.a_max; ++a) {
+    for (uint64_t b = value.b_min; b < value.b_max; ++b) {
       multiplication_check(a, b);
+    }
+  }
+}
+
+TEST_P(UBigIntegerHeavyTest, heavy_division1_test) {
+  auto value = GetParam();
+  for (uint64_t a = value.a_min; a < value.a_max; ++a) {
+    for (uint64_t b = value.b_min; b < value.b_max; ++b) {
       division_check1(a, b);
+    }
+  }
+}
+
+TEST_P(UBigIntegerHeavyTest, heavy_division2_test) {
+  auto value = GetParam();
+  for (uint64_t a = value.a_min; a < value.a_max; ++a) {
+    for (uint64_t b = value.b_min; b < value.b_max; ++b) {
       division_check2(a, b);
     }
   }
 }
 
 static std::vector<UBigIntegerHeavyTestCase> test_cases = {
-    /*{0, 1000, 0, 1000},
+    {0, 1000, 0, 1000},
     {(std::numeric_limits<uint64_t>::max() - 1000),
      std::numeric_limits<uint64_t>::max(),
      (std::numeric_limits<uint64_t>::max() - 1000),
@@ -112,7 +152,7 @@ static std::vector<UBigIntegerHeavyTestCase> test_cases = {
     {(std::numeric_limits<uint64_t>::max() - 1000),
      std::numeric_limits<uint64_t>::max(),
      0,
-     1000}, */
+     1000},
 };
 
 INSTANTIATE_TEST_SUITE_P(UBigIntegerHeavyTestSuite,
