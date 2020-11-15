@@ -305,17 +305,15 @@ struct BigInteger : public UBigInteger<SIZE> {
 
   static BigInteger<SIZE> min_value() {
     BigInteger<SIZE> ret;
+    ret.get_unsigned() = UBigInteger<SIZE>::max_value();
     ret.sign = false;
-    UBigInteger<SIZE>& tmp = ret;
-    --tmp;
     return ret;
   }
 
   static BigInteger<SIZE> max_value() {
     BigInteger<SIZE> ret;
+    ret.get_unsigned() = UBigInteger<SIZE>::max_value();
     ret.sign = true;
-    UBigInteger<SIZE>& tmp = ret;
-    --tmp;
     return ret;
   }
 
