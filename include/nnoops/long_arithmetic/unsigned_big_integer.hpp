@@ -96,7 +96,7 @@ struct UBigInteger {
         break;
       } else {
         THROW_ARITH_ERROR(
-            i != 0,
+            i != ARRAY_LEN - 1,
             "decrement overflow",
             "result should be in the interval [0, UBigInteger::max_value()]");
       }
