@@ -69,7 +69,10 @@ struct UBigInteger {
 
   UBigInteger<SIZE>& operator++() {
     // prefix operator
-    for (size_t i = 0; i < ARRAY_LEN && ++data[i] == 0; ++i) {
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+      if (++data[i] != 0) {
+        break;
+      }
     }
     return *this;
   }
@@ -83,7 +86,10 @@ struct UBigInteger {
 
   UBigInteger<SIZE>& operator--() {
     // prefix operator
-    for (size_t i = 0; i < ARRAY_LEN && --data[i] == BASE; ++i) {
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+      if (--data[i] != BASE) {
+        break;
+      }
     }
     return *this;
   }
@@ -252,7 +258,7 @@ struct UBigInteger {
         result.data[i + j] = n & BASE;
         carry = n >> 8;
       }
-     THROW_ARITH_ERROR(
+      THROW_ARITH_ERROR(
           carry == 0,
           "multiplication overflow",
           "result should be in the interval [0, UBigInteger::max_value()]");
