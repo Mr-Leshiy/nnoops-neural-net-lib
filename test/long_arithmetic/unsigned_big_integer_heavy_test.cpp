@@ -6,8 +6,8 @@
 using namespace nnoops;
 
 void comparison_check(uint64_t a, uint64_t b) {
-  UBigInteger<128> val1 = a;
-  UBigInteger<128> val2 = b;
+  UBigInteger<64> val1 = a;
+  UBigInteger<64> val2 = b;
 
   EXPECT_EQ(val1 == val2, a == b);
   EXPECT_EQ(val2 == val1, b == a);
@@ -29,54 +29,58 @@ void comparison_check(uint64_t a, uint64_t b) {
 }
 
 void addition_check(uint64_t a, uint64_t b) {
-  UBigInteger<128> val1 = a;
-  UBigInteger<128> val2 = b;
-  EXPECT_EQ(val1 + val2, UBigInteger<128>(a + b));
-  EXPECT_EQ(val2 + val1, UBigInteger<128>(a + b));
+  a = (uint32_t)a;
+  b = (uint32_t)b;
+  UBigInteger<64> val1 = a;
+  UBigInteger<64> val2 = b;
+  EXPECT_EQ(val1 + val2, UBigInteger<64>(a + b));
+  EXPECT_EQ(val2 + val1, UBigInteger<64>(a + b));
 }
 
 void substraction_check(uint64_t a, uint64_t b) {
-  UBigInteger<128> val1 = a;
-  UBigInteger<128> val2 = b;
+  UBigInteger<64> val1 = a;
+  UBigInteger<64> val2 = b;
   if (a > b) {
-    EXPECT_EQ(val1 - val2, UBigInteger<128>(a - b));
+    EXPECT_EQ(val1 - val2, UBigInteger<64>(a - b));
   } else {
-    EXPECT_EQ(val2 - val1, UBigInteger<128>(b - a));
+    EXPECT_EQ(val2 - val1, UBigInteger<64>(b - a));
   }
 
-  EXPECT_EQ(val1 - val1, UBigInteger<128>(0));
-  EXPECT_EQ(val2 - val2, UBigInteger<128>(0));
+  EXPECT_EQ(val1 - val1, UBigInteger<64>(0));
+  EXPECT_EQ(val2 - val2, UBigInteger<64>(0));
 }
 
 void multiplication_check(uint64_t a, uint64_t b) {
-  UBigInteger<128> val1 = a;
-  UBigInteger<128> val2 = b;
-  EXPECT_EQ(val1 * val2, UBigInteger<128>(a * b));
-  EXPECT_EQ(val2 * val1, UBigInteger<128>(a * b));
+  a = (uint32_t)a;
+  b = (uint32_t)b;
+  UBigInteger<64> val1 = a;
+  UBigInteger<64> val2 = b;
+  EXPECT_EQ(val1 * val2, UBigInteger<64>(a * b));
+  EXPECT_EQ(val2 * val1, UBigInteger<64>(a * b));
 }
 
 void division_check1(uint64_t a, uint64_t b) {
   if (a == 0 || b == 0) {
     return;
   }
-  UBigInteger<128> val1 = a;
-  UBigInteger<128> val2 = b;
-  EXPECT_EQ(val1 / val2, UBigInteger<128>(a / b));
-  EXPECT_EQ(val2 / val1, UBigInteger<128>(b / a));
-  EXPECT_EQ(val1 / val1, UBigInteger<128>(1));
-  EXPECT_EQ(val2 / val2, UBigInteger<128>(1));
+  UBigInteger<64> val1 = a;
+  UBigInteger<64> val2 = b;
+  EXPECT_EQ(val1 / val2, UBigInteger<64>(a / b));
+  EXPECT_EQ(val2 / val1, UBigInteger<64>(b / a));
+  EXPECT_EQ(val1 / val1, UBigInteger<64>(1));
+  EXPECT_EQ(val2 / val2, UBigInteger<64>(1));
 }
 
 void division_check2(uint64_t a, uint64_t b) {
   if (a == 0 || b == 0) {
     return;
   }
-  UBigInteger<128> val1 = a;
-  UBigInteger<128> val2 = b;
-  EXPECT_EQ(val1 % val2, UBigInteger<128>(a % b));
-  EXPECT_EQ(val2 % val1, UBigInteger<128>(b % a));
-  EXPECT_EQ(val1 % val1, UBigInteger<128>(0));
-  EXPECT_EQ(val2 % val2, UBigInteger<128>(0));
+  UBigInteger<64> val1 = a;
+  UBigInteger<64> val2 = b;
+  EXPECT_EQ(val1 % val2, UBigInteger<64>(a % b));
+  EXPECT_EQ(val2 % val1, UBigInteger<64>(b % a));
+  EXPECT_EQ(val1 % val1, UBigInteger<64>(0));
+  EXPECT_EQ(val2 % val2, UBigInteger<64>(0));
 }
 
 struct UBigIntegerHeavyTestCase {
