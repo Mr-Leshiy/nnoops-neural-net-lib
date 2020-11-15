@@ -57,7 +57,7 @@ struct BigInteger : public UBigInteger<SIZE> {
   BigInteger<SIZE> operator-() const {
     BigInteger<SIZE> ret = *this;
     if (ret.get_unsigned() != UBigInteger<SIZE>::zero_value()) {
-        ret.sign = this->sign == true ? false : true;
+      ret.sign = this->sign == true ? false : true;
     }
     return ret;
   }
@@ -296,7 +296,10 @@ struct BigInteger : public UBigInteger<SIZE> {
                         : dividend.sign == divisor.sign;
 
     if (remainder != nullptr) {
-      remainder->sign = dividend.sign;
+      remainder->sign =
+          remainder->get_unsigned() == UBigInteger<SIZE>::zero_value()
+              ? true
+              : dividend.sign;
     }
   }
 
