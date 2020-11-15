@@ -233,6 +233,8 @@ TYPED_TEST_P(UBigIntegerTest, exception_handling_test) {
 
   EXPECT_THROW(val1 + 1, arith_error);
   EXPECT_THROW(1 + val1, arith_error);
+  // EXPECT_THROW(++val1, arith_error);
+  // EXPECT_THROW(val1++, arith_error);
 
   EXPECT_THROW(val2 * val1, arith_error);
   EXPECT_THROW(val1 * val2, arith_error);

@@ -72,6 +72,11 @@ struct UBigInteger {
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (++data[i] != 0) {
         break;
+      } else {
+        THROW_ARITH_ERROR(
+            i != ARRAY_LEN - 1,
+            "increment overflow",
+            "result should be in the interval [0, UBigInteger::max_value()]");
       }
     }
     return *this;
@@ -89,6 +94,11 @@ struct UBigInteger {
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (--data[i] != BASE) {
         break;
+      } else {
+        THROW_ARITH_ERROR(
+            i != 0,
+            "decrement overflow",
+            "result should be in the interval [0, UBigInteger::max_value()]");
       }
     }
     return *this;
@@ -355,7 +365,10 @@ struct UBigInteger {
 
   static UBigInteger<SIZE> max_value() {
     UBigInteger<SIZE> ret;
-    return --ret;
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
+      ret.data[i] = BASE;
+    }
+    return ret;
   }
 
   static UBigInteger<SIZE> zero_value() { return UBigInteger<SIZE>(); }
