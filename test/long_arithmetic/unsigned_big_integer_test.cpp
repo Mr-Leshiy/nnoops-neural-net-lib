@@ -83,8 +83,8 @@ TYPED_TEST_P(UBigIntegerTest, addition_substraction_test) {
 
 TYPED_TEST_P(UBigIntegerTest, multiplication_test) {
   const static uint64_t size = TypeParam::size;
-  UBigInteger<size> val1 = 1234;
-  UBigInteger<size> val2 = 4321;
+  UBigInteger<size> val1(1234);
+  UBigInteger<size> val2(4321);
 
   val1 *= val2;
 
@@ -104,8 +104,8 @@ TYPED_TEST_P(UBigIntegerTest, multiplication_test) {
 
 TYPED_TEST_P(UBigIntegerTest, division_test) {
   const static uint64_t size = TypeParam::size;
-  UBigInteger<size> val1 = 41351;
-  UBigInteger<size> val2 = 5423;
+  UBigInteger<size> val1(41351);
+  UBigInteger<size> val2(5423);
 
   EXPECT_EQ(val1 / val2, UBigInteger<size>(7));
   EXPECT_EQ(val2 / val1, UBigInteger<size>(0));
@@ -163,8 +163,8 @@ TYPED_TEST_P(UBigIntegerTest, division_test) {
 
 TYPED_TEST_P(UBigIntegerTest, division_test2) {
   const static uint64_t size = TypeParam::size;
-  UBigInteger<size> val1 = 41351;
-  UBigInteger<size> val2 = 5423;
+  UBigInteger<size> val1(41351);
+  UBigInteger<size> val2(5423);
 
   EXPECT_EQ(val1 % val2, UBigInteger<size>(3390));
   EXPECT_EQ(val2 % val1, UBigInteger<size>(5423));
@@ -257,13 +257,85 @@ INSTANTIATE_TYPED_TEST_SUITE_P(UBigIntegerTestSuite,
                                UBigIntegerTest,
                                UBigIntegerTestCases);
 
-TEST(UBigInteger, small_multiplication_test) {}
+TEST(UBigInteger, small_comparison_test) {
+  UBigInteger<8> val1((uint8_t)11);
+  UBigInteger<8> val2((uint8_t)123);
 
-TEST(UBigInteger, small_addition_substraction_test) {}
+  EXPECT_TRUE(val1 == val1);
+  EXPECT_FALSE(val1 == val2);
+  EXPECT_FALSE(val1 != val1);
+  EXPECT_TRUE(val1 != val2);
 
-TEST(UBigInteger, small_division_test) {}
+  EXPECT_TRUE(val1 < val2);
+  EXPECT_FALSE(val2 < val1);
+  EXPECT_FALSE(val1 < val1);
+  EXPECT_FALSE(val2 < val2);
 
-TEST(UBigInteger, small_division_test2) {}
+  EXPECT_FALSE(val1 > val2);
+  EXPECT_TRUE(val2 > val1);
+  EXPECT_FALSE(val1 > val1);
+  EXPECT_FALSE(val2 > val2);
+
+  EXPECT_TRUE(val1 <= val2);
+  EXPECT_FALSE(val2 <= val1);
+  EXPECT_TRUE(val1 <= val1);
+  EXPECT_TRUE(val2 <= val2);
+
+  EXPECT_FALSE(val1 >= val2);
+  EXPECT_TRUE(val2 >= val1);
+  EXPECT_TRUE(val1 >= val1);
+  EXPECT_TRUE(val2 >= val2);
+}
+
+TEST(UBigInteger, small_addition_substraction_test) {
+  UBigInteger<8> val1((uint8_t)123);
+  UBigInteger<8> val2((uint8_t)84);
+
+  EXPECT_EQ(val1 + val2, UBigInteger<8>((uint8_t)207));
+  EXPECT_EQ(val2 + val1, UBigInteger<8>((uint8_t)207));
+
+  EXPECT_EQ(val1 - val2, UBigInteger<8>((uint8_t)39));
+
+  EXPECT_EQ(val1++, UBigInteger<8>((uint8_t)123));
+  EXPECT_EQ(val1, UBigInteger<8>((uint8_t)124));
+
+  EXPECT_EQ(++val1, UBigInteger<8>((uint8_t)125));
+  EXPECT_EQ(val1, UBigInteger<8>((uint8_t)125));
+
+  EXPECT_EQ(val1--, UBigInteger<8>((uint8_t)125));
+  EXPECT_EQ(val1, UBigInteger<8>((uint8_t)124));
+
+  EXPECT_EQ(--val1, UBigInteger<8>((uint8_t)123));
+  EXPECT_EQ(val1, UBigInteger<8>((uint8_t)123));
+}
+
+TEST(UBigInteger, small_multiplication_test) {
+  UBigInteger<8> val1((uint8_t)2);
+  UBigInteger<8> val2((uint8_t)124);
+
+  EXPECT_EQ(val1 * val2, UBigInteger<8>((uint8_t)248));
+  EXPECT_EQ(val2 * val1, UBigInteger<8>((uint8_t)248));
+}
+
+TEST(UBigInteger, small_division_test) {
+  UBigInteger<8> val1((uint8_t)123);
+  UBigInteger<8> val2((uint8_t)15);
+
+  EXPECT_EQ(val1 / val2, UBigInteger<8>((uint8_t)8));
+  // EXPECT_EQ(val2 / val1, UBigInteger<8>((uint8_t)0));
+  // EXPECT_EQ(val1 / val1, UBigInteger<8>((uint8_t)1));
+  // EXPECT_EQ(val2 / val2, UBigInteger<8>((uint8_t)1));
+}
+
+TEST(UBigInteger, small_division_test2) {
+  UBigInteger<8> val1((uint8_t)123);
+  UBigInteger<8> val2((uint8_t)15);
+
+  // EXPECT_EQ(val1 % val2, UBigInteger<8>((uint8_t)3));
+  // EXPECT_EQ(val2 % val1, UBigInteger<8>((uint8_t)15));
+  // EXPECT_EQ(val1 % val1, UBigInteger<8>((uint8_t)0));
+  // EXPECT_EQ(val2 % val2, UBigInteger<8>((uint8_t)0));
+}
 
 TEST(UBigInteger, toPrettyString_test) {
   UBigInteger<32> val(1234);
