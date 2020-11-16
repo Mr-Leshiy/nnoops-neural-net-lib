@@ -322,19 +322,19 @@ TEST(UBigInteger, small_division_test) {
   UBigInteger<8> val2((uint8_t)15);
 
   EXPECT_EQ(val1 / val2, UBigInteger<8>((uint8_t)8));
-  // EXPECT_EQ(val2 / val1, UBigInteger<8>((uint8_t)0));
-  // EXPECT_EQ(val1 / val1, UBigInteger<8>((uint8_t)1));
-  // EXPECT_EQ(val2 / val2, UBigInteger<8>((uint8_t)1));
+  EXPECT_EQ(val2 / val1, UBigInteger<8>((uint8_t)0));
+  EXPECT_EQ(val1 / val1, UBigInteger<8>((uint8_t)1));
+  EXPECT_EQ(val2 / val2, UBigInteger<8>((uint8_t)1));
 }
 
 TEST(UBigInteger, small_division_test2) {
   UBigInteger<8> val1((uint8_t)123);
   UBigInteger<8> val2((uint8_t)15);
 
-  // EXPECT_EQ(val1 % val2, UBigInteger<8>((uint8_t)3));
-  // EXPECT_EQ(val2 % val1, UBigInteger<8>((uint8_t)15));
-  // EXPECT_EQ(val1 % val1, UBigInteger<8>((uint8_t)0));
-  // EXPECT_EQ(val2 % val2, UBigInteger<8>((uint8_t)0));
+  EXPECT_EQ(val1 % val2, UBigInteger<8>((uint8_t)3));
+  EXPECT_EQ(val2 % val1, UBigInteger<8>((uint8_t)15));
+  EXPECT_EQ(val1 % val1, UBigInteger<8>((uint8_t)0));
+  EXPECT_EQ(val2 % val2, UBigInteger<8>((uint8_t)0));
 }
 
 TEST(UBigInteger, toPrettyString_test) {

@@ -336,7 +336,7 @@ struct UBigInteger {
         tmp1.data[k] = dividend.data[i];
       }
 
-      UBigInteger<SIZE> tmp2 = q * divisor;
+      UBigInteger<SIZE> tmp2 = (uint8_t)q * divisor;
 
       // Test reminder
       if (tmp1 >= tmp2) {
