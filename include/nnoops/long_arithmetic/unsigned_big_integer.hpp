@@ -279,9 +279,10 @@ struct UBigInteger {
                                  UBigInteger<SIZE> divisor,
                                  UBigInteger<SIZE>& quotient,
                                  UBigInteger<SIZE>* remainder = nullptr) {
-    THROW_ARITH_ERROR(divisor != 0, "devide by zero");
+    THROW_ARITH_ERROR(divisor != UBigInteger<SIZE>::zero_value(),
+                      "devide by zero");
 
-    quotient = 0;
+    quotient = UBigInteger<SIZE>::zero_value();
 
     if (divisor > dividend) {
       if (remainder != nullptr) {
@@ -330,12 +331,12 @@ struct UBigInteger {
       }
 
       // Multiply and substract
-      UBigInteger<SIZE> tmp1 = 0;
+      UBigInteger<SIZE> tmp1;
       for (size_t i = j, k = 0; i <= j + n + 1 && i < ARRAY_LEN; ++i, ++k) {
         tmp1.data[k] = dividend.data[i];
       }
 
-      auto tmp2 = q * divisor;
+      UBigInteger<SIZE> tmp2 = (uint8_t)q * divisor;
 
       // Test reminder
       if (tmp1 >= tmp2) {
