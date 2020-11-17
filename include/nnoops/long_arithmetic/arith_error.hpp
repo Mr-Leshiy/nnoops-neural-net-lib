@@ -9,7 +9,7 @@ namespace nnoops {
 struct arith_error : public std::runtime_error {
   explicit arith_error(const std::string& err) : std::runtime_error(err) {}
   explicit arith_error(const std::string& err, const std::string& debug)
-      : std::runtime_error(err + debug) {}
+      : std::runtime_error(err + " : " + debug) {}
 };
 
 }  // namespace nnoops
