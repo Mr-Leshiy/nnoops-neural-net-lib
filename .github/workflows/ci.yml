@@ -17,10 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         flags: [
-          "-DCLANG_TIDY=ON",
-          "-DASAN=ON",
-          "-DUBSAN=ON",
-          "-DCMAKE_BUILD_TYPE=Release"
+          "-DCLANG_TIDY=ON -DNEURAL_NET_TESTING=ON",
+          "-DASAN=ON -DNEURAL_NET_TESTING=ON",
+          "-DUBSAN=ON -DNEURAL_NET_TESTING=ON",
+          "-DCMAKE_BUILD_TYPE=Release -DNEURAL_NET_TESTING=ON"
         ]
     env:
       CC: clang
