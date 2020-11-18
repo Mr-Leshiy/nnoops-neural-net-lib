@@ -2,6 +2,9 @@
 
 namespace nnoops {
 
+template struct UBigInteger<8>;
+template struct UBigInteger<16>;
+template struct UBigInteger<32>;
 template struct UBigInteger<64>;
 template struct UBigInteger<128>;
 template struct UBigInteger<256>;
