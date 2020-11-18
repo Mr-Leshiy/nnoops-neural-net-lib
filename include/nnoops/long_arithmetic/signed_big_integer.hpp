@@ -339,6 +339,9 @@ struct BigInteger : public UBigInteger<SIZE> {
   bool sign = true;
 };
 
+extern template struct BigInteger<8>;
+extern template struct BigInteger<16>;
+extern template struct BigInteger<32>;
 extern template struct BigInteger<64>;
 extern template struct BigInteger<128>;
 extern template struct BigInteger<256>;

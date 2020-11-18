@@ -6,48 +6,52 @@
 
 #include <string>
 
+#include "nnoops/long_arithmetic/signed_big_integer.hpp"
+
 namespace nnoops {
 
+// Representation on the big decimal with the arbitrary size
+// SIZE should be multiple of 8 (1 byte)
+// actual size of the BigDecimal equals to SIZE / 2
+// representation is equal to quotient of a / b
+template <uint64_t SIZE = 64,
+          typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
 struct BigDecimal {
   BigDecimal() = default;
 
-  BigDecimal(const BigDecimal& val)
-      : sign(val.sign),
-        integer_part(val.integer_part),
-        decimal_part(val.decimal_part) {}
-  
-  BigDecimal(BigDecimal&& val)
-      : sign(std::move(val.sign)),
-        integer_part(std::move(val.integer_part)),
-        decimal_part(std::move(val.decimal_part)) {}
-  
-  BigDecimal& operator=(const BigDecimal& val) {
-    this->sign = val.sign;
-    this->integer_part = val.integer_part;
-    this->decimal_part = val.decimal_part;
+  BigDecimal(const BigDecimal& val) : a(val.a), b(val.b) {}
+
+  BigDecimal(BigDecimal&& val) : a(std::move(val.a)), b(std::move(val.b)) {}
+
+  BigDecimal& operator=(const BigDecimal<SIZE>& val) {
+    this->a = val.a;
+    this->b = val.b;
     return *this;
   }
 
-  BigDecimal& operator=(BigDecimal&& val) {
-    this->sign = std::move(val.sign);
-    this->integer_part = std::move(val.integer_part);
-    this->decimal_part = std::move(val.decimal_part);
+  BigDecimal& operator=(BigDecimal<SIZE>&& val) {
+    this->a = std::move(val.a);
+    this->b = std::move(val.b);
     return *this;
   }
 
-  BigDecimal(const std::string& val);
-
-  BigDecimal(const double& val);
-
-  friend std::string toPrettyString(const BigDecimal& val);
+  BigDecimal(const double& val) { (void)val; }
 
  private:
-  void optimizeDecimalPart();
-
-  bool sign{true};
-  uint64_t integer_part{0};
-  uint64_t decimal_part{0};
+  BigInteger<SIZE> a;
+  UBigInteger<SIZE> b;
 };
+
+extern template struct BigDecimal<8>;
+extern template struct BigDecimal<16>;
+extern template struct BigDecimal<32>;
+extern template struct BigDecimal<64>;
+extern template struct BigDecimal<128>;
+extern template struct BigDecimal<256>;
+extern template struct BigDecimal<512>;
+extern template struct BigDecimal<1024>;
+extern template struct BigDecimal<2048>;
+extern template struct BigDecimal<4096>;
 
 }  // namespace nnoops
 

@@ -399,6 +399,9 @@ struct UBigInteger {
   std::array<uint8_t, ARRAY_LEN> data{};
 };
 
+extern template struct UBigInteger<8>;
+extern template struct UBigInteger<16>;
+extern template struct UBigInteger<32>;
 extern template struct UBigInteger<64>;
 extern template struct UBigInteger<128>;
 extern template struct UBigInteger<256>;
