@@ -11,52 +11,47 @@ namespace nnoops {
 // SIZE should be multiple of 8 (1 byte)
 template <uint64_t SIZE = 64,
           typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
-struct BigInteger : public UBigInteger<SIZE> {
-  ~BigInteger() override = default;
+struct BigInteger {
+  ~BigInteger() = default;
 
-  BigInteger() : UBigInteger<SIZE>() {}
+  BigInteger() = default;
 
-  BigInteger(const BigInteger<SIZE>& val)
-      : UBigInteger<SIZE>(val), sign(val.sign) {}
+  BigInteger(const BigInteger<SIZE>& val) : sign(val.sign), value(val.value) {}
 
   BigInteger(BigInteger<SIZE>&& val)
-      : UBigInteger<SIZE>(val), sign(std::move(val.sign)) {}
+      : sign(std::move(val.sign)), value(std::move(val.value)) {}
 
   BigInteger<SIZE>& operator=(const BigInteger<SIZE>& val) {
-    UBigInteger<SIZE>::operator=(val);
     this->sign = val.sign;
+    this->value = val.value;
     return *this;
   }
 
   BigInteger<SIZE>& operator=(BigInteger<SIZE>&& val) {
-    UBigInteger<SIZE>::operator=(val);
     this->sign = std::move(val.sign);
+    this->value = std::move(val.value);
     return *this;
   }
 
-  BigInteger(uint8_t val) : UBigInteger<SIZE>(val), sign(true) {}
+  BigInteger(uint8_t val) : sign(true), value(val) {}
 
-  BigInteger(uint16_t val) : UBigInteger<SIZE>(val), sign(true) {}
+  BigInteger(uint16_t val) : sign(true), value(val) {}
 
-  BigInteger(uint32_t val) : UBigInteger<SIZE>(val), sign(true) {}
+  BigInteger(uint32_t val) : sign(true), value(val) {}
 
-  BigInteger(uint64_t val) : UBigInteger<SIZE>(val), sign(true) {}
+  BigInteger(uint64_t val) : sign(true), value(val) {}
 
-  BigInteger(int8_t val)
-      : UBigInteger<SIZE>(abs(val)), sign(val >= 0 ? true : false) {}
+  BigInteger(int8_t val) : sign(val >= 0 ? true : false), value(abs(val)) {}
 
-  BigInteger(int16_t val)
-      : UBigInteger<SIZE>(abs(val)), sign(val >= 0 ? true : false) {}
+  BigInteger(int16_t val) : sign(val >= 0 ? true : false), value(abs(val)) {}
 
-  BigInteger(int32_t val)
-      : UBigInteger<SIZE>(abs(val)), sign(val >= 0 ? true : false) {}
+  BigInteger(int32_t val) : sign(val >= 0 ? true : false), value(abs(val)) {}
 
-  BigInteger(int64_t val)
-      : UBigInteger<SIZE>(abs(val)), sign(val >= 0 ? true : false) {}
+  BigInteger(int64_t val) : sign(val >= 0 ? true : false), value(abs(val)) {}
 
   BigInteger<SIZE> operator-() const {
     BigInteger<SIZE> ret = *this;
-    if (ret.get_unsigned() != UBigInteger<SIZE>::zero_value()) {
+    if (ret.value != UBigInteger<SIZE>::zero_value()) {
       ret.sign = this->sign == true ? false : true;
     }
     return ret;
@@ -65,13 +60,13 @@ struct BigInteger : public UBigInteger<SIZE> {
   BigInteger<SIZE>& operator++() {
     // prefix operator
     if (sign == true) {
-      UBigInteger<SIZE>::operator++();
+      ++value;
     } else {
-      UBigInteger<SIZE>::operator--();
+      --value;
     }
 
-    if (*this == BigInteger<SIZE>::zero_value()) {
-      this->sign = true;
+    if (value == UBigInteger<SIZE>::zero_value()) {
+      sign = true;
     }
 
     return *this;
@@ -86,15 +81,15 @@ struct BigInteger : public UBigInteger<SIZE> {
 
   BigInteger<SIZE>& operator--() {
     // prefix operator
-    if (*this == BigInteger<SIZE>::zero_value()) {
+    if (value == UBigInteger<SIZE>::zero_value()) {
       this->sign = false;
-      UBigInteger<SIZE>::operator++();
+      ++value;
       return *this;
     }
     if (sign == true) {
-      UBigInteger<SIZE>::operator--();
+      --value;
     } else {
-      UBigInteger<SIZE>::operator++();
+      ++value;
     }
     return *this;
   }
@@ -171,7 +166,7 @@ struct BigInteger : public UBigInteger<SIZE> {
   }
 
   bool operator==(const BigInteger<SIZE>& val) const {
-    return this->sign == val.sign && UBigInteger<SIZE>::operator==(val);
+    return this->sign == val.sign && this->value == val.value;
   }
 
   bool operator!=(const BigInteger<SIZE>& val) const { return !(*this == val); }
@@ -203,8 +198,8 @@ struct BigInteger : public UBigInteger<SIZE> {
       return 1;
     }
 
-    return b.sign == false ? -1 * UBigInteger<SIZE>::compareTo(b)
-                           : UBigInteger<SIZE>::compareTo(b);
+    return b.sign == false ? -1 * value.compareTo(b.value)
+                           : value.compareTo(b.value);
   }
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
@@ -216,24 +211,20 @@ struct BigInteger : public UBigInteger<SIZE> {
     if (a.sign == b.sign) {
       // a + b == a + b
       // (-a) + (-b) == -(a + b)
-      classical_addition(
-          a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+      classical_addition(a.value, b.value, result.value);
     } else {
       // a + (-y) == x - y == -(y - x)
       // (-x) + y == y - x == -(x - y)
-      if (a.get_unsigned() >= b.get_unsigned()) {
-        classical_substraction(
-            a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+      if (a.value >= b.value) {
+        classical_substraction(a.value, b.value, result.value);
       } else {
         sign = !sign;
-        classical_substraction(
-            b.get_unsigned(), a.get_unsigned(), result.get_unsigned());
+        classical_substraction(b.value, a.value, result.value);
       }
     }
 
     // 0 has the positive sign
-    result.sign =
-        result.get_unsigned() == UBigInteger<SIZE>::zero_value() ? true : sign;
+    result.sign = result.value == UBigInteger<SIZE>::zero_value() ? true : sign;
   }
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
@@ -245,24 +236,20 @@ struct BigInteger : public UBigInteger<SIZE> {
     if (a.sign != b.sign) {
       // a - (-b) == a + b
       // (-a) - b == -(a + b)
-      classical_addition(
-          a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+      classical_addition(a.value, b.value, result.value);
     } else {
       // a - b == -(b - a)
       // (-a) - (-b) == b - a == -(a - b)
-      if (a.get_unsigned() >= b.get_unsigned()) {
-        classical_substraction(
-            a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+      if (a.value >= b.value) {
+        classical_substraction(a.value, b.value, result.value);
       } else {
         sign = !sign;
-        classical_substraction(
-            b.get_unsigned(), a.get_unsigned(), result.get_unsigned());
+        classical_substraction(b.value, a.value, result.value);
       }
     }
 
     // 0 has the positive sign
-    result.sign =
-        result.get_unsigned() == UBigInteger<SIZE>::zero_value() ? true : sign;
+    result.sign = result.value == UBigInteger<SIZE>::zero_value() ? true : sign;
   }
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
@@ -274,10 +261,9 @@ struct BigInteger : public UBigInteger<SIZE> {
     // x * (-y) == -(x * y)
     // (-x) * y == -(x * y)
     // (-x) * (-y) == x * y
-    classical_multiplication(
-        a.get_unsigned(), b.get_unsigned(), result.get_unsigned());
+    classical_multiplication(a.value, b.value, result.value);
 
-    result.sign = result.get_unsigned() == UBigInteger<SIZE>::zero_value()
+    result.sign = result.value == UBigInteger<SIZE>::zero_value()
                       ? true
                       : a.sign == b.sign;
   }
@@ -286,50 +272,47 @@ struct BigInteger : public UBigInteger<SIZE> {
                                  const BigInteger<SIZE>& divisor,
                                  BigInteger<SIZE>& quotient,
                                  BigInteger<SIZE>* remainder = nullptr) {
-    classical_division(dividend.get_unsigned(),
-                       divisor.get_unsigned(),
-                       quotient.get_unsigned(),
-                       (UBigInteger<SIZE>*)remainder);
+    classical_division(dividend.value,
+                       divisor.value,
+                       quotient.value,
+                       remainder != nullptr ? &remainder->value : nullptr);
 
-    quotient.sign = quotient.get_unsigned() == UBigInteger<SIZE>::zero_value()
+    quotient.sign = quotient.value == UBigInteger<SIZE>::zero_value()
                         ? true
                         : dividend.sign == divisor.sign;
 
     if (remainder != nullptr) {
-      remainder->sign =
-          remainder->get_unsigned() == UBigInteger<SIZE>::zero_value()
-              ? true
-              : dividend.sign;
+      remainder->sign = remainder->value == UBigInteger<SIZE>::zero_value()
+                            ? true
+                            : dividend.sign;
     }
   }
 
   static BigInteger<SIZE> min_value() {
     BigInteger<SIZE> ret;
-    ret.get_unsigned() = UBigInteger<SIZE>::max_value();
+    ret.value = UBigInteger<SIZE>::max_value();
     ret.sign = false;
     return ret;
   }
 
   static BigInteger<SIZE> max_value() {
     BigInteger<SIZE> ret;
-    ret.get_unsigned() = UBigInteger<SIZE>::max_value();
+    ret.value = UBigInteger<SIZE>::max_value();
     ret.sign = true;
     return ret;
   }
 
   static BigInteger<SIZE> zero_value() { return BigInteger<SIZE>(); }
 
-  UBigInteger<SIZE>& get_unsigned() { return (UBigInteger<SIZE>&)*this; }
+  UBigInteger<SIZE>& get_unsigned() { return this->value; }
 
-  const UBigInteger<SIZE>& get_unsigned() const {
-    return (UBigInteger<SIZE>&)*this;
-  }
+  const UBigInteger<SIZE>& get_unsigned() const { return this->value; }
 
   friend std::string toPrettyString(const BigInteger<SIZE>& val) {
     if (val.sign == true) {
-      return toPrettyString(UBigInteger<SIZE>(val));
+      return toPrettyString(val.value);
     } else {
-      return "-" + toPrettyString(UBigInteger<SIZE>(val));
+      return "-" + toPrettyString(val.value);
     }
   }
 
@@ -337,6 +320,8 @@ struct BigInteger : public UBigInteger<SIZE> {
   // sign == true means positive number
   // sign == false means negative number
   bool sign = true;
+  // unsigned value
+  UBigInteger<SIZE> value;
 };
 
 extern template struct BigInteger<8>;
