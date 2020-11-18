@@ -35,7 +35,11 @@ struct BigDecimal {
     return *this;
   }
 
-  BigDecimal(const double& val) { (void)val; }
+  BigDecimal(uint64_t a, uint64_t b) : a(a), b(b) {}
+
+  friend std::string toPrettyString(const BigDecimal<SIZE>& val) {
+    return toPrettyString(val.a) + "/" + toPrettyString(val.b);
+  }
 
  private:
   BigInteger<SIZE> a;

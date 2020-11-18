@@ -375,10 +375,10 @@ struct UBigInteger {
   static UBigInteger<SIZE> zero_value() { return UBigInteger<SIZE>(); }
 
   friend std::string toPrettyString(const UBigInteger<SIZE>& val) {
-    return HexStr(val.data.rbegin(), val.data.rend());
+    return removeZeros(HexStr(val.data.rbegin(), val.data.rend()));
   }
 
- protected:
+ private:
   template <typename T,
             typename = typename std::enable_if<
                 std::is_integral<T>::value && std::is_unsigned<T>::value>::type>
