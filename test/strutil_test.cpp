@@ -19,10 +19,3 @@ TEST(StrUtil, hex_test) {
 
   EXPECT_EQ(hex_str, "000000000020417b360cbe");
 }
-
-TEST(StrUtil, dec_test) {
-  std::vector<uint8_t> data = {32, 65, 123, 54, 12, 190};
-  std::string hex_str = DecStr(data);
-
-  EXPECT_EQ(hex_str, "35465612102846");
-}
