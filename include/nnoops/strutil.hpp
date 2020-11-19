@@ -47,6 +47,9 @@ std::string HexStr(const T& vch) {
   return HexStr(vch.begin(), vch.end());
 }
 
+// remove all '0' char, before to the first non '0' char
+std::string removeZeros(const std::string& str);
+
 std::vector<uint8_t> toBytes(const std::string& input);
 
 }  // namespace nnoops
