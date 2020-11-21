@@ -19,31 +19,24 @@ template <uint64_t SIZE = 64,
 struct BigDecimal {
   BigDecimal() = default;
 
-  BigDecimal(const BigDecimal& val) : a(val.a), b(val.b) {}
+  BigDecimal(const BigDecimal& val) { (void)val; }
 
-  BigDecimal(BigDecimal&& val) : a(std::move(val.a)), b(std::move(val.b)) {}
+  BigDecimal(BigDecimal&& val) { (void)val; }
 
   BigDecimal& operator=(const BigDecimal<SIZE>& val) {
-    this->a = val.a;
-    this->b = val.b;
+    (void)val;
     return *this;
   }
 
   BigDecimal& operator=(BigDecimal<SIZE>&& val) {
-    this->a = std::move(val.a);
-    this->b = std::move(val.b);
+    (void)val;
     return *this;
   }
 
-  BigDecimal(uint64_t a, uint64_t b) : a(a), b(b) {}
-
   friend std::string toPrettyString(const BigDecimal<SIZE>& val) {
-    return toPrettyString(val.a) + "/" + toPrettyString(val.b);
+    (void)val;
+    return "";
   }
-
- private:
-  BigInteger<SIZE> a;
-  UBigInteger<SIZE> b;
 };
 
 extern template struct BigDecimal<8>;
