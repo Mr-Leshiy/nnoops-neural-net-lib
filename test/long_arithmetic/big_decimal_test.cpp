@@ -11,4 +11,7 @@ TEST(BigDecimal, basic_test) {}
 TEST(BigDecimal, toPrettyString_test) {
   BigDecimal val(5, 6);
   EXPECT_EQ(toPrettyString(val), "5/6");
+
+  val = BigDecimal(0.15);
+  EXPECT_EQ(toPrettyString(val), "15/100");
 }

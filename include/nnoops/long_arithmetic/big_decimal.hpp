@@ -37,13 +37,29 @@ struct BigDecimal {
 
   BigDecimal(uint64_t a, uint64_t b) : a(a), b(b) {}
 
+  BigDecimal(double val) {
+    int64_t int_part = val;
+    double fractional_part = val - int_part;
+    uint64_t a = 0;
+    uint64_t b = 1;
+    while (fractional_part != 0) {
+      fractional_part *= 10;
+      b *= 10;
+      a = a * 10 + (uint64_t)fractional_part;
+      fractional_part = (uint64_t)fractional_part - fractional_part;
+    }
+
+    this->a = BigInteger<SIZE>(int_part) * b + BigInteger<SIZE>(a);
+    this->b = UBigInteger<SIZE>(b);
+  }
+
   friend std::string toPrettyString(const BigDecimal<SIZE>& val) {
     return toPrettyString(val.a) + "/" + toPrettyString(val.b);
   }
 
  private:
-  BigInteger<SIZE> a;
-  UBigInteger<SIZE> b;
+  BigInteger<SIZE> a{};
+  UBigInteger<SIZE> b{};
 };
 
 extern template struct BigDecimal<8>;
