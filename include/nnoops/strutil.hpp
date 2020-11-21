@@ -48,9 +48,11 @@ std::string DecStr(const T& itbegin, const T& itend) {
   // clang-format off
   static const char hexmap[16] = { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
   // clang-format on
-  for (T it = itbegin; it < itend; ++it) {
-    uint8_t val = (uint8_t)(*it);
-  }
+  (void)itbegin;
+  (void)itend;
+  (void)rv;
+  (void)hexmap;
+  return rv;
 }
 
 template <typename T>

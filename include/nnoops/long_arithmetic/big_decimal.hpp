@@ -33,11 +33,10 @@ struct BigDecimal {
     return *this;
   }
 
-  friend std::string toPrettyString(const BigDecimal<SIZE>& val) { return ""; }
-
- private:
-  BigInteger<SIZE> a;
-  UBigInteger<SIZE> b;
+  friend std::string toPrettyString(const BigDecimal<SIZE>& val) {
+    (void)val;
+    return "";
+  }
 };
 
 extern template struct BigDecimal<8>;
