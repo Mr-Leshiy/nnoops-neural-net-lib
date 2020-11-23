@@ -17,26 +17,37 @@ namespace nnoops {
 template <uint64_t SIZE = 64,
           typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
 struct BigDecimal {
+  ~BigDecimal() = default;
+
   BigDecimal() = default;
 
-  BigDecimal(const BigDecimal& val) { (void)val; }
+  BigDecimal(const BigDecimal& val)
+      : exponent(val.exponent), mantissa(val.mantissa) {}
 
-  BigDecimal(BigDecimal&& val) { (void)val; }
+  BigDecimal(BigDecimal&& val)
+      : exponent(std::move(val.exponent)), mantissa(std::move(val.mantissa)) {}
 
   BigDecimal& operator=(const BigDecimal<SIZE>& val) {
-    (void)val;
+    this->exponent = val.exponent;
+    this->mantissa = val.mantissa;
     return *this;
   }
 
   BigDecimal& operator=(BigDecimal<SIZE>&& val) {
-    (void)val;
+    this->exponent = std::move(val.exponent);
+    this->mantissa = std::move(val.mantissa);
     return *this;
   }
 
+  BigDecimal(double val) { (void)val; }
+
   friend std::string toPrettyString(const BigDecimal<SIZE>& val) {
-    (void)val;
-    return "";
+    return toPrettyString(val.mantissa) + "e" + std::to_string(val.exponent);
   }
+
+ private:
+  int64_t exponent{};
+  BigInteger<SIZE> mantissa{};
 };
 
 extern template struct BigDecimal<8>;

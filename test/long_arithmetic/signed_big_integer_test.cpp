@@ -672,8 +672,6 @@ TYPED_TEST_P(BigIntegerTest, division_test2) {
 TYPED_TEST_P(BigIntegerTest, exception_handling_test) {
   const static uint64_t size = TypeParam::size;
 
-  BigInteger<size> val1 = 2;
-
   EXPECT_THROW(BigInteger<size>::max_value() + 1, arith_error);
   EXPECT_THROW(1 + BigInteger<size>::max_value(), arith_error);
   EXPECT_THROW(++BigInteger<size>::max_value(), arith_error);

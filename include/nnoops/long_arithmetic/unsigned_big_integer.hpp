@@ -17,9 +17,9 @@ namespace nnoops {
 template <uint64_t SIZE = 64,
           typename = typename std::enable_if<SIZE != 0 && SIZE % 8 == 0>::type>
 struct UBigInteger {
-  virtual ~UBigInteger() = default;
+  ~UBigInteger() = default;
 
-  UBigInteger() noexcept {
+  UBigInteger() {
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       this->data[i] = 0;
     }
