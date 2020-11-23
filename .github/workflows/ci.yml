@@ -100,6 +100,5 @@ jobs:
         run: cmake . -Bbuild ${{ matrix.flags }} -DCMAKE_BUILD_TYPE=Release
       - name: build
         run: cmake --build build -- -j2
-      # TODO fix macos tests
-      # - name: test
-      #   run: cd build && ctest
+      - name: test
+        run: cd build && ctest
