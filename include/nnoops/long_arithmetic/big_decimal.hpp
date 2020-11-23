@@ -15,7 +15,7 @@ namespace nnoops {
 // actual size of the BigDecimal equals to SIZE / 2
 // representation is equal to quotient of a / b
 template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
+          typename = typename std::enable_if<SIZE % 32 == 0 && SIZE != 0>::type>
 struct BigDecimal {
   ~BigDecimal() = default;
 
@@ -50,8 +50,6 @@ struct BigDecimal {
   BigInteger<SIZE> mantissa{};
 };
 
-extern template struct BigDecimal<8>;
-extern template struct BigDecimal<16>;
 extern template struct BigDecimal<32>;
 extern template struct BigDecimal<64>;
 extern template struct BigDecimal<128>;

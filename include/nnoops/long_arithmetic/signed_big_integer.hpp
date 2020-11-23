@@ -10,7 +10,7 @@ namespace nnoops {
 // Representation on the signed integer with the arbitrary size
 // SIZE should be multiple of 8 (1 byte)
 template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE % 8 == 0 && SIZE != 0>::type>
+          typename = typename std::enable_if<SIZE % 32 == 0 && SIZE != 0>::type>
 struct BigInteger {
   ~BigInteger() = default;
 
@@ -102,58 +102,58 @@ struct BigInteger {
   }
 
   BigInteger<SIZE>& operator+=(const BigInteger<SIZE>& b) {
-    classical_addition(*this, b, *this);
+    addition(*this, b, *this);
     return *this;
   }
 
   BigInteger<SIZE>& operator-=(const BigInteger<SIZE>& b) {
-    classical_substraction(*this, b, *this);
+    substraction(*this, b, *this);
     return *this;
   }
 
   BigInteger<SIZE>& operator*=(const BigInteger<SIZE>& b) {
     BigInteger<SIZE> res;
-    classical_multiplication(*this, b, res);
+    multiplication(*this, b, res);
     *this = std::move(res);
     return *this;
   }
 
   BigInteger<SIZE>& operator/=(const BigInteger<SIZE>& b) {
-    classical_division(*this, b, *this);
+    division(*this, b, *this);
     return *this;
   }
 
   BigInteger<SIZE>& operator%=(const BigInteger<SIZE>& b) {
     BigInteger<SIZE> q;
-    classical_division(*this, b, q, this);
+    division(*this, b, q, this);
     return *this;
   }
 
   friend inline BigInteger<SIZE> operator+(const BigInteger<SIZE>& a,
                                            const BigInteger<SIZE>& b) {
     BigInteger<SIZE> res;
-    classical_addition(a, b, res);
+    addition(a, b, res);
     return res;
   }
 
   friend inline BigInteger<SIZE> operator-(const BigInteger<SIZE>& a,
                                            const BigInteger<SIZE>& b) {
     BigInteger<SIZE> res;
-    classical_substraction(a, b, res);
+    substraction(a, b, res);
     return res;
   }
 
   friend inline BigInteger<SIZE> operator*(const BigInteger<SIZE>& a,
                                            const BigInteger<SIZE>& b) {
     BigInteger<SIZE> res;
-    classical_multiplication(a, b, res);
+    multiplication(a, b, res);
     return res;
   }
 
   friend inline BigInteger<SIZE> operator/(const BigInteger<SIZE>& a,
                                            BigInteger<SIZE>& b) {
     BigInteger<SIZE> q;
-    classical_division(a, b, q);
+    division(a, b, q);
     return q;
   }
 
@@ -161,7 +161,7 @@ struct BigInteger {
                                            const BigInteger<SIZE>& b) {
     BigInteger<SIZE> q;
     BigInteger<SIZE> r;
-    classical_division(a, b, q, &r);
+    division(a, b, q, &r);
     return r;
   }
 
@@ -204,9 +204,9 @@ struct BigInteger {
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
   // 'b' arguments
-  friend void classical_addition(const BigInteger<SIZE>& a,
-                                 const BigInteger<SIZE>& b,
-                                 BigInteger<SIZE>& result) {
+  friend void addition(const BigInteger<SIZE>& a,
+                       const BigInteger<SIZE>& b,
+                       BigInteger<SIZE>& result) {
     bool sign = a.sign;
     if (a.sign == b.sign) {
       // a + b == a + b
@@ -229,9 +229,9 @@ struct BigInteger {
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
   // 'b' arguments
-  friend void classical_substraction(const BigInteger<SIZE>& a,
-                                     const BigInteger<SIZE>& b,
-                                     BigInteger<SIZE>& result) {
+  friend void substraction(const BigInteger<SIZE>& a,
+                           const BigInteger<SIZE>& b,
+                           BigInteger<SIZE>& result) {
     bool sign = a.sign;
     if (a.sign != b.sign) {
       // a - (-b) == a + b
@@ -254,9 +254,9 @@ struct BigInteger {
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
   // or 'b' arguments
-  friend void classical_multiplication(const BigInteger<SIZE>& a,
-                                       const BigInteger<SIZE>& b,
-                                       BigInteger<SIZE>& result) {
+  friend void multiplication(const BigInteger<SIZE>& a,
+                             const BigInteger<SIZE>& b,
+                             BigInteger<SIZE>& result) {
     // x * y == x * y
     // x * (-y) == -(x * y)
     // (-x) * y == -(x * y)
@@ -268,10 +268,10 @@ struct BigInteger {
                       : a.sign == b.sign;
   }
 
-  friend void classical_division(const BigInteger<SIZE>& dividend,
-                                 const BigInteger<SIZE>& divisor,
-                                 BigInteger<SIZE>& quotient,
-                                 BigInteger<SIZE>* remainder = nullptr) {
+  friend void division(const BigInteger<SIZE>& dividend,
+                       const BigInteger<SIZE>& divisor,
+                       BigInteger<SIZE>& quotient,
+                       BigInteger<SIZE>* remainder = nullptr) {
     classical_division(dividend.value,
                        divisor.value,
                        quotient.value,
@@ -324,8 +324,6 @@ struct BigInteger {
   UBigInteger<SIZE> value;
 };
 
-extern template struct BigInteger<8>;
-extern template struct BigInteger<16>;
 extern template struct BigInteger<32>;
 extern template struct BigInteger<64>;
 extern template struct BigInteger<128>;

@@ -13,9 +13,9 @@
 namespace nnoops {
 
 // Representation on the unsigned integer with the arbitrary size
-// SIZE should be multiple of 8 (1 byte)
+// SIZE should be multiple of 32 (1 byte)
 template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE != 0 && SIZE % 8 == 0>::type>
+          typename = typename std::enable_if<SIZE != 0 && SIZE % 32 == 0>::type>
 struct UBigInteger {
   ~UBigInteger() = default;
 
@@ -399,8 +399,6 @@ struct UBigInteger {
   std::array<uint8_t, ARRAY_LEN> data{};
 };
 
-extern template struct UBigInteger<8>;
-extern template struct UBigInteger<16>;
 extern template struct UBigInteger<32>;
 extern template struct UBigInteger<64>;
 extern template struct UBigInteger<128>;

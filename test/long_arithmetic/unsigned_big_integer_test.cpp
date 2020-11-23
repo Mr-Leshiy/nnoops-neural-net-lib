@@ -258,8 +258,8 @@ INSTANTIATE_TYPED_TEST_SUITE_P(UBigIntegerTestSuite,
                                UBigIntegerTestCases);
 
 TEST(UBigInteger, small_comparison_test) {
-  UBigInteger<8> val1((uint8_t)11);
-  UBigInteger<8> val2((uint8_t)123);
+  UBigInteger<32> val1(11);
+  UBigInteger<32> val2(123);
 
   EXPECT_TRUE(val1 == val1);
   EXPECT_FALSE(val1 == val2);
@@ -288,57 +288,57 @@ TEST(UBigInteger, small_comparison_test) {
 }
 
 TEST(UBigInteger, small_addition_substraction_test) {
-  UBigInteger<8> val1((uint8_t)123);
-  UBigInteger<8> val2((uint8_t)84);
+  UBigInteger<32> val1(123);
+  UBigInteger<32> val2(84);
 
-  EXPECT_EQ(val1 + val2, UBigInteger<8>((uint8_t)207));
-  EXPECT_EQ(val2 + val1, UBigInteger<8>((uint8_t)207));
+  EXPECT_EQ(val1 + val2, UBigInteger<32>(207));
+  EXPECT_EQ(val2 + val1, UBigInteger<32>(207));
 
-  EXPECT_EQ(val1 - val2, UBigInteger<8>((uint8_t)39));
+  EXPECT_EQ(val1 - val2, UBigInteger<32>(39));
 
-  EXPECT_EQ(val1++, UBigInteger<8>((uint8_t)123));
-  EXPECT_EQ(val1, UBigInteger<8>((uint8_t)124));
+  EXPECT_EQ(val1++, UBigInteger<32>(123));
+  EXPECT_EQ(val1, UBigInteger<32>(124));
 
-  EXPECT_EQ(++val1, UBigInteger<8>((uint8_t)125));
-  EXPECT_EQ(val1, UBigInteger<8>((uint8_t)125));
+  EXPECT_EQ(++val1, UBigInteger<32>(125));
+  EXPECT_EQ(val1, UBigInteger<32>(125));
 
-  EXPECT_EQ(val1--, UBigInteger<8>((uint8_t)125));
-  EXPECT_EQ(val1, UBigInteger<8>((uint8_t)124));
+  EXPECT_EQ(val1--, UBigInteger<32>(125));
+  EXPECT_EQ(val1, UBigInteger<32>(124));
 
-  EXPECT_EQ(--val1, UBigInteger<8>((uint8_t)123));
-  EXPECT_EQ(val1, UBigInteger<8>((uint8_t)123));
+  EXPECT_EQ(--val1, UBigInteger<32>(123));
+  EXPECT_EQ(val1, UBigInteger<32>(123));
 }
 
 TEST(UBigInteger, small_multiplication_test) {
-  UBigInteger<8> val1((uint8_t)2);
-  UBigInteger<8> val2((uint8_t)124);
+  UBigInteger<32> val1(2);
+  UBigInteger<32> val2(124);
 
-  EXPECT_EQ(val1 * val2, UBigInteger<8>((uint8_t)248));
-  EXPECT_EQ(val2 * val1, UBigInteger<8>((uint8_t)248));
+  EXPECT_EQ(val1 * val2, UBigInteger<32>(248));
+  EXPECT_EQ(val2 * val1, UBigInteger<32>(248));
 }
 
 TEST(UBigInteger, small_division_test) {
-  UBigInteger<8> val1((uint8_t)123);
-  UBigInteger<8> val2((uint8_t)15);
+  UBigInteger<32> val1(123);
+  UBigInteger<32> val2(15);
 
-  EXPECT_EQ(val1 / val2, UBigInteger<8>((uint8_t)8));
-  EXPECT_EQ(val2 / val1, UBigInteger<8>((uint8_t)0));
-  EXPECT_EQ(val1 / val1, UBigInteger<8>((uint8_t)1));
-  EXPECT_EQ(val2 / val2, UBigInteger<8>((uint8_t)1));
+  EXPECT_EQ(val1 / val2, UBigInteger<32>(8));
+  EXPECT_EQ(val2 / val1, UBigInteger<32>(0));
+  EXPECT_EQ(val1 / val1, UBigInteger<32>(1));
+  EXPECT_EQ(val2 / val2, UBigInteger<32>(1));
 }
 
 TEST(UBigInteger, small_division_test2) {
-  UBigInteger<8> val1((uint8_t)123);
-  UBigInteger<8> val2((uint8_t)15);
+  UBigInteger<32> val1(123);
+  UBigInteger<32> val2(15);
 
-  EXPECT_EQ(val1 % val2, UBigInteger<8>((uint8_t)3));
-  EXPECT_EQ(val2 % val1, UBigInteger<8>((uint8_t)15));
-  EXPECT_EQ(val1 % val1, UBigInteger<8>((uint8_t)0));
-  EXPECT_EQ(val2 % val2, UBigInteger<8>((uint8_t)0));
+  EXPECT_EQ(val1 % val2, UBigInteger<32>(3));
+  EXPECT_EQ(val2 % val1, UBigInteger<32>(15));
+  EXPECT_EQ(val1 % val1, UBigInteger<32>(0));
+  EXPECT_EQ(val2 % val2, UBigInteger<32>(0));
 }
 
 TEST(UBigInteger, toPrettyString_test) {
-  UBigInteger<32> val(1234);
+  UBigInteger<> val(1234);
 
   EXPECT_EQ(toPrettyString(val), "4d2");
 
@@ -348,24 +348,11 @@ TEST(UBigInteger, toPrettyString_test) {
 }
 
 TEST(UBigInteger, basic_values_test) {
-  UBigInteger<8> val1 = UBigInteger<8>::max_value();
-  EXPECT_EQ(toPrettyString(val1), "ff");
-  val1 = UBigInteger<8>::zero_value();
-  EXPECT_EQ(toPrettyString(val1), "0");
-  val1 = UBigInteger<8>::min_value();
-  EXPECT_EQ(toPrettyString(val1), "0");
+  EXPECT_EQ(toPrettyString(UBigInteger<32>::max_value()), "ffffffff");
+  EXPECT_EQ(toPrettyString(UBigInteger<32>::zero_value()), "0");
+  EXPECT_EQ(toPrettyString(UBigInteger<32>::min_value()), "0");
 
-  UBigInteger<16> val2 = UBigInteger<16>::max_value();
-  EXPECT_EQ(toPrettyString(val2), "ffff");
-  val2 = UBigInteger<16>::zero_value();
-  EXPECT_EQ(toPrettyString(val2), "0");
-  val2 = UBigInteger<16>::min_value();
-  EXPECT_EQ(toPrettyString(val2), "0");
-
-  UBigInteger<32> val3 = UBigInteger<32>::max_value();
-  EXPECT_EQ(toPrettyString(val3), "ffffffff");
-  val3 = UBigInteger<32>::zero_value();
-  EXPECT_EQ(toPrettyString(val3), "0");
-  val3 = UBigInteger<32>::min_value();
-  EXPECT_EQ(toPrettyString(val3), "0");
+  EXPECT_EQ(toPrettyString(UBigInteger<64>::max_value()), "ffffffffffffffff");
+  EXPECT_EQ(toPrettyString(UBigInteger<64>::zero_value()), "0");
+  EXPECT_EQ(toPrettyString(UBigInteger<64>::min_value()), "0");
 }
