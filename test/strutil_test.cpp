@@ -10,7 +10,7 @@ TEST(StrUtil, hex_test) {
 
   EXPECT_EQ(hex_str, "20417b360cbe");
 
-  std::vector<uint8_t> data2 = ParseHex(hex_str);
+  std::vector<uint8_t> data2 = ParseHex<uint8_t>(hex_str);
 
   EXPECT_EQ(data1, data2);
 
@@ -19,10 +19,14 @@ TEST(StrUtil, hex_test) {
 
   EXPECT_EQ(hex_str, "000000000020417b360cbe");
 
-  std::vector<uint32_t> data3 = {321454321};
+  std::vector<uint32_t> data3 = {0, 321454321};
 
   hex_str = HexStr(data3);
-  EXPECT_EQ(hex_str, "");
+  EXPECT_EQ(hex_str, "00000000132900f1");
+
+  std::vector<uint32_t> data4 = ParseHex<uint32_t>(hex_str);
+
+  EXPECT_EQ(data3, data4);
 }
 
 TEST(StrUtil, removeZeros_test) {

@@ -18,7 +18,11 @@ void insert_hex_digits(uint8_t val, std::string& result) {
 }
 
 void insert_hex_digits(uint32_t val, std::string& result) {
-  result.push_back(hexmap[val >> 16u]);
+  result.push_back(hexmap[val >> 28u]);
+  result.push_back(hexmap[(val & 0xf000000u) >> 24u]);
+  result.push_back(hexmap[(val & 0xf00000u) >> 20u]);
+  result.push_back(hexmap[(val & 0xf0000u) >> 16u]);
+  result.push_back(hexmap[(val & 0xf000u) >> 12u]);
   result.push_back(hexmap[(val & 0xf00u) >> 8u]);
   result.push_back(hexmap[(val & 0xf0u) >> 4u]);
   result.push_back(hexmap[val & 0xfu]);
@@ -39,8 +43,11 @@ inline std::string toPrettyString(const int64_t& val) {
 }
 
 bool IsHex(const std::string& str);
-std::vector<uint8_t> ParseHex(const char* psz);
-std::vector<uint8_t> ParseHex(const std::string& hex);
+
+template <typename T>
+std::vector<T> ParseHex(const char* psz);
+template <typename T>
+std::vector<T> ParseHex(const std::string& hex);
 
 constexpr inline bool IsSpace(char c) noexcept {
   return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' ||
@@ -66,6 +73,16 @@ std::string HexStr(const T& vch) {
 std::string removeZeros(const std::string& str);
 
 std::vector<uint8_t> toBytes(const std::string& input);
+
+template <>
+std::vector<uint8_t> ParseHex(const char* psz);
+template <>
+std::vector<uint8_t> ParseHex(const std::string& hex);
+
+template <>
+std::vector<uint32_t> ParseHex(const char* psz);
+template <>
+std::vector<uint32_t> ParseHex(const std::string& hex);
 
 }  // namespace nnoops
 
