@@ -33,17 +33,9 @@ struct BigInteger {
     return *this;
   }
 
-  BigInteger(uint8_t val) : sign(true), value(val) {}
-
-  BigInteger(uint16_t val) : sign(true), value(val) {}
-
   BigInteger(uint32_t val) : sign(true), value(val) {}
 
   BigInteger(uint64_t val) : sign(true), value(val) {}
-
-  BigInteger(int8_t val) : sign(val >= 0 ? true : false), value(abs(val)) {}
-
-  BigInteger(int16_t val) : sign(val >= 0 ? true : false), value(abs(val)) {}
 
   BigInteger(int32_t val) : sign(val >= 0 ? true : false), value(abs(val)) {}
 

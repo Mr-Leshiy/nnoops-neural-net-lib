@@ -39,23 +39,9 @@ struct UBigInteger {
     return *this;
   }
 
-  UBigInteger(uint8_t val) { init(val); }
-
-  UBigInteger(uint16_t val) { init(val); }
-
   UBigInteger(uint32_t val) { init(val); }
 
   UBigInteger(uint64_t val) { init(val); }
-
-  UBigInteger(int8_t val) {
-    THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive")
-    init((uint8_t)val);
-  }
-
-  UBigInteger(int16_t val) {
-    THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive");
-    init((uint16_t)val);
-  }
 
   UBigInteger(int32_t val) {
     THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive");

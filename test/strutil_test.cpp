@@ -5,19 +5,24 @@
 using namespace nnoops;
 
 TEST(StrUtil, hex_test) {
-  std::vector<uint8_t> data = {32, 65, 123, 54, 12, 190};
-  std::string hex_str = HexStr(data);
+  std::vector<uint8_t> data1 = {32, 65, 123, 54, 12, 190};
+  std::string hex_str = HexStr(data1);
 
   EXPECT_EQ(hex_str, "20417b360cbe");
 
   std::vector<uint8_t> data2 = ParseHex(hex_str);
 
-  EXPECT_EQ(data, data2);
+  EXPECT_EQ(data1, data2);
 
-  data = {0, 0, 0, 0, 0, 32, 65, 123, 54, 12, 190};
-  hex_str = HexStr(data);
+  data1 = {0, 0, 0, 0, 0, 32, 65, 123, 54, 12, 190};
+  hex_str = HexStr(data1);
 
   EXPECT_EQ(hex_str, "000000000020417b360cbe");
+
+  std::vector<uint32_t> data3 = {321454321};
+
+  hex_str = HexStr(data3);
+  EXPECT_EQ(hex_str, "");
 }
 
 TEST(StrUtil, removeZeros_test) {
