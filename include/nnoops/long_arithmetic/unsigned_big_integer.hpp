@@ -216,7 +216,7 @@ struct UBigInteger {
     for (size_t i = 0; i < UBigInteger<SIZE>::ARRAY_LEN; ++i) {
       uint64_t n = carry + a.data[i] + b.data[i];
       result.data[i] = n & BASE;  // same to the n % (BASE + 1)
-      carry = n >> 8;             // same to the [n / (BASE + 1)]
+      carry = n >> 32;            // same to the [n / (BASE + 1)]
     }
     THROW_ARITH_ERROR(
         carry == 0,
@@ -232,7 +232,7 @@ struct UBigInteger {
     int64_t carry = 0;
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       int64_t n = carry + a.data[i] - b.data[i];
-      result.data[i] = n % (BASE + 1);
+      result.data[i] = n % ((uint64_t)BASE + 1);
       carry = n >= 0 ? 0 : -1;  // same to the [n / (BASE + 1)]
     }
     THROW_ARITH_ERROR(
@@ -250,9 +250,9 @@ struct UBigInteger {
       uint64_t carry = 0;
       for (size_t j = 0; i + j < ARRAY_LEN; ++j) {
         uint64_t n =
-            carry + result.data[i + j] + (uint64_t)(a.data[i] * b.data[j]);
+            carry + result.data[i + j] + (uint64_t)a.data[i] * b.data[j];
         result.data[i + j] = n & BASE;
-        carry = n >> 8;
+        carry = n >> 32;
       }
       THROW_ARITH_ERROR(
           carry == 0,
@@ -299,7 +299,7 @@ struct UBigInteger {
       uint64_t el1 =
           j + n + 1 >= ARRAY_LEN
               ? dividend.data[j + n]
-              : (uint64_t)(dividend.data[j + n + 1] * (uint64_t)(BASE + 1)) +
+              : (uint64_t)(dividend.data[j + n + 1] * ((uint64_t)BASE + 1)) +
                     dividend.data[j + n];
 
       uint64_t r = el1 % divisor.data[n];
@@ -322,7 +322,7 @@ struct UBigInteger {
         tmp1.data[k] = dividend.data[i];
       }
 
-      UBigInteger<SIZE> tmp2 = (uint8_t)q * divisor;
+      UBigInteger<SIZE> tmp2 = (uint32_t)q * divisor;
 
       // Test reminder
       if (tmp1 >= tmp2) {
@@ -369,20 +369,20 @@ struct UBigInteger {
             typename = typename std::enable_if<
                 std::is_integral<T>::value && std::is_unsigned<T>::value>::type>
   void init(T value) {
-    size_t val_size = sizeof(value);
+    size_t val_size = sizeof(value) / 4;
     THROW_ARITH_ERROR(ARRAY_LEN >= val_size, "data has a small size");
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (i < val_size) {
-        data[i] = (uint8_t)(value >> 8 * i);
+        data[i] = (uint32_t)(value >> 32 * i);
       } else {
         data[i] = 0;
       }
     }
   }
 
-  static const uint8_t BASE = 0xff;
-  static constexpr uint64_t ARRAY_LEN = SIZE / 8;
-  std::array<uint8_t, ARRAY_LEN> data{};
+  static const uint32_t BASE = 0xffffffff;
+  static constexpr uint64_t ARRAY_LEN = SIZE / 32;
+  std::array<uint32_t, ARRAY_LEN> data{};
 };
 
 extern template struct UBigInteger<32>;
