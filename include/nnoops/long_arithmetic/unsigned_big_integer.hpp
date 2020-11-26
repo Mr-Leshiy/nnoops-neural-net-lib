@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 
+#include <algorithm>
 #include <array>
+#include <limits>
 #include <string>
 #include <type_traits>
 
@@ -15,7 +17,11 @@ namespace nnoops {
 // Representation on the unsigned integer with the arbitrary size
 // SIZE should be multiple of 32 (1 byte)
 template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE != 0 && SIZE % 32 == 0>::type>
+          typename base_t = uint32_t,
+          typename = typename std::enable_if<
+              (SIZE != 0 && SIZE % (sizeof(base_t) * 8) == 0) &&
+              (std::is_integral<base_t>::value &&
+               std::is_unsigned<base_t>::value)>::type>
 struct UBigInteger {
   ~UBigInteger() = default;
 
@@ -25,23 +31,37 @@ struct UBigInteger {
     }
   };
 
-  UBigInteger(const UBigInteger<SIZE>& val) : data(val.data) {}
+  UBigInteger(const UBigInteger<SIZE, base_t>& val) : data(val.data) {}
 
-  UBigInteger(UBigInteger<SIZE>&& val) : data(std::move(val.data)) {}
+  UBigInteger(UBigInteger<SIZE, base_t>&& val) : data(std::move(val.data)) {}
 
-  UBigInteger<SIZE>& operator=(const UBigInteger<SIZE>& val) {
+  UBigInteger<SIZE, base_t>& operator=(const UBigInteger<SIZE, base_t>& val) {
     this->data = val.data;
     return *this;
   }
 
-  UBigInteger<SIZE>& operator=(UBigInteger<SIZE>&& val) {
+  UBigInteger<SIZE, base_t>& operator=(UBigInteger<SIZE, base_t>&& val) {
     this->data = std::move(val.data);
     return *this;
   }
 
+  UBigInteger(uint8_t val) { init(val); }
+
+  UBigInteger(uint16_t val) { init(val); }
+
   UBigInteger(uint32_t val) { init(val); }
 
   UBigInteger(uint64_t val) { init(val); }
+
+  UBigInteger(int8_t val) {
+    THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive");
+    init((uint8_t)val);
+  }
+
+  UBigInteger(int16_t val) {
+    THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive");
+    init((uint16_t)val);
+  }
 
   UBigInteger(int32_t val) {
     THROW_ARITH_ERROR(val >= 0, "negative value, value should be positive");
@@ -53,7 +73,7 @@ struct UBigInteger {
     init((uint64_t)val);
   }
 
-  UBigInteger<SIZE>& operator++() {
+  UBigInteger<SIZE, base_t>& operator++() {
     // prefix operator
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (++data[i] != 0) {
@@ -68,14 +88,14 @@ struct UBigInteger {
     return *this;
   }
 
-  UBigInteger<SIZE> operator++(int) {
+  UBigInteger<SIZE, base_t> operator++(int) {
     // postfix operator
-    UBigInteger<SIZE> ret = *this;
+    UBigInteger<SIZE, base_t> ret = *this;
     ++(*this);
     return ret;
   }
 
-  UBigInteger<SIZE>& operator--() {
+  UBigInteger<SIZE, base_t>& operator--() {
     // prefix operator
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (--data[i] != BASE) {
@@ -90,108 +110,108 @@ struct UBigInteger {
     return *this;
   }
 
-  UBigInteger<SIZE> operator--(int) {
-    UBigInteger<SIZE> ret = *this;
+  UBigInteger<SIZE, base_t> operator--(int) {
+    UBigInteger<SIZE, base_t> ret = *this;
     --(*this);
     return ret;
   }
 
-  UBigInteger<SIZE>& operator+=(const UBigInteger<SIZE>& b) {
+  UBigInteger<SIZE, base_t>& operator+=(const UBigInteger<SIZE, base_t>& b) {
     classical_addition(*this, b, *this);
     return *this;
   }
 
-  UBigInteger<SIZE>& operator-=(const UBigInteger<SIZE>& b) {
+  UBigInteger<SIZE, base_t>& operator-=(const UBigInteger<SIZE, base_t>& b) {
     classical_substraction(*this, b, *this);
     return *this;
   }
 
-  UBigInteger<SIZE>& operator*=(const UBigInteger<SIZE>& b) {
-    UBigInteger<SIZE> res;
+  UBigInteger<SIZE, base_t>& operator*=(const UBigInteger<SIZE, base_t>& b) {
+    UBigInteger<SIZE, base_t> res;
     classical_multiplication(*this, b, res);
     *this = std::move(res);
     return *this;
   }
 
-  UBigInteger<SIZE>& operator/=(const UBigInteger<SIZE>& b) {
+  UBigInteger<SIZE, base_t>& operator/=(const UBigInteger<SIZE, base_t>& b) {
     classical_division(*this, b, *this);
     return *this;
   }
 
-  UBigInteger<SIZE>& operator%=(const UBigInteger<SIZE>& b) {
-    UBigInteger<SIZE> q;
+  UBigInteger<SIZE, base_t>& operator%=(const UBigInteger<SIZE, base_t>& b) {
+    UBigInteger<SIZE, base_t> q;
     classical_division(*this, b, q, this);
     return *this;
   }
 
-  friend inline UBigInteger<SIZE> operator+(const UBigInteger<SIZE>& a,
-                                            const UBigInteger<SIZE>& b) {
-    UBigInteger<SIZE> res;
+  friend inline UBigInteger<SIZE, base_t> operator+(
+      const UBigInteger<SIZE, base_t>& a, const UBigInteger<SIZE, base_t>& b) {
+    UBigInteger<SIZE, base_t> res;
     classical_addition(a, b, res);
     return res;
   }
 
-  friend inline UBigInteger<SIZE> operator-(const UBigInteger<SIZE>& a,
-                                            const UBigInteger<SIZE>& b) {
-    UBigInteger<SIZE> res;
+  friend inline UBigInteger<SIZE, base_t> operator-(
+      const UBigInteger<SIZE, base_t>& a, const UBigInteger<SIZE, base_t>& b) {
+    UBigInteger<SIZE, base_t> res;
     classical_substraction(a, b, res);
     return res;
   }
 
-  friend inline UBigInteger<SIZE> operator*(const UBigInteger<SIZE>& a,
-                                            const UBigInteger<SIZE>& b) {
-    UBigInteger<SIZE> res;
+  friend inline UBigInteger<SIZE, base_t> operator*(
+      const UBigInteger<SIZE, base_t>& a, const UBigInteger<SIZE, base_t>& b) {
+    UBigInteger<SIZE, base_t> res;
     classical_multiplication(a, b, res);
     return res;
   }
 
-  friend inline UBigInteger<SIZE> operator/(const UBigInteger<SIZE>& a,
-                                            const UBigInteger<SIZE>& b) {
-    UBigInteger<SIZE> q;
+  friend inline UBigInteger<SIZE, base_t> operator/(
+      const UBigInteger<SIZE, base_t>& a, const UBigInteger<SIZE, base_t>& b) {
+    UBigInteger<SIZE, base_t> q;
     classical_division(a, b, q);
     return q;
   }
 
-  friend inline UBigInteger<SIZE> operator%(const UBigInteger<SIZE>& a,
-                                            UBigInteger<SIZE>& b) {
-    UBigInteger<SIZE> q;
-    UBigInteger<SIZE> r;
+  friend inline UBigInteger<SIZE, base_t> operator%(
+      const UBigInteger<SIZE, base_t>& a, UBigInteger<SIZE, base_t>& b) {
+    UBigInteger<SIZE, base_t> q;
+    UBigInteger<SIZE, base_t> r;
     classical_division(a, b, q, &r);
     return r;
   }
 
-  bool operator==(const UBigInteger<SIZE>& val) const {
+  bool operator==(const UBigInteger<SIZE, base_t>& val) const {
     return this->data == val.data;
   }
 
-  bool operator!=(const UBigInteger<SIZE>& val) const {
+  bool operator!=(const UBigInteger<SIZE, base_t>& val) const {
     return !(*this == val);
   }
 
-  friend bool operator>(const UBigInteger<SIZE>& a,
-                        const UBigInteger<SIZE>& b) {
+  friend bool operator>(const UBigInteger<SIZE, base_t>& a,
+                        const UBigInteger<SIZE, base_t>& b) {
     return a.compareTo(b) > 0;
   }
 
-  friend bool operator<(const UBigInteger<SIZE>& a,
-                        const UBigInteger<SIZE>& b) {
+  friend bool operator<(const UBigInteger<SIZE, base_t>& a,
+                        const UBigInteger<SIZE, base_t>& b) {
     return a.compareTo(b) < 0;
   }
 
-  friend bool operator>=(const UBigInteger<SIZE>& a,
-                         const UBigInteger<SIZE>& b) {
+  friend bool operator>=(const UBigInteger<SIZE, base_t>& a,
+                         const UBigInteger<SIZE, base_t>& b) {
     return a.compareTo(b) >= 0;
   }
 
-  friend bool operator<=(const UBigInteger<SIZE>& a,
-                         const UBigInteger<SIZE>& b) {
+  friend bool operator<=(const UBigInteger<SIZE, base_t>& a,
+                         const UBigInteger<SIZE, base_t>& b) {
     return a.compareTo(b) <= 0;
   }
 
   // return -1 if this less than b,
   // return 1 if this bigger than b
   // return 0 if this equal to b
-  int compareTo(const UBigInteger<SIZE>& b) const {
+  int compareTo(const UBigInteger<SIZE, base_t>& b) const {
     for (uint64_t i = ARRAY_LEN - 1;; --i) {
       if (this->data[i] < b.data[i]) {
         return -1;
@@ -209,14 +229,14 @@ struct UBigInteger {
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
   // 'b' arguments
-  friend void classical_addition(const UBigInteger<SIZE>& a,
-                                 const UBigInteger<SIZE>& b,
-                                 UBigInteger<SIZE>& result) {
+  friend void classical_addition(const UBigInteger<SIZE, base_t>& a,
+                                 const UBigInteger<SIZE, base_t>& b,
+                                 UBigInteger<SIZE, base_t>& result) {
     uint64_t carry = 0;
-    for (size_t i = 0; i < UBigInteger<SIZE>::ARRAY_LEN; ++i) {
+    for (size_t i = 0; i < ARRAY_LEN; ++i) {
       uint64_t n = carry + a.data[i] + b.data[i];
       result.data[i] = n & BASE;  // same to the n % (BASE + 1)
-      carry = n >> 32;            // same to the [n / (BASE + 1)]
+      carry = n >> BASE_BITS;     // same to the [n / (BASE + 1)]
     }
     THROW_ARITH_ERROR(
         carry == 0,
@@ -226,9 +246,9 @@ struct UBigInteger {
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
   // 'b' arguments
-  friend void classical_substraction(const UBigInteger<SIZE>& a,
-                                     const UBigInteger<SIZE>& b,
-                                     UBigInteger<SIZE>& result) {
+  friend void classical_substraction(const UBigInteger<SIZE, base_t>& a,
+                                     const UBigInteger<SIZE, base_t>& b,
+                                     UBigInteger<SIZE, base_t>& result) {
     int64_t carry = 0;
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       int64_t n = carry + a.data[i] - b.data[i];
@@ -243,16 +263,16 @@ struct UBigInteger {
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
   // or 'b' arguments
-  friend void classical_multiplication(const UBigInteger<SIZE>& a,
-                                       const UBigInteger<SIZE>& b,
-                                       UBigInteger<SIZE>& result) {
+  friend void classical_multiplication(const UBigInteger<SIZE, base_t>& a,
+                                       const UBigInteger<SIZE, base_t>& b,
+                                       UBigInteger<SIZE, base_t>& result) {
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       uint64_t carry = 0;
       for (size_t j = 0; i + j < ARRAY_LEN; ++j) {
         uint64_t n =
             carry + result.data[i + j] + (uint64_t)a.data[i] * b.data[j];
         result.data[i + j] = n & BASE;
-        carry = n >> 32;
+        carry = n >> BASE_BITS;
       }
       THROW_ARITH_ERROR(
           carry == 0,
@@ -261,14 +281,15 @@ struct UBigInteger {
     }
   }
 
-  friend void classical_division(UBigInteger<SIZE> dividend,
-                                 UBigInteger<SIZE> divisor,
-                                 UBigInteger<SIZE>& quotient,
-                                 UBigInteger<SIZE>* remainder = nullptr) {
-    THROW_ARITH_ERROR(divisor != UBigInteger<SIZE>::zero_value(),
+  friend void classical_division(
+      UBigInteger<SIZE, base_t> dividend,
+      UBigInteger<SIZE, base_t> divisor,
+      UBigInteger<SIZE, base_t>& quotient,
+      UBigInteger<SIZE, base_t>* remainder = nullptr) {
+    THROW_ARITH_ERROR(divisor != (UBigInteger<SIZE, base_t>::zero_value()),
                       "devide by zero");
 
-    quotient = UBigInteger<SIZE>::zero_value();
+    quotient = UBigInteger<SIZE, base_t>::zero_value();
 
     if (divisor > dividend) {
       if (remainder != nullptr) {
@@ -317,12 +338,12 @@ struct UBigInteger {
       }
 
       // Multiply and substract
-      UBigInteger<SIZE> tmp1;
+      UBigInteger<SIZE, base_t> tmp1;
       for (size_t i = j, k = 0; i <= j + n + 1 && i < ARRAY_LEN; ++i, ++k) {
         tmp1.data[k] = dividend.data[i];
       }
 
-      UBigInteger<SIZE> tmp2 = (uint32_t)q * divisor;
+      UBigInteger<SIZE, base_t> tmp2 = (base_t)q * divisor;
 
       // Test reminder
       if (tmp1 >= tmp2) {
@@ -348,19 +369,23 @@ struct UBigInteger {
     }
   }
 
-  static UBigInteger<SIZE> min_value() { return UBigInteger<SIZE>(); }
+  static UBigInteger<SIZE, base_t> min_value() {
+    return UBigInteger<SIZE, base_t>();
+  }
 
-  static UBigInteger<SIZE> max_value() {
-    UBigInteger<SIZE> ret;
+  static UBigInteger<SIZE, base_t> max_value() {
+    UBigInteger<SIZE, base_t> ret;
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       ret.data[i] = BASE;
     }
     return ret;
   }
 
-  static UBigInteger<SIZE> zero_value() { return UBigInteger<SIZE>(); }
+  static UBigInteger<SIZE, base_t> zero_value() {
+    return UBigInteger<SIZE, base_t>();
+  }
 
-  friend std::string toPrettyString(const UBigInteger<SIZE>& val) {
+  friend std::string toPrettyString(const UBigInteger<SIZE, base_t>& val) {
     return removeZeros(HexStr(val.data.rbegin(), val.data.rend()));
   }
 
@@ -369,22 +394,27 @@ struct UBigInteger {
             typename = typename std::enable_if<
                 std::is_integral<T>::value && std::is_unsigned<T>::value>::type>
   void init(T value) {
-    size_t val_size = sizeof(value) / 4;
+    static constexpr const size_t val_size =
+        sizeof(T) * 8 / BASE_BITS > 0 ? sizeof(T) * 8 / BASE_BITS : 1;
+
     THROW_ARITH_ERROR(ARRAY_LEN >= val_size, "data has a small size");
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (i < val_size) {
-        data[i] = (uint32_t)(value >> 32 * i);
+        data[i] = (base_t)(value >> BASE_BITS * i);
       } else {
         data[i] = 0;
       }
     }
   }
 
-  static const uint32_t BASE = 0xffffffff;
-  static constexpr uint64_t ARRAY_LEN = SIZE / 32;
-  std::array<uint32_t, ARRAY_LEN> data{};
+  static constexpr const base_t BASE = std::numeric_limits<base_t>::max();
+  static constexpr const uint8_t BASE_BITS = sizeof(base_t) * 8;
+  static constexpr const uint64_t ARRAY_LEN = SIZE / BASE_BITS;
+  std::array<base_t, ARRAY_LEN> data{};
 };
 
+extern template struct UBigInteger<8, uint8_t>;
+extern template struct UBigInteger<16, uint8_t>;
 extern template struct UBigInteger<32>;
 extern template struct UBigInteger<64>;
 extern template struct UBigInteger<128>;

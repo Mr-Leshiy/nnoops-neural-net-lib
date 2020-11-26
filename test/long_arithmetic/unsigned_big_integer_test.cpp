@@ -258,8 +258,8 @@ INSTANTIATE_TYPED_TEST_SUITE_P(UBigIntegerTestSuite,
                                UBigIntegerTestCases);
 
 TEST(UBigInteger, small_comparison_test) {
-  UBigInteger<32> val1(11);
-  UBigInteger<32> val2(123);
+  UBigInteger<8, uint8_t> val1((uint8_t)11);
+  UBigInteger<8, uint8_t> val2((uint8_t)123);
 
   EXPECT_TRUE(val1 == val1);
   EXPECT_FALSE(val1 == val2);
@@ -288,53 +288,53 @@ TEST(UBigInteger, small_comparison_test) {
 }
 
 TEST(UBigInteger, small_addition_substraction_test) {
-  UBigInteger<32> val1(123);
-  UBigInteger<32> val2(84);
+  UBigInteger<8, uint8_t> val1((uint8_t)123);
+  UBigInteger<8, uint8_t> val2((uint8_t)84);
 
-  EXPECT_EQ(val1 + val2, UBigInteger<32>(207));
-  EXPECT_EQ(val2 + val1, UBigInteger<32>(207));
+  EXPECT_EQ(val1 + val2, (UBigInteger<8, uint8_t>((uint8_t)207)));
+  EXPECT_EQ(val2 + val1, (UBigInteger<8, uint8_t>((uint8_t)207)));
 
-  EXPECT_EQ(val1 - val2, UBigInteger<32>(39));
+  EXPECT_EQ(val1 - val2, (UBigInteger<8, uint8_t>((uint8_t)39)));
 
-  EXPECT_EQ(val1++, UBigInteger<32>(123));
-  EXPECT_EQ(val1, UBigInteger<32>(124));
+  EXPECT_EQ(val1++, (UBigInteger<8, uint8_t>((uint8_t)123)));
+  EXPECT_EQ(val1, (UBigInteger<8, uint8_t>((uint8_t)124)));
 
-  EXPECT_EQ(++val1, UBigInteger<32>(125));
-  EXPECT_EQ(val1, UBigInteger<32>(125));
+  EXPECT_EQ(++val1, (UBigInteger<8, uint8_t>((uint8_t)125)));
+  EXPECT_EQ(val1, (UBigInteger<8, uint8_t>((uint8_t)125)));
 
-  EXPECT_EQ(val1--, UBigInteger<32>(125));
-  EXPECT_EQ(val1, UBigInteger<32>(124));
+  EXPECT_EQ(val1--, (UBigInteger<8, uint8_t>((uint8_t)125)));
+  EXPECT_EQ(val1, (UBigInteger<8, uint8_t>((uint8_t)124)));
 
-  EXPECT_EQ(--val1, UBigInteger<32>(123));
-  EXPECT_EQ(val1, UBigInteger<32>(123));
+  EXPECT_EQ(--val1, (UBigInteger<8, uint8_t>((uint8_t)123)));
+  EXPECT_EQ(val1, (UBigInteger<8, uint8_t>((uint8_t)123)));
 }
 
 TEST(UBigInteger, small_multiplication_test) {
-  UBigInteger<32> val1(2);
-  UBigInteger<32> val2(124);
+  UBigInteger<8, uint8_t> val1((uint8_t)2);
+  UBigInteger<8, uint8_t> val2((uint8_t)124);
 
-  EXPECT_EQ(val1 * val2, UBigInteger<32>(248));
-  EXPECT_EQ(val2 * val1, UBigInteger<32>(248));
+  EXPECT_EQ(val1 * val2, (UBigInteger<8, uint8_t>((uint8_t)248)));
+  EXPECT_EQ(val2 * val1, (UBigInteger<8, uint8_t>((uint8_t)248)));
 }
 
 TEST(UBigInteger, small_division_test) {
-  UBigInteger<32> val1(123);
-  UBigInteger<32> val2(15);
+  UBigInteger<8, uint8_t> val1((uint8_t)123);
+  UBigInteger<8, uint8_t> val2((uint8_t)15);
 
-  EXPECT_EQ(val1 / val2, UBigInteger<32>(8));
-  EXPECT_EQ(val2 / val1, UBigInteger<32>(0));
-  EXPECT_EQ(val1 / val1, UBigInteger<32>(1));
-  EXPECT_EQ(val2 / val2, UBigInteger<32>(1));
+  EXPECT_EQ(val1 / val2, (UBigInteger<8, uint8_t>((uint8_t)8)));
+  EXPECT_EQ(val2 / val1, (UBigInteger<8, uint8_t>((uint8_t)0)));
+  EXPECT_EQ(val1 / val1, (UBigInteger<8, uint8_t>((uint8_t)1)));
+  EXPECT_EQ(val2 / val2, (UBigInteger<8, uint8_t>((uint8_t)1)));
 }
 
 TEST(UBigInteger, small_division_test2) {
-  UBigInteger<32> val1(123);
-  UBigInteger<32> val2(15);
+  UBigInteger<8, uint8_t> val1((uint8_t)123);
+  UBigInteger<8, uint8_t> val2((uint8_t)15);
 
-  EXPECT_EQ(val1 % val2, UBigInteger<32>(3));
-  EXPECT_EQ(val2 % val1, UBigInteger<32>(15));
-  EXPECT_EQ(val1 % val1, UBigInteger<32>(0));
-  EXPECT_EQ(val2 % val2, UBigInteger<32>(0));
+  EXPECT_EQ(val1 % val2, (UBigInteger<8, uint8_t>((uint8_t)3)));
+  EXPECT_EQ(val2 % val1, (UBigInteger<8, uint8_t>((uint8_t)15)));
+  EXPECT_EQ(val1 % val1, (UBigInteger<8, uint8_t>((uint8_t)0)));
+  EXPECT_EQ(val2 % val2, (UBigInteger<8, uint8_t>((uint8_t)0)));
 }
 
 TEST(UBigInteger, toPrettyString_test) {
