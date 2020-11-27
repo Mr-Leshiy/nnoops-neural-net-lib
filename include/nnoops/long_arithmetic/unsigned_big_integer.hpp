@@ -424,8 +424,6 @@ extern template struct UBigInteger<1024, uint8_t>;
 extern template struct UBigInteger<2048, uint8_t>;
 extern template struct UBigInteger<4096, uint8_t>;
 
-extern template struct UBigInteger<8, uint32_t>;
-extern template struct UBigInteger<16, uint32_t>;
 extern template struct UBigInteger<32, uint32_t>;
 extern template struct UBigInteger<64, uint32_t>;
 extern template struct UBigInteger<128, uint32_t>;
