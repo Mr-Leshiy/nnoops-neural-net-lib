@@ -16,12 +16,14 @@ namespace nnoops {
 
 // Representation on the unsigned integer with the arbitrary size
 // SIZE should be multiple of 32 (1 byte)
+// BASE_T - type of the each elemtn of the number. Only can be uint8_t,
+// uint16_t, uint32_t.
 template <uint64_t SIZE = 64,
           typename BASE_T = uint32_t,
           typename = typename std::enable_if<
               (SIZE != 0 && SIZE % (sizeof(BASE_T) * 8) == 0) &&
               (std::is_integral<BASE_T>::value &&
-               std::is_unsigned<BASE_T>::value)>::type>
+               std::is_unsigned<BASE_T>::value && sizeof(BASE_T) <= 4)>::type>
 struct UBigInteger {
   using UBigIntegerT = UBigInteger<SIZE, BASE_T>;
 
@@ -412,6 +414,16 @@ extern template struct UBigInteger<512, uint8_t>;
 extern template struct UBigInteger<1024, uint8_t>;
 extern template struct UBigInteger<2048, uint8_t>;
 extern template struct UBigInteger<4096, uint8_t>;
+
+extern template struct UBigInteger<16, uint16_t>;
+extern template struct UBigInteger<32, uint16_t>;
+extern template struct UBigInteger<64, uint16_t>;
+extern template struct UBigInteger<128, uint16_t>;
+extern template struct UBigInteger<256, uint16_t>;
+extern template struct UBigInteger<512, uint16_t>;
+extern template struct UBigInteger<1024, uint16_t>;
+extern template struct UBigInteger<2048, uint16_t>;
+extern template struct UBigInteger<4096, uint16_t>;
 
 extern template struct UBigInteger<32, uint32_t>;
 extern template struct UBigInteger<64, uint32_t>;

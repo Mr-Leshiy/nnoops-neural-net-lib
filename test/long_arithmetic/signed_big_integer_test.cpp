@@ -4,19 +4,24 @@
 
 using namespace nnoops;
 
-template <uint64_t SIZE>
+template <uint64_t SIZE, typename BASE_T>
 struct BigIntegerTestCase {
   const static uint64_t size = SIZE;
+  using base_t = BASE_T;
 };
 
 template <typename T>
 struct BigIntegerTest : public ::testing::Test {};
 
 TYPED_TEST_SUITE_P(BigIntegerTest);
+
 TYPED_TEST_P(BigIntegerTest, comparison_test) {
   const static uint64_t size = TypeParam::size;
-  BigInteger<size> val1(431);
-  BigInteger<size> val2(25423);
+  using base_t = typename TypeParam::base_t;
+  using BigIntegerT = BigInteger<size, base_t>;
+
+  BigIntegerT val1(431);
+  BigIntegerT val2(25423);
 
   EXPECT_TRUE(val1 == val1);
   EXPECT_FALSE(val1 == val2);
@@ -102,589 +107,603 @@ TYPED_TEST_P(BigIntegerTest, comparison_test) {
 
 TYPED_TEST_P(BigIntegerTest, addition_substraction_test) {
   const static uint64_t size = TypeParam::size;
-  BigInteger<size> val1(66576);
-  BigInteger<size> val2(53648);
+  using base_t = typename TypeParam::base_t;
+  using BigIntegerT = BigInteger<size, base_t>;
+
+  BigIntegerT val1(66576);
+  BigIntegerT val2(53648);
 
   val1 += val2;
 
-  EXPECT_EQ(val1, BigInteger<size>(120224));
+  EXPECT_EQ(val1, BigIntegerT(120224));
 
   val1 -= val2;
 
-  EXPECT_EQ(val1, BigInteger<size>(66576));
+  EXPECT_EQ(val1, BigIntegerT(66576));
 
-  EXPECT_EQ(val1 + val2, BigInteger<size>(120224));
-  EXPECT_EQ(val1 + val2, BigInteger<size>(120224));
+  EXPECT_EQ(val1 + val2, BigIntegerT(120224));
+  EXPECT_EQ(val1 + val2, BigIntegerT(120224));
 
-  EXPECT_EQ(val1 - val2, BigInteger<size>(12928));
-  EXPECT_EQ(val2 - val1, BigInteger<size>(-12928));
+  EXPECT_EQ(val1 - val2, BigIntegerT(12928));
+  EXPECT_EQ(val2 - val1, BigIntegerT(-12928));
 
-  EXPECT_EQ(val1++, BigInteger<size>(66576));
-  EXPECT_EQ(val1, BigInteger<size>(66577));
+  EXPECT_EQ(val1++, BigIntegerT(66576));
+  EXPECT_EQ(val1, BigIntegerT(66577));
 
-  EXPECT_EQ(++val1, BigInteger<size>(66578));
-  EXPECT_EQ(val1, BigInteger<size>(66578));
+  EXPECT_EQ(++val1, BigIntegerT(66578));
+  EXPECT_EQ(val1, BigIntegerT(66578));
 
-  EXPECT_EQ(val1--, BigInteger<size>(66578));
-  EXPECT_EQ(val1, BigInteger<size>(66577));
+  EXPECT_EQ(val1--, BigIntegerT(66578));
+  EXPECT_EQ(val1, BigIntegerT(66577));
 
-  EXPECT_EQ(--val1, BigInteger<size>(66576));
-  EXPECT_EQ(val1, BigInteger<size>(66576));
+  EXPECT_EQ(--val1, BigIntegerT(66576));
+  EXPECT_EQ(val1, BigIntegerT(66576));
 
   val1 = -12928;
 
-  EXPECT_EQ(val1--, BigInteger<size>(-12928));
-  EXPECT_EQ(val1, BigInteger<size>(-12929));
+  EXPECT_EQ(val1--, BigIntegerT(-12928));
+  EXPECT_EQ(val1, BigIntegerT(-12929));
 
-  EXPECT_EQ(--val1, BigInteger<size>(-12930));
-  EXPECT_EQ(val1, BigInteger<size>(-12930));
+  EXPECT_EQ(--val1, BigIntegerT(-12930));
+  EXPECT_EQ(val1, BigIntegerT(-12930));
 
-  EXPECT_EQ(val1++, BigInteger<size>(-12930));
-  EXPECT_EQ(val1, BigInteger<size>(-12929));
+  EXPECT_EQ(val1++, BigIntegerT(-12930));
+  EXPECT_EQ(val1, BigIntegerT(-12929));
 
-  EXPECT_EQ(++val1, BigInteger<size>(-12928));
-  EXPECT_EQ(val1, BigInteger<size>(-12928));
+  EXPECT_EQ(++val1, BigIntegerT(-12928));
+  EXPECT_EQ(val1, BigIntegerT(-12928));
 
   val1 += val1;
 
-  EXPECT_EQ(val1, BigInteger<size>(-25856));
+  EXPECT_EQ(val1, BigIntegerT(-25856));
 
-  val1 -= BigInteger<size>(-12928);
+  val1 -= BigIntegerT(-12928);
 
-  EXPECT_EQ(val1, BigInteger<size>(-12928));
+  EXPECT_EQ(val1, BigIntegerT(-12928));
 
-  EXPECT_EQ(val1 + val1, BigInteger<size>(-25856));
-  EXPECT_EQ(val1 - val1, BigInteger<size>(0));
+  EXPECT_EQ(val1 + val1, BigIntegerT(-25856));
+  EXPECT_EQ(val1 - val1, BigIntegerT(0));
 
   val2 = 12928 * 2;
 
-  EXPECT_EQ(val1 - val2, BigInteger<size>(-38784));
-  EXPECT_EQ(val1 + val2, BigInteger<size>(12928));
+  EXPECT_EQ(val1 - val2, BigIntegerT(-38784));
+  EXPECT_EQ(val1 + val2, BigIntegerT(12928));
 }
 
 TYPED_TEST_P(BigIntegerTest, multiplication_test) {
   const static uint64_t size = TypeParam::size;
-  BigInteger<size> val1 = 1234;
-  BigInteger<size> val2 = -4321;
+  using base_t = typename TypeParam::base_t;
+  using BigIntegerT = BigInteger<size, base_t>;
+
+  BigIntegerT val1 = 1234;
+  BigIntegerT val2 = -4321;
 
   val1 *= val2;
 
-  EXPECT_EQ(val1, BigInteger<size>(-5332114));
+  EXPECT_EQ(val1, BigIntegerT(-5332114));
 
   val1 = 1234;
 
-  EXPECT_EQ(val1 * val2, BigInteger<size>(-5332114));
-  EXPECT_EQ(val2 * val1, BigInteger<size>(-5332114));
+  EXPECT_EQ(val1 * val2, BigIntegerT(-5332114));
+  EXPECT_EQ(val2 * val1, BigIntegerT(-5332114));
 
   val2 *= -1;
   val1 = 1234;
 
-  EXPECT_EQ(val2, BigInteger<size>(4321));
+  EXPECT_EQ(val2, BigIntegerT(4321));
 
   val1 *= val2;
 
-  EXPECT_EQ(val1, BigInteger<size>(5332114));
+  EXPECT_EQ(val1, BigIntegerT(5332114));
 
   val1 = 1234;
 
-  EXPECT_EQ(val1 * val2, BigInteger<size>(5332114));
-  EXPECT_EQ(val2 * val1, BigInteger<size>(5332114));
+  EXPECT_EQ(val1 * val2, BigIntegerT(5332114));
+  EXPECT_EQ(val2 * val1, BigIntegerT(5332114));
 
-  BigInteger<size> val3 = 125;
-  BigInteger<size> val4 = 2;
+  BigIntegerT val3 = 125;
+  BigIntegerT val4 = 2;
 
-  EXPECT_EQ(val3 * val4, BigInteger<size>(250));
-  EXPECT_EQ(val4 * val3, BigInteger<size>(250));
+  EXPECT_EQ(val3 * val4, BigIntegerT(250));
+  EXPECT_EQ(val4 * val3, BigIntegerT(250));
 
   val3 = 125;
   val4 = -2;
 
-  EXPECT_EQ(val3 * val4, BigInteger<size>(-250));
-  EXPECT_EQ(val4 * val3, BigInteger<size>(-250));
+  EXPECT_EQ(val3 * val4, BigIntegerT(-250));
+  EXPECT_EQ(val4 * val3, BigIntegerT(-250));
 
   val3 = -125;
   val4 = 2;
 
-  EXPECT_EQ(val3 * val4, BigInteger<size>(-250));
-  EXPECT_EQ(val4 * val3, BigInteger<size>(-250));
+  EXPECT_EQ(val3 * val4, BigIntegerT(-250));
+  EXPECT_EQ(val4 * val3, BigIntegerT(-250));
 
   val3 = -125;
   val4 = -2;
 
-  EXPECT_EQ(val3 * val4, BigInteger<size>(250));
-  EXPECT_EQ(val4 * val3, BigInteger<size>(250));
+  EXPECT_EQ(val3 * val4, BigIntegerT(250));
+  EXPECT_EQ(val4 * val3, BigIntegerT(250));
 }
 
 TYPED_TEST_P(BigIntegerTest, division_test) {
   const static uint64_t size = TypeParam::size;
-  BigInteger<size> val1 = 41351;
-  BigInteger<size> val2 = 5423;
+  using base_t = typename TypeParam::base_t;
+  using BigIntegerT = BigInteger<size, base_t>;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(7));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  BigIntegerT val1 = 41351;
+  BigIntegerT val2 = 5423;
+
+  EXPECT_EQ(val1 / val2, BigIntegerT(7));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 357;
   val2 = 2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(178));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(178));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 13452;
   val2 = 2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(6726));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(6726));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 12412511;
   val2 = 2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(6206255));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(6206255));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 1235984556;
   val2 = 411;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(3007261));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(3007261));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 325685126;
   val2 = 13699;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(23774));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(23774));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 999991;
   val2 = 999990;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(1));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 41351;
   val2 = -5423;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-7));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-7));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 357;
   val2 = -2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-178));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-178));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 13452;
   val2 = -2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-6726));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-6726));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 12412511;
   val2 = -2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-6206255));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-6206255));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 1235984556;
   val2 = -411;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-3007261));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-3007261));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 325685126;
   val2 = -13699;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-23774));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-23774));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = 999991;
   val2 = -999990;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-1));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-1));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -41351;
   val2 = 5423;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-7));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-7));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -357;
   val2 = 2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-178));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-178));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -13452;
   val2 = 2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-6726));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-6726));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -12412511;
   val2 = 2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-6206255));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-6206255));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -1235984556;
   val2 = 411;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-3007261));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-3007261));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -325685126;
   val2 = 13699;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-23774));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-23774));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -999991;
   val2 = 999990;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(-1));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(-1));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -41351;
   val2 = -5423;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(7));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(7));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -357;
   val2 = -2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(178));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(178));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -13452;
   val2 = -2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(6726));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(6726));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -12412511;
   val2 = -2;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(6206255));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(6206255));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -1235984556;
   val2 = -411;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(3007261));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(3007261));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -325685126;
   val2 = -13699;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(23774));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(23774));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 
   val1 = -999991;
   val2 = -999990;
 
-  EXPECT_EQ(val1 / val2, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val1, BigInteger<size>(0));
-  EXPECT_EQ(val1 / val1, BigInteger<size>(1));
-  EXPECT_EQ(val2 / val2, BigInteger<size>(1));
+  EXPECT_EQ(val1 / val2, BigIntegerT(1));
+  EXPECT_EQ(val2 / val1, BigIntegerT(0));
+  EXPECT_EQ(val1 / val1, BigIntegerT(1));
+  EXPECT_EQ(val2 / val2, BigIntegerT(1));
 }
 
 TYPED_TEST_P(BigIntegerTest, division_test2) {
   const static uint64_t size = TypeParam::size;
-  BigInteger<size> val1 = 41351;
-  BigInteger<size> val2 = 5423;
+  using base_t = typename TypeParam::base_t;
+  using BigIntegerT = BigInteger<size, base_t>;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(3390));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(5423));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  BigIntegerT val1 = 41351;
+  BigIntegerT val2 = 5423;
+
+  EXPECT_EQ(val1 % val2, BigIntegerT(3390));
+  EXPECT_EQ(val2 % val1, BigIntegerT(5423));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 357;
   val2 = 2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 13452;
   val2 = 2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(0));
+  EXPECT_EQ(val2 % val1, BigIntegerT(2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 12412511;
   val2 = 2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 1235984556;
   val2 = 411;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(285));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(411));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(285));
+  EXPECT_EQ(val2 % val1, BigIntegerT(411));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 325685126;
   val2 = 13699;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(5100));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(13699));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(5100));
+  EXPECT_EQ(val2 % val1, BigIntegerT(13699));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 999991;
   val2 = 999990;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(999990));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(999990));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 41351;
   val2 = -5423;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(3390));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-5423));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(3390));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-5423));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 357;
   val2 = -2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 13452;
   val2 = -2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(0));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 12412511;
   val2 = -2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 1235984556;
   val2 = -411;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(285));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-411));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(285));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-411));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 325685126;
   val2 = -13699;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(5100));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-13699));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(5100));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-13699));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = 999991;
   val2 = -999990;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-999990));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-999990));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -41351;
   val2 = 5423;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-3390));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(5423));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-3390));
+  EXPECT_EQ(val2 % val1, BigIntegerT(5423));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -357;
   val2 = 2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -13452;
   val2 = 2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(0));
+  EXPECT_EQ(val2 % val1, BigIntegerT(2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -12412511;
   val2 = 2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -1235984556;
   val2 = 411;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-285));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(411));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-285));
+  EXPECT_EQ(val2 % val1, BigIntegerT(411));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -325685126;
   val2 = 13699;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-5100));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(13699));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-5100));
+  EXPECT_EQ(val2 % val1, BigIntegerT(13699));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -999991;
   val2 = 999990;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(999990));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(999990));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -41351;
   val2 = -5423;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-3390));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-5423));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-3390));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-5423));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -357;
   val2 = -2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -13452;
   val2 = -2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(0));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -12412511;
   val2 = -2;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-2));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-2));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -1235984556;
   val2 = -411;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-285));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-411));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-285));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-411));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -325685126;
   val2 = -13699;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-5100));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-13699));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-5100));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-13699));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 
   val1 = -999991;
   val2 = -999990;
 
-  EXPECT_EQ(val1 % val2, BigInteger<size>(-1));
-  EXPECT_EQ(val2 % val1, BigInteger<size>(-999990));
-  EXPECT_EQ(val1 % val1, BigInteger<size>(0));
-  EXPECT_EQ(val2 % val2, BigInteger<size>(0));
+  EXPECT_EQ(val1 % val2, BigIntegerT(-1));
+  EXPECT_EQ(val2 % val1, BigIntegerT(-999990));
+  EXPECT_EQ(val1 % val1, BigIntegerT(0));
+  EXPECT_EQ(val2 % val2, BigIntegerT(0));
 }
 
 TYPED_TEST_P(BigIntegerTest, exception_handling_test) {
   const static uint64_t size = TypeParam::size;
+  using base_t = typename TypeParam::base_t;
+  using BigIntegerT = BigInteger<size, base_t>;
 
-  EXPECT_THROW(BigInteger<size>::max_value() + 1, arith_error);
-  EXPECT_THROW(1 + BigInteger<size>::max_value(), arith_error);
-  EXPECT_THROW(++BigInteger<size>::max_value(), arith_error);
-  EXPECT_THROW(BigInteger<size>::max_value()++, arith_error);
-  EXPECT_THROW(2 * BigInteger<size>::max_value(), arith_error);
-  EXPECT_THROW(BigInteger<size>::max_value() * 2, arith_error);
+  EXPECT_THROW(BigIntegerT::max_value() + 1, arith_error);
+  EXPECT_THROW(1 + BigIntegerT::max_value(), arith_error);
+  EXPECT_THROW(++BigIntegerT::max_value(), arith_error);
+  EXPECT_THROW(BigIntegerT::max_value()++, arith_error);
+  EXPECT_THROW(2 * BigIntegerT::max_value(), arith_error);
+  EXPECT_THROW(BigIntegerT::max_value() * 2, arith_error);
 
-  EXPECT_THROW(BigInteger<size>::min_value() - 1, arith_error);
-  EXPECT_THROW(-(1 - BigInteger<size>::min_value()), arith_error);
-  EXPECT_THROW(--BigInteger<size>::min_value(), arith_error);
-  EXPECT_THROW(BigInteger<size>::min_value()--, arith_error);
-  EXPECT_THROW(2 * BigInteger<size>::min_value(), arith_error);
-  EXPECT_THROW(BigInteger<size>::min_value() * 2, arith_error);
+  EXPECT_THROW(BigIntegerT::min_value() - 1, arith_error);
+  EXPECT_THROW(-(1 - BigIntegerT::min_value()), arith_error);
+  EXPECT_THROW(--BigIntegerT::min_value(), arith_error);
+  EXPECT_THROW(BigIntegerT::min_value()--, arith_error);
+  EXPECT_THROW(2 * BigIntegerT::min_value(), arith_error);
+  EXPECT_THROW(BigIntegerT::min_value() * 2, arith_error);
 }
 
 REGISTER_TYPED_TEST_SUITE_P(BigIntegerTest,
@@ -695,13 +714,27 @@ REGISTER_TYPED_TEST_SUITE_P(BigIntegerTest,
                             division_test2,
                             exception_handling_test);
 
-typedef ::testing::Types<BigIntegerTestCase<64>,
-                         BigIntegerTestCase<128>,
-                         BigIntegerTestCase<256>,
-                         BigIntegerTestCase<512>,
-                         BigIntegerTestCase<1024>,
-                         BigIntegerTestCase<2048>,
-                         BigIntegerTestCase<4096>>
+typedef ::testing::Types<BigIntegerTestCase<64, uint8_t>,
+                         BigIntegerTestCase<128, uint8_t>,
+                         BigIntegerTestCase<256, uint8_t>,
+                         BigIntegerTestCase<512, uint8_t>,
+                         BigIntegerTestCase<1024, uint8_t>,
+                         BigIntegerTestCase<2048, uint8_t>,
+                         BigIntegerTestCase<4096, uint8_t>,
+                         BigIntegerTestCase<64, uint16_t>,
+                         BigIntegerTestCase<128, uint16_t>,
+                         BigIntegerTestCase<256, uint16_t>,
+                         BigIntegerTestCase<512, uint16_t>,
+                         BigIntegerTestCase<1024, uint16_t>,
+                         BigIntegerTestCase<2048, uint16_t>,
+                         BigIntegerTestCase<4096, uint16_t>,
+                         BigIntegerTestCase<64, uint32_t>,
+                         BigIntegerTestCase<128, uint32_t>,
+                         BigIntegerTestCase<256, uint32_t>,
+                         BigIntegerTestCase<512, uint32_t>,
+                         BigIntegerTestCase<1024, uint32_t>,
+                         BigIntegerTestCase<2048, uint32_t>,
+                         BigIntegerTestCase<4096, uint32_t>>
     BigIntegerTestCases;
 
 INSTANTIATE_TYPED_TEST_SUITE_P(BigIntegerTestSuite,
