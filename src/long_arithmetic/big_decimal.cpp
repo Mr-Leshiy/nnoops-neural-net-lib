@@ -6,8 +6,6 @@
 
 namespace nnoops {
 
-template struct BigDecimal<8>;
-template struct BigDecimal<16>;
 template struct BigDecimal<32>;
 template struct BigDecimal<64>;
 template struct BigDecimal<128>;

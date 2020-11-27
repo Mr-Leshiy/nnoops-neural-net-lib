@@ -1,0 +1,6 @@
+Benchmark                            Time             CPU   Iterations
+----------------------------------------------------------------------
+BM_classical_addition              106 ns          106 ns      6684864
+BM_classical_substraction          116 ns          116 ns      6172520
+BM_classical_multiplication        484 ns          482 ns      1508300
+BM_classical_division             2459 ns         2454 ns       283003

@@ -719,24 +719,11 @@ TEST(BigInteger, toPrettyString_test) {
 }
 
 TEST(BigInteger, basic_values_test) {
-  BigInteger<8> val1 = BigInteger<8>::max_value();
-  EXPECT_EQ(toPrettyString(val1), "ff");
-  val1 = BigInteger<8>::zero_value();
-  EXPECT_EQ(toPrettyString(val1), "0");
-  val1 = BigInteger<8>::min_value();
-  EXPECT_EQ(toPrettyString(val1), "-ff");
+  EXPECT_EQ(toPrettyString(BigInteger<32>::max_value()), "ffffffff");
+  EXPECT_EQ(toPrettyString(BigInteger<32>::zero_value()), "0");
+  EXPECT_EQ(toPrettyString(BigInteger<32>::min_value()), "-ffffffff");
 
-  BigInteger<16> val2 = BigInteger<16>::max_value();
-  EXPECT_EQ(toPrettyString(val2), "ffff");
-  val2 = BigInteger<16>::zero_value();
-  EXPECT_EQ(toPrettyString(val2), "0");
-  val2 = BigInteger<16>::min_value();
-  EXPECT_EQ(toPrettyString(val2), "-ffff");
-
-  BigInteger<32> val3 = BigInteger<32>::max_value();
-  EXPECT_EQ(toPrettyString(val3), "ffffffff");
-  val3 = BigInteger<32>::zero_value();
-  EXPECT_EQ(toPrettyString(val3), "0");
-  val3 = BigInteger<32>::min_value();
-  EXPECT_EQ(toPrettyString(val3), "-ffffffff");
+  EXPECT_EQ(toPrettyString(BigInteger<64>::max_value()), "ffffffffffffffff");
+  EXPECT_EQ(toPrettyString(BigInteger<64>::zero_value()), "0");
+  EXPECT_EQ(toPrettyString(BigInteger<64>::min_value()), "-ffffffffffffffff");
 }
