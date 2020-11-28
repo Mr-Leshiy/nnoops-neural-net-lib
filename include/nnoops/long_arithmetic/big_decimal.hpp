@@ -14,26 +14,28 @@ namespace nnoops {
 // SIZE should be multiple of 8 (1 byte)
 // actual size of the BigDecimal equals to SIZE / 2
 // representation is equal to quotient of a / b
-template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE % 32 == 0 && SIZE != 0>::type>
+template <uint64_t SIZE = 64, typename BASE_T = uint32_t>
 struct BigDecimal {
+  using BigDecimalT = BigDecimal<SIZE, BASE_T>;
+  using BigIntegerT = BigInteger<SIZE, BASE_T>;
+
   ~BigDecimal() = default;
 
   BigDecimal() = default;
 
-  BigDecimal(const BigDecimal& val)
+  BigDecimal(const BigDecimalT& val)
       : exponent(val.exponent), mantissa(val.mantissa) {}
 
-  BigDecimal(BigDecimal&& val)
+  BigDecimal(BigDecimalT&& val)
       : exponent(std::move(val.exponent)), mantissa(std::move(val.mantissa)) {}
 
-  BigDecimal& operator=(const BigDecimal<SIZE>& val) {
+  BigDecimalT& operator=(const BigDecimalT& val) {
     this->exponent = val.exponent;
     this->mantissa = val.mantissa;
     return *this;
   }
 
-  BigDecimal& operator=(BigDecimal<SIZE>&& val) {
+  BigDecimalT& operator=(BigDecimalT&& val) {
     this->exponent = std::move(val.exponent);
     this->mantissa = std::move(val.mantissa);
     return *this;
@@ -41,23 +43,14 @@ struct BigDecimal {
 
   BigDecimal(double val) { (void)val; }
 
-  friend std::string toPrettyString(const BigDecimal<SIZE>& val) {
+  friend std::string toPrettyString(const BigDecimalT& val) {
     return toPrettyString(val.mantissa) + "e" + std::to_string(val.exponent);
   }
 
  private:
   int64_t exponent{};
-  BigInteger<SIZE> mantissa{};
+  BigIntegerT mantissa{};
 };
-
-extern template struct BigDecimal<32>;
-extern template struct BigDecimal<64>;
-extern template struct BigDecimal<128>;
-extern template struct BigDecimal<256>;
-extern template struct BigDecimal<512>;
-extern template struct BigDecimal<1024>;
-extern template struct BigDecimal<2048>;
-extern template struct BigDecimal<4096>;
 
 }  // namespace nnoops
 
