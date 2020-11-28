@@ -208,12 +208,12 @@ struct UBigInteger {
   // return -1 if this less than b,
   // return 1 if this bigger than b
   // return 0 if this equal to b
-  int compareTo(const UBigIntegerT& b) const {
+  int compareTo(const UBigIntegerT& val) const {
     for (uint64_t i = ARRAY_LEN - 1;; --i) {
-      if (this->data[i] < b.data[i]) {
+      if (this->data[i] < val.data[i]) {
         return -1;
       }
-      if (this->data[i] > b.data[i]) {
+      if (this->data[i] > val.data[i]) {
         return 1;
       }
       if (i == 0) {

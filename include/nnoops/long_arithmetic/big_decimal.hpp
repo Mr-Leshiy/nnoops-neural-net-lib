@@ -43,6 +43,42 @@ struct BigDecimal {
 
   BigDecimal(double val) { (void)val; }
 
+  bool operator==(const BigDecimalT& val) const {
+    return this->mantissa == val.mantissa && this->exponent == val.exponent;
+  }
+
+  bool operator!=(const BigDecimalT& val) const { return !(*this == val); }
+
+  friend bool operator>(const BigDecimalT& a, const BigDecimalT& b) {
+    return a.compareTo(b) > 0;
+  }
+
+  friend bool operator<(const BigDecimalT& a, const BigDecimalT& b) {
+    return a.compareTo(b) < 0;
+  }
+
+  friend bool operator>=(const BigDecimalT& a, const BigDecimalT& b) {
+    return a.compareTo(b) >= 0;
+  }
+
+  friend bool operator<=(const BigDecimalT& a, const BigDecimalT& b) {
+    return a.compareTo(b) <= 0;
+  }
+
+  // return -1 if this less than b,
+  // return 1 if this bigger than b
+  // return 0 if this equal to b
+  int compareTo(const BigDecimalT& val) const {
+    if (this->exponent < val.exponent) {
+      return -1;
+    }
+    if (this->exponent > val.exponent) {
+      return 1;
+    }
+
+    return this->mantissa.compareTo(val.mantissa);
+  }
+
   friend std::string toPrettyString(const BigDecimalT& val) {
     return toPrettyString(val.mantissa) + "e" + std::to_string(val.exponent);
   }
