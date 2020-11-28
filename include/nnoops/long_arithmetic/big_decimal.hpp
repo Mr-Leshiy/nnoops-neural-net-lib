@@ -43,6 +43,14 @@ struct BigDecimal {
 
   BigDecimal(double val) { (void)val; }
 
+  BigDecimal(int8_t val) { init(val); }
+
+  BigDecimal(int16_t val) { init(val); }
+
+  BigDecimal(int32_t val) { init(val); }
+
+  BigDecimal(int64_t val) { init(val); }
+
   bool operator==(const BigDecimalT& val) const {
     return this->mantissa == val.mantissa && this->exponent == val.exponent;
   }
@@ -80,7 +88,30 @@ struct BigDecimal {
   }
 
   friend std::string toPrettyString(const BigDecimalT& val) {
-    return toPrettyString(val.mantissa) + "e" + std::to_string(val.exponent);
+    std::string exp_part =
+        removeZeros(HexStr(std::vector<uint64_t>{(uint64_t)val.exponent}));
+    if (val.exponent < 0) {
+      exp_part += "-";
+    }
+    return toPrettyString(val.mantissa) + "*e^(" + exp_part + ")";
+  }
+
+ private:
+  template <
+      typename T,
+      typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  void init(T val) {
+    uint64_t exp = 0;
+    while (val % 10 == 0) {
+      val /= 10;
+      ++exp;
+    }
+    this->mantissa = BigIntegerT(val);
+    while (val != 0) {
+      val /= 10;
+      ++exp;
+    }
+    this->exponent = exp;
   }
 
  private:
