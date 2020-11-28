@@ -386,7 +386,7 @@ struct UBigInteger {
                 std::is_integral<T>::value && std::is_unsigned<T>::value>::type>
   void init(T value) {
     static constexpr const size_t val_size =
-        sizeof(T) * 8 / BASE_BITS > 0 ? sizeof(T) * 8 / BASE_BITS : 1;
+        std::max((size_t)(sizeof(T) * 8 / BASE_BITS), (size_t)1);
 
     THROW_ARITH_ERROR(ARRAY_LEN >= val_size, "data has a small size");
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
