@@ -51,6 +51,56 @@ struct BigDecimal {
 
   BigDecimal(int64_t val) { init(val); }
 
+  BigDecimalT& operator+=(const BigDecimalT& b) {
+    addition(*this, b, *this);
+    return *this;
+  }
+
+  BigDecimalT& operator-=(const BigDecimalT& b) {
+    substraction(*this, b, *this);
+    return *this;
+  }
+
+  BigDecimalT& operator*=(const BigDecimalT& b) {
+    BigDecimalT res;
+    multiplication(*this, b, res);
+    *this = std::move(res);
+    return *this;
+  }
+
+  BigDecimalT& operator/=(const BigDecimalT& b) {
+    division(*this, b, *this);
+    return *this;
+  }
+
+  friend inline BigDecimalT operator+(const BigDecimalT& a,
+                                      const BigDecimalT& b) {
+    BigDecimalT res;
+    addition(a, b, res);
+    return res;
+  }
+
+  friend inline BigDecimalT operator-(const BigDecimalT& a,
+                                      const BigDecimalT& b) {
+    BigDecimalT res;
+    substraction(a, b, res);
+    return res;
+  }
+
+  friend inline BigDecimalT operator*(const BigDecimalT& a,
+                                      const BigDecimalT& b) {
+    BigDecimalT res;
+    multiplication(a, b, res);
+    return res;
+  }
+
+  friend inline BigDecimalT operator/(const BigDecimalT& a,
+                                      const BigDecimalT& b) {
+    BigDecimalT q;
+    division(a, b, q);
+    return q;
+  }
+
   bool operator==(const BigDecimalT& val) const {
     return this->mantissa == val.mantissa && this->exponent == val.exponent;
   }
@@ -71,6 +121,44 @@ struct BigDecimal {
 
   friend bool operator<=(const BigDecimalT& a, const BigDecimalT& b) {
     return a.compareTo(b) <= 0;
+  }
+
+  // reference to the 'result' argument CAN BE THE SAME with the 'a' or
+  // 'b' arguments
+  friend void addition(const BigDecimalT& a,
+                       const BigDecimalT& b,
+                       BigDecimalT& result) {
+    (void)a;
+    (void)b;
+    (void)result;
+  }
+
+  // reference to the 'result' argument CAN BE THE SAME with the 'a' or
+  // 'b' arguments
+  friend void substraction(const BigDecimalT& a,
+                           const BigDecimal& b,
+                           BigDecimalT& result) {
+    (void)a;
+    (void)b;
+    (void)result;
+  }
+
+  // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
+  // or 'b' arguments
+  friend void multiplication(const BigDecimalT& a,
+                             const BigDecimalT& b,
+                             BigDecimalT& result) {
+    (void)a;
+    (void)b;
+    (void)result;
+  }
+
+  friend void division(BigDecimalT dividend,
+                       BigDecimalT divisor,
+                       BigDecimalT& quotient) {
+    (void)dividend;
+    (void)divisor;
+    (void)quotient;
   }
 
   // return -1 if this less than b,
