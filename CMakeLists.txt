@@ -13,7 +13,7 @@ include(CheckCXXCompilerFlag)
 include(cmake/functions.cmake)
 
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(CLANG_TIDY   "Enable clang-tidy checks during compilation" OFF)

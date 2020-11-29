@@ -14,26 +14,28 @@ namespace nnoops {
 // SIZE should be multiple of 8 (1 byte)
 // actual size of the BigDecimal equals to SIZE / 2
 // representation is equal to quotient of a / b
-template <uint64_t SIZE = 64,
-          typename = typename std::enable_if<SIZE % 32 == 0 && SIZE != 0>::type>
+template <uint64_t SIZE = 64, typename BASE_T = uint32_t>
 struct BigDecimal {
+  using BigDecimalT = BigDecimal<SIZE, BASE_T>;
+  using BigIntegerT = BigInteger<SIZE, BASE_T>;
+
   ~BigDecimal() = default;
 
   BigDecimal() = default;
 
-  BigDecimal(const BigDecimal& val)
+  BigDecimal(const BigDecimalT& val)
       : exponent(val.exponent), mantissa(val.mantissa) {}
 
-  BigDecimal(BigDecimal&& val)
+  BigDecimal(BigDecimalT&& val)
       : exponent(std::move(val.exponent)), mantissa(std::move(val.mantissa)) {}
 
-  BigDecimal& operator=(const BigDecimal<SIZE>& val) {
+  BigDecimalT& operator=(const BigDecimalT& val) {
     this->exponent = val.exponent;
     this->mantissa = val.mantissa;
     return *this;
   }
 
-  BigDecimal& operator=(BigDecimal<SIZE>&& val) {
+  BigDecimalT& operator=(BigDecimalT&& val) {
     this->exponent = std::move(val.exponent);
     this->mantissa = std::move(val.mantissa);
     return *this;
@@ -41,23 +43,169 @@ struct BigDecimal {
 
   BigDecimal(double val) { (void)val; }
 
-  friend std::string toPrettyString(const BigDecimal<SIZE>& val) {
-    return toPrettyString(val.mantissa) + "e" + std::to_string(val.exponent);
+  BigDecimal(int8_t val) { init(val); }
+
+  BigDecimal(int16_t val) { init(val); }
+
+  BigDecimal(int32_t val) { init(val); }
+
+  BigDecimal(int64_t val) { init(val); }
+
+  BigDecimalT& operator+=(const BigDecimalT& b) {
+    addition(*this, b, *this);
+    return *this;
+  }
+
+  BigDecimalT& operator-=(const BigDecimalT& b) {
+    substraction(*this, b, *this);
+    return *this;
+  }
+
+  BigDecimalT& operator*=(const BigDecimalT& b) {
+    BigDecimalT res;
+    multiplication(*this, b, res);
+    *this = std::move(res);
+    return *this;
+  }
+
+  BigDecimalT& operator/=(const BigDecimalT& b) {
+    division(*this, b, *this);
+    return *this;
+  }
+
+  friend inline BigDecimalT operator+(const BigDecimalT& a,
+                                      const BigDecimalT& b) {
+    BigDecimalT res;
+    addition(a, b, res);
+    return res;
+  }
+
+  friend inline BigDecimalT operator-(const BigDecimalT& a,
+                                      const BigDecimalT& b) {
+    BigDecimalT res;
+    substraction(a, b, res);
+    return res;
+  }
+
+  friend inline BigDecimalT operator*(const BigDecimalT& a,
+                                      const BigDecimalT& b) {
+    BigDecimalT res;
+    multiplication(a, b, res);
+    return res;
+  }
+
+  friend inline BigDecimalT operator/(const BigDecimalT& a,
+                                      const BigDecimalT& b) {
+    BigDecimalT q;
+    division(a, b, q);
+    return q;
+  }
+
+  bool operator==(const BigDecimalT& val) const {
+    return this->mantissa == val.mantissa && this->exponent == val.exponent;
+  }
+
+  bool operator!=(const BigDecimalT& val) const { return !(*this == val); }
+
+  friend bool operator>(const BigDecimalT& a, const BigDecimalT& b) {
+    return a.compareTo(b) > 0;
+  }
+
+  friend bool operator<(const BigDecimalT& a, const BigDecimalT& b) {
+    return a.compareTo(b) < 0;
+  }
+
+  friend bool operator>=(const BigDecimalT& a, const BigDecimalT& b) {
+    return a.compareTo(b) >= 0;
+  }
+
+  friend bool operator<=(const BigDecimalT& a, const BigDecimalT& b) {
+    return a.compareTo(b) <= 0;
+  }
+
+  // reference to the 'result' argument CAN BE THE SAME with the 'a' or
+  // 'b' arguments
+  friend void addition(const BigDecimalT& a,
+                       const BigDecimalT& b,
+                       BigDecimalT& result) {
+    (void)a;
+    (void)b;
+    (void)result;
+  }
+
+  // reference to the 'result' argument CAN BE THE SAME with the 'a' or
+  // 'b' arguments
+  friend void substraction(const BigDecimalT& a,
+                           const BigDecimal& b,
+                           BigDecimalT& result) {
+    (void)a;
+    (void)b;
+    (void)result;
+  }
+
+  // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
+  // or 'b' arguments
+  friend void multiplication(const BigDecimalT& a,
+                             const BigDecimalT& b,
+                             BigDecimalT& result) {
+    (void)a;
+    (void)b;
+    (void)result;
+  }
+
+  friend void division(BigDecimalT dividend,
+                       BigDecimalT divisor,
+                       BigDecimalT& quotient) {
+    (void)dividend;
+    (void)divisor;
+    (void)quotient;
+  }
+
+  // return -1 if this less than b,
+  // return 1 if this bigger than b
+  // return 0 if this equal to b
+  int compareTo(const BigDecimalT& val) const {
+    if (this->exponent < val.exponent) {
+      return -1;
+    }
+    if (this->exponent > val.exponent) {
+      return 1;
+    }
+
+    return this->mantissa.compareTo(val.mantissa);
+  }
+
+  friend std::string toPrettyString(const BigDecimalT& val) {
+    std::string exp_part =
+        removeZeros(HexStr(std::vector<uint64_t>{(uint64_t)val.exponent}));
+    if (val.exponent < 0) {
+      exp_part += "-";
+    }
+    return toPrettyString(val.mantissa) + "*e^(" + exp_part + ")";
+  }
+
+ private:
+  template <
+      typename T,
+      typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  void init(T val) {
+    uint64_t exp = 0;
+    while (val % 10 == 0) {
+      val /= 10;
+      ++exp;
+    }
+    this->mantissa = BigIntegerT(val);
+    while (val != 0) {
+      val /= 10;
+      ++exp;
+    }
+    this->exponent = exp;
   }
 
  private:
   int64_t exponent{};
-  BigInteger<SIZE> mantissa{};
+  BigIntegerT mantissa{};
 };
-
-extern template struct BigDecimal<32>;
-extern template struct BigDecimal<64>;
-extern template struct BigDecimal<128>;
-extern template struct BigDecimal<256>;
-extern template struct BigDecimal<512>;
-extern template struct BigDecimal<1024>;
-extern template struct BigDecimal<2048>;
-extern template struct BigDecimal<4096>;
 
 }  // namespace nnoops
 
