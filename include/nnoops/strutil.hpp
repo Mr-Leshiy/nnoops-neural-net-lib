@@ -24,7 +24,7 @@ static const char hexmap[16] = { '0','1','2','3','4','5','6','7','8','9','a','b'
 
 template <typename T>
 void insert_hex_digits(T val, std::string& result) {
-  size_t size = sizeof(val);
+  int size = sizeof(val);
   static const T a = 0xfu;
 
   for (int i = size * 2 - 1; i >= 0; --i) {
