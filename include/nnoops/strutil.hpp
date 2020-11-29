@@ -22,47 +22,14 @@ namespace {
 static const char hexmap[16] = { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
 // clang-format on
 
-void insert_hex_digits(uint8_t val, std::string& result) {
-  result.push_back(hexmap[val >> 4u]);
-  result.push_back(hexmap[val & 0xfu]);
-}
+template<typename T>
+void insert_hex_digits(T val, std::string& result) {
+  size_t size = sizeof(val);
+  static const T a = 0xfu;
 
-void insert_hex_digits(uint16_t val, std::string& result) {
-  result.push_back(hexmap[val >> 12u]);
-  result.push_back(hexmap[(val & 0xf00u) >> 8u]);
-  result.push_back(hexmap[(val & 0xf0u) >> 4u]);
-  result.push_back(hexmap[val & 0xfu]);
-}
-
-void insert_hex_digits(uint32_t val, std::string& result) {
-  result.push_back(hexmap[val >> 28u]);
-  result.push_back(hexmap[(val & 0xf000000u) >> 24u]);
-  result.push_back(hexmap[(val & 0xf00000u) >> 20u]);
-  result.push_back(hexmap[(val & 0xf0000u) >> 16u]);
-  result.push_back(hexmap[(val & 0xf000u) >> 12u]);
-  result.push_back(hexmap[(val & 0xf00u) >> 8u]);
-  result.push_back(hexmap[(val & 0xf0u) >> 4u]);
-  result.push_back(hexmap[val & 0xfu]);
-}
-
-void insert_hex_digits(uint64_t val, std::string& result) {
-  result.push_back(hexmap[val >> 60u]);
-  result.push_back(hexmap[(val & 0xf0000000000000u) >> 56u]);
-  result.push_back(hexmap[(val & 0xf000000000000u) >> 52u]);
-  result.push_back(hexmap[(val & 0xf00000000000u) >> 48u]);
-  result.push_back(hexmap[(val & 0xf0000000000u) >> 44u]);
-  result.push_back(hexmap[(val & 0xf000000000u) >> 40u]);
-  result.push_back(hexmap[(val & 0xf00000000u) >> 36u]);
-  result.push_back(hexmap[(val & 0xf0000000u) >> 32u]);
-
-  result.push_back(hexmap[(val & 0xf000000u) >> 28u]);
-  result.push_back(hexmap[(val & 0xf000000u) >> 24u]);
-  result.push_back(hexmap[(val & 0xf00000u) >> 20u]);
-  result.push_back(hexmap[(val & 0xf0000u) >> 16u]);
-  result.push_back(hexmap[(val & 0xf000u) >> 12u]);
-  result.push_back(hexmap[(val & 0xf00u) >> 8u]);
-  result.push_back(hexmap[(val & 0xf0u) >> 4u]);
-  result.push_back(hexmap[val & 0xfu]);
+  for (int i = size * 2 - 1; i >= 0; --i) {
+    result.push_back(hexmap[(val & (a << (4u * i))) >> (4u * i)]);
+  }
 }
 
 template <typename T>
