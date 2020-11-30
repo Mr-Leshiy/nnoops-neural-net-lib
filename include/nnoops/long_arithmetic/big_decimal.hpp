@@ -41,7 +41,16 @@ struct BigDecimal {
     return *this;
   }
 
-  BigDecimal(double val) { (void)val; }
+  BigDecimal(double val) {
+    uint64_t exp = 0;
+    while ((val - (int64_t)val) != 0) {
+      val *= 10;
+      ++exp;
+    }
+    init((int64_t)val);
+
+    this->exponent -= exp;
+  }
 
   BigDecimal(int8_t val) { init(val); }
 
@@ -148,9 +157,8 @@ struct BigDecimal {
   friend void multiplication(const BigDecimalT& a,
                              const BigDecimalT& b,
                              BigDecimalT& result) {
-    (void)a;
-    (void)b;
-    (void)result;
+    result.exponent = a.exponent + b.exponent;
+    multiplication(a.mantissa, b.mantissa, result.mantissa);
   }
 
   friend void division(BigDecimalT dividend,
@@ -176,10 +184,10 @@ struct BigDecimal {
   }
 
   friend std::string toPrettyString(const BigDecimalT& val) {
-    std::string exp_part =
-        removeZeros(HexStr(std::vector<uint64_t>{(uint64_t)val.exponent}));
+    std::string exp_part = removeZeros(
+        HexStr(std::vector<uint64_t>{(uint64_t)std::abs(val.exponent)}));
     if (val.exponent < 0) {
-      exp_part += "-";
+      exp_part = "-" + exp_part;
     }
     return toPrettyString(val.mantissa) + "*e^(" + exp_part + ")";
   }
