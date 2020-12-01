@@ -6,7 +6,25 @@
 
 using namespace nnoops;
 
-TEST(BigDecimal, basic_test) {}
+TEST(BigDecimal, multiplication_test) {
+  using BigDecimalT = BigDecimal<>;
+  BigDecimalT val1 = 3124.3312;
+  BigDecimalT val2 = -12.41551;
+
+  val1 *= val2;
+
+  EXPECT_EQ(val1, BigDecimalT(-38790.165256912));
+
+  val1 = 3124.3312;
+
+  EXPECT_EQ(val1 * val2, BigDecimalT(-38790.165256912));
+  EXPECT_EQ(val2 * val1, BigDecimalT(-38790.165256912));
+
+  val2 *= -1;
+
+  EXPECT_EQ(val1 * val2, BigDecimalT(38790.165256912));
+  EXPECT_EQ(val2 * val1, BigDecimalT(38790.165256912));
+}
 
 TEST(BigDecimal, toPrettyString_test) {
   BigDecimal<> val(1234);

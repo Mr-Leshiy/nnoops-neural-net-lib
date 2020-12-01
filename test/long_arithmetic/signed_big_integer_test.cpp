@@ -188,7 +188,6 @@ TYPED_TEST_P(BigIntegerTest, multiplication_test) {
   EXPECT_EQ(val2 * val1, BigIntegerT(-5332114));
 
   val2 *= -1;
-  val1 = 1234;
 
   EXPECT_EQ(val2, BigIntegerT(4321));
 
