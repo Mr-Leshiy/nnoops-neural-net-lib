@@ -189,7 +189,7 @@ struct BigDecimal {
     if (val.exponent < 0) {
       exp_part = "-" + exp_part;
     }
-    return toPrettyString(val.mantissa) + "*e^(" + exp_part + ")";
+    return "0." + toPrettyString(val.mantissa) + "*e^(" + exp_part + ")";
   }
 
  private:

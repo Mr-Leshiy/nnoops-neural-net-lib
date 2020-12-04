@@ -22,7 +22,9 @@ namespace {
 static const char hexmap[16] = { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
 // clang-format on
 
-template <typename T>
+template <typename T,
+          typename = typename std::enable_if<std::is_integral<T>::value &&
+                                             std::is_unsigned<T>::value>::type>
 void insert_hex_digits(T val, std::string& result) {
   int size = sizeof(val);
   static const T a = 0xfu;
