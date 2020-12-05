@@ -49,6 +49,8 @@ struct UBigInteger {
     return *this;
   }
 
+  UBigInteger(const std::string& str) { (void)str; }
+
   UBigInteger(uint8_t val) { init(val); }
 
   UBigInteger(uint16_t val) { init(val); }

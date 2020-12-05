@@ -9,17 +9,14 @@ namespace nnoops {
 
 bool IsHex(const std::string& str);
 
-signed char HexDigit(char c);
+signed char HexDigit(uint8_t c);
 
-constexpr inline bool IsSpace(char c) noexcept {
-  return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' ||
-         c == '\v';
-}
+}  // namespace nnoops
 
 namespace {
 
 // clang-format off
-static const char hexmap[16] = { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
+    static const char hexmap[16] = { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
 // clang-format on
 
 template <typename T,
@@ -39,8 +36,9 @@ const char* fillDigit(const char* psz, std::vector<T>& vch) {
   size_t size = sizeof(T);
   T n = 0;
   for (int32_t i = (int32_t)(size * 2 - 1); i >= 0; --i) {
-    signed char c = HexDigit(*psz++);
+    signed char c = nnoops::HexDigit(*psz++);
     if (c == (int8_t)-1) {
+      // TODO throw exception
       return nullptr;
     }
     n |= c << (i * 4u);
@@ -50,6 +48,13 @@ const char* fillDigit(const char* psz, std::vector<T>& vch) {
 }
 
 }  // namespace
+
+namespace nnoops {
+
+constexpr inline bool IsSpace(char c) noexcept {
+  return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' ||
+         c == '\v';
+}
 
 inline std::string toPrettyString(const uint64_t& val) {
   return std::to_string(val);
@@ -100,6 +105,14 @@ template <typename T>
 std::string HexStr(const T& vch) {
   return HexStr(vch.begin(), vch.end());
 }
+
+// convert hex string to decimal string
+// "0xff" => "255"
+std::string HexToDec(std::string hex);
+
+// convert decimal string to hex string
+// "255" => "0xff"
+std::string DecToHex(std::string dec);
 
 // remove all '0' char, before to the first non '0' char
 std::string removeZeros(const std::string& str);
