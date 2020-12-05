@@ -65,7 +65,7 @@ struct UBigInteger {
 
     THROW_ARITH_ERROR(vec.size() <= ARRAY_LEN,
                       "provided value bigger than size of the UBigInteger");
-    std::copy(vec.begin(), vec.end(), data.begin());
+    std::copy(vec.rbegin(), vec.rend(), data.begin());
   }
 
   UBigInteger(uint8_t val) { init(val); }

@@ -51,6 +51,7 @@ const char* fillDigit(const char* psz, std::vector<T>& vch) {
   for (int32_t i = (int32_t)(size * 2 - 1); i >= 0; --i) {
     signed char c = nnoops::GetDigit(*psz++);
     if (c == (int8_t)-1) {
+      vch.push_back(n);
       return nullptr;
     }
     n |= c << (i * 4u);
@@ -85,15 +86,18 @@ template <typename T,
                                              std::is_unsigned<T>::value>::type>
 std::vector<T> ParseHex(const std::string& hex) {
   THROW_STR_ERROR(IsHex(hex), "provided not a hex str");
+  size_t size = sizeof(T);
   // convert hex dump to vector
-  const char* psz = hex.c_str();
   std::vector<T> vch;
-  while (true) {
-    psz = fillDigit(psz, vch);
-    if (psz == nullptr) {
-      break;
+  vch.reserve(hex.size() / size);
+  for (auto it = hex.rbegin(); it != hex.rend();) {
+    T n = 0;
+    for (size_t i = 0; i < size * 2 && it != hex.rend(); ++i, ++it) {
+      n |= nnoops::GetDigit(*it) << (i * 4u);
     }
+    vch.push_back(n);
   }
+  std::reverse(vch.begin(), vch.end());
   return vch;
 }
 

@@ -39,10 +39,11 @@ struct BigInteger {
     THROW_ARITH_ERROR(!str.empty(), "str value should not be empty");
     if (str[0] == '-') {
       this->sign = false;
+      this->value = UBigIntegerT(str.substr(1), format);
     } else {
       this->sign = true;
+      this->value = UBigIntegerT(str, format);
     }
-    this->value = UBigIntegerT(str.substr(1), format);
   }
 
   BigInteger(uint32_t val) : sign(true), value(val) {}
