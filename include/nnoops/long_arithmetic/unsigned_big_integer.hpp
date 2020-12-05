@@ -14,6 +14,11 @@
 
 namespace nnoops {
 
+enum class NumFormat {
+  HEX,
+  DEC,
+};
+
 // Representation on the unsigned integer with the arbitrary size
 // SIZE should be multiple of 32 (1 byte)
 // BASE_T - type of the each elemtn of the number. Only can be uint8_t,
@@ -49,7 +54,19 @@ struct UBigInteger {
     return *this;
   }
 
-  UBigInteger(const std::string& str) { (void)str; }
+  UBigInteger(const std::string& str, NumFormat format = NumFormat::DEC) {
+    std::vector<BASE_T> vec{};
+    if (format == NumFormat::DEC) {
+      vec = ParseHex<BASE_T>(DecToHex(str));
+    }
+    if (format == NumFormat::HEX) {
+      vec = ParseHex<BASE_T>(str);
+    }
+
+    THROW_ARITH_ERROR(vec.size() <= ARRAY_LEN,
+                      "provided value bigger than size of the UBigInteger");
+    std::copy(vec.rbegin(), vec.rend(), data.begin());
+  }
 
   UBigInteger(uint8_t val) { init(val); }
 
@@ -378,8 +395,15 @@ struct UBigInteger {
 
   static UBigIntegerT zero_value() { return UBigIntegerT(); }
 
-  friend std::string toPrettyString(const UBigIntegerT& val) {
-    return removeZeros(HexStr(val.data.rbegin(), val.data.rend()));
+  friend std::string toPrettyString(const UBigIntegerT& val,
+                                    NumFormat format = NumFormat::DEC) {
+    if (format == NumFormat::HEX) {
+      return removeZeros(HexStr(val.data.rbegin(), val.data.rend()));
+    }
+    if (format == NumFormat::DEC) {
+      return HexToDec(removeZeros(HexStr(val.data.rbegin(), val.data.rend())));
+    }
+    return "";
   }
 
  private:
@@ -390,7 +414,8 @@ struct UBigInteger {
     static constexpr const size_t val_size =
         std::max((size_t)(sizeof(T) * 8 / BASE_BITS), (size_t)1);
 
-    THROW_ARITH_ERROR(ARRAY_LEN >= val_size, "data has a small size");
+    THROW_ARITH_ERROR(ARRAY_LEN >= val_size,
+                      "provided value bigger than size of the UBigInteger");
     for (size_t i = 0; i < ARRAY_LEN; ++i) {
       if (i < val_size) {
         data[i] = (BASE_T)(value >> BASE_BITS * i);
