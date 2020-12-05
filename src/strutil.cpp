@@ -18,11 +18,9 @@ uint8_t base2dec(uint8_t base, const std::string& value) {
   uint8_t rv = 0;
   for (size_t i = 0; i < value.size(); ++i) {
     rv *= base;
-    int c = nnoops::HexDigit(value[i]);
-    if (c < 0 || c >= base) {
-      // TODO throw exception
-      return 0;
-    }
+    int c = nnoops::GetDigit(value[i]);
+    THROW_STR_ERROR((c > 0 || c < base),
+                    "char does not feel provided encoding");
     rv += (uint8_t)c;
   }
 
@@ -31,9 +29,7 @@ uint8_t base2dec(uint8_t base, const std::string& value) {
 
 uint8_t divide(std::string& x, uint8_t base_to, uint8_t base_from) {
   std::string quotient = "";
-
   size_t size = x.size();
-
   for (size_t i = 0; i < size; ++i) {
     size_t j = i + 1 + x.size() - size;
     if (x.size() < j) break;
@@ -44,9 +40,7 @@ uint8_t divide(std::string& x, uint8_t base_to, uint8_t base_from) {
   }
 
   uint8_t remainder = base2dec(base_from, x);
-
   x = nnoops::removeZeros(quotient);
-
   return remainder;
 }
 
@@ -73,11 +67,22 @@ static const signed char p_util_hexdigit[256] = {
     -1, -1,  -1,  -1,  -1,  -1,  -1,  -1, -1, -1, -1, -1, -1, -1, -1, -1,
 };
 
-signed char HexDigit(uint8_t c) { return p_util_hexdigit[c]; }
+signed char GetDigit(uint8_t c) { return p_util_hexdigit[c]; }
 
 bool IsHex(const std::string& str) {
   for (char it : str) {
-    if (HexDigit(it) < 0) {
+    if (GetDigit(it) < 0) {
+      return false;
+    }
+  }
+
+  return (!str.empty());
+}
+
+bool IsDec(const std::string& str) {
+  for (char it : str) {
+    char c = GetDigit(it);
+    if (c < 0 || c >= 10) {
       return false;
     }
   }
@@ -86,13 +91,9 @@ bool IsHex(const std::string& str) {
 }
 
 std::string HexToDec(std::string hex) {
+  THROW_STR_ERROR(IsHex(hex), "provided not a hex str");
+
   std::string rv = "";
-
-  if (!IsHex(hex)) {
-    // TODO throw exception
-    return "";
-  }
-
   do {
     uint8_t remainder = divide(hex, 10, 16);
     rv.push_back(::hexmap[remainder]);
@@ -103,14 +104,9 @@ std::string HexToDec(std::string hex) {
 }
 
 std::string DecToHex(std::string dec) {
+  THROW_STR_ERROR(IsDec(dec), "provided not a hex str");
+
   std::string rv = "";
-
-  // TODO add IsDec function
-  /*if (!IsHes(hex)) {
-    // TODO throw exception
-    return "";
-  } */
-
   do {
     uint8_t remainder = divide(dec, 16, 10);
     rv.push_back(::hexmap[remainder]);

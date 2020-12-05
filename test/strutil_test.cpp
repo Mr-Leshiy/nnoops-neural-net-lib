@@ -57,6 +57,16 @@ TEST(StrUtil, DecToHex_test) {
   EXPECT_EQ(DecToHex("4208137404"), "fad314bc");
 }
 
+TEST(StrUtil, error_handling_test) {
+  EXPECT_THROW(DecToHex("2u"), str_error);
+  EXPECT_THROW(DecToHex("2a"), str_error);
+  EXPECT_THROW(HexToDec("2u"), str_error);
+
+  EXPECT_THROW(ParseHex<uint8_t>("2u"), str_error);
+  EXPECT_THROW(ParseHex<uint16_t>("2u"), str_error);
+  EXPECT_THROW(ParseHex<uint32_t>("2u"), str_error);
+}
+
 TEST(StrUtil, removeZeros_test) {
   EXPECT_EQ(removeZeros("000000000020417b360cbe"), "20417b360cbe");
   EXPECT_EQ(removeZeros("000000000043141fade134"), "43141fade134");
