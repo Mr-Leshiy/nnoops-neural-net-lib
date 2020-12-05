@@ -54,6 +54,10 @@ struct BigInteger {
 
   BigInteger(int64_t val) : sign(val >= 0 ? true : false), value(abs(val)) {}
 
+  bool getSign() const { return this->sign; }
+
+  void setSign(bool sign) { this->sign = sign; }
+
   BigIntegerT operator-() const {
     BigIntegerT ret = *this;
     if (ret.value != UBigIntegerT::zero_value()) {
