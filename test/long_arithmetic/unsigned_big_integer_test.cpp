@@ -390,6 +390,16 @@ TEST(UBigInteger, toPrettyString_test) {
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "4d3");
   EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "1235");
+
+  val = UBigInteger<>("4d2", NumFormat::HEX);
+
+  EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "4d2");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "1234");
+
+  val = UBigInteger<>("1235", NumFormat::DEC);
+
+  EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "4d3");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "1235");
 }
 
 TEST(UBigInteger, basic_values_test) {

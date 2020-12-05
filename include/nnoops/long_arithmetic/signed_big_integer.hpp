@@ -35,6 +35,16 @@ struct BigInteger {
     return *this;
   }
 
+  BigInteger(const std::string& str, NumFormat format = NumFormat::DEC) {
+    THROW_ARITH_ERROR(!str.empty(), "str value should not be empty");
+    if (str[0] == '-') {
+      this->sign = false;
+    } else {
+      this->sign = true;
+    }
+    this->value = UBigIntegerT(str.substr(1), format);
+  }
+
   BigInteger(uint32_t val) : sign(true), value(val) {}
 
   BigInteger(uint64_t val) : sign(true), value(val) {}
@@ -300,7 +310,7 @@ struct BigInteger {
   const UBigIntegerT& get_unsigned() const { return this->value; }
 
   friend std::string toPrettyString(const BigIntegerT& val,
-                                    NumFormat format = NumFormat::HEX) {
+                                    NumFormat format = NumFormat::DEC) {
     if (val.sign == true) {
       return toPrettyString(val.value, format);
     } else {

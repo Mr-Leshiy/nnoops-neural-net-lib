@@ -183,13 +183,26 @@ struct BigDecimal {
     return this->mantissa.compareTo(val.mantissa);
   }
 
-  friend std::string toPrettyString(const BigDecimalT& val) {
-    std::string exp_part = removeZeros(
-        HexStr(std::vector<uint64_t>{(uint64_t)std::abs(val.exponent)}));
+  friend std::string toPrettyString(const BigDecimalT& val,
+                                    NumFormat format = NumFormat::DEC) {
+    std::string exp_part;
+    if (format == NumFormat::DEC) {
+      exp_part = std::to_string(val.exponent);
+    }
+    if (format == NumFormat::HEX) {
+      exp_part = removeZeros(
+          HexStr(std::vector<uint64_t>{(uint64_t)std::abs(val.exponent)}));
+    }
     if (val.exponent < 0) {
       exp_part = "-" + exp_part;
     }
-    return "0." + toPrettyString(val.mantissa) + "*e^(" + exp_part + ")";
+
+    std::string m_part = toPrettyString(val.mantissa, format);
+    if (m_part[0] == '-') {
+      return "-0." + m_part.substr(1) + "*e^(" + exp_part + ")";
+    }
+
+    return "0." + m_part + "*e^(" + exp_part + ")";
   }
 
  private:
