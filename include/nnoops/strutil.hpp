@@ -1,6 +1,7 @@
 #ifndef NNOOPS_LIB_CPP_STRUTIL_HPP_
 #define NNOOPS_LIB_CPP_STRUTIL_HPP_
 
+#include <algorithm>
 #include <string>
 #include <type_traits>
 #include <vector>
