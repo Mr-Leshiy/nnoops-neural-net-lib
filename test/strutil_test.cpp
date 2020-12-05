@@ -3,7 +3,6 @@
 #include "nnoops/strutil.hpp"
 
 using namespace nnoops;
-
 TEST(StrUtil, hex_test) {
   std::vector<uint8_t> data1 = {32, 65, 123, 54, 12, 190};
   std::string hex_str = HexStr(data1);
@@ -36,6 +35,36 @@ TEST(StrUtil, hex_test) {
   std::vector<uint32_t> data6 = ParseHex<uint32_t>(hex_str);
 
   EXPECT_EQ(data5, data6);
+}
+
+TEST(StrUtil, HexToDec_test) {
+  EXPECT_EQ(HexToDec("20417b360cbe"), "35465612102846");
+
+  EXPECT_EQ(HexToDec("4125feb3c"), "17488145212");
+
+  EXPECT_EQ(HexToDec("bce4551ff"), "50705289727");
+
+  EXPECT_EQ(HexToDec("fad314bc"), "4208137404");
+}
+
+TEST(StrUtil, DecToHex_test) {
+  EXPECT_EQ(DecToHex("35465612102846"), "20417b360cbe");
+
+  EXPECT_EQ(DecToHex("17488145212"), "4125feb3c");
+
+  EXPECT_EQ(DecToHex("50705289727"), "bce4551ff");
+
+  EXPECT_EQ(DecToHex("4208137404"), "fad314bc");
+}
+
+TEST(StrUtil, error_handling_test) {
+  EXPECT_THROW(DecToHex("2u"), str_error);
+  EXPECT_THROW(DecToHex("2a"), str_error);
+  EXPECT_THROW(HexToDec("2u"), str_error);
+
+  EXPECT_THROW(ParseHex<uint8_t>("2u"), str_error);
+  EXPECT_THROW(ParseHex<uint16_t>("2u"), str_error);
+  EXPECT_THROW(ParseHex<uint32_t>("2u"), str_error);
 }
 
 TEST(StrUtil, removeZeros_test) {
