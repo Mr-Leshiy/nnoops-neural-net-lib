@@ -14,6 +14,11 @@
 
 namespace nnoops {
 
+enum class NumFormat {
+  HEX,
+  DEC,
+};
+
 // Representation on the unsigned integer with the arbitrary size
 // SIZE should be multiple of 32 (1 byte)
 // BASE_T - type of the each elemtn of the number. Only can be uint8_t,
@@ -378,8 +383,15 @@ struct UBigInteger {
 
   static UBigIntegerT zero_value() { return UBigIntegerT(); }
 
-  friend std::string toPrettyString(const UBigIntegerT& val) {
-    return removeZeros(HexStr(val.data.rbegin(), val.data.rend()));
+  friend std::string toPrettyString(const UBigIntegerT& val,
+                                    NumFormat format = NumFormat::HEX) {
+    if (format == NumFormat::HEX) {
+      return removeZeros(HexStr(val.data.rbegin(), val.data.rend()));
+    }
+    if (format == NumFormat::DEC) {
+      return HexToDec(removeZeros(HexStr(val.data.rbegin(), val.data.rend())));
+    }
+    return "";
   }
 
  private:

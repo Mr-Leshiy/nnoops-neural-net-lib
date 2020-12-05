@@ -299,11 +299,12 @@ struct BigInteger {
 
   const UBigIntegerT& get_unsigned() const { return this->value; }
 
-  friend std::string toPrettyString(const BigIntegerT& val) {
+  friend std::string toPrettyString(const BigIntegerT& val,
+                                    NumFormat format = NumFormat::HEX) {
     if (val.sign == true) {
-      return toPrettyString(val.value);
+      return toPrettyString(val.value, format);
     } else {
-      return "-" + toPrettyString(val.value);
+      return "-" + toPrettyString(val.value, format);
     }
   }
 

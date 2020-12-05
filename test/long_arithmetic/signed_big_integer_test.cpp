@@ -743,19 +743,37 @@ INSTANTIATE_TYPED_TEST_SUITE_P(BigIntegerTestSuite,
 TEST(BigInteger, toPrettyString_test) {
   BigInteger<32> val(1234);
 
-  EXPECT_EQ(toPrettyString(val), "4d2");
+  EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "4d2");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "1234");
 
   val = -1235;
 
-  EXPECT_EQ(toPrettyString(val), "-4d3");
+  EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "-4d3");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "-1235");
 }
 
 TEST(BigInteger, basic_values_test) {
-  EXPECT_EQ(toPrettyString(BigInteger<32>::max_value()), "ffffffff");
-  EXPECT_EQ(toPrettyString(BigInteger<32>::zero_value()), "0");
-  EXPECT_EQ(toPrettyString(BigInteger<32>::min_value()), "-ffffffff");
+  EXPECT_EQ(toPrettyString(BigInteger<32>::max_value(), NumFormat::HEX),
+            "ffffffff");
+  EXPECT_EQ(toPrettyString(BigInteger<32>::zero_value(), NumFormat::HEX), "0");
+  EXPECT_EQ(toPrettyString(BigInteger<32>::min_value(), NumFormat::HEX),
+            "-ffffffff");
 
-  EXPECT_EQ(toPrettyString(BigInteger<64>::max_value()), "ffffffffffffffff");
-  EXPECT_EQ(toPrettyString(BigInteger<64>::zero_value()), "0");
-  EXPECT_EQ(toPrettyString(BigInteger<64>::min_value()), "-ffffffffffffffff");
+  EXPECT_EQ(toPrettyString(BigInteger<64>::max_value(), NumFormat::HEX),
+            "ffffffffffffffff");
+  EXPECT_EQ(toPrettyString(BigInteger<64>::zero_value(), NumFormat::HEX), "0");
+  EXPECT_EQ(toPrettyString(BigInteger<64>::min_value(), NumFormat::HEX),
+            "-ffffffffffffffff");
+
+  EXPECT_EQ(toPrettyString(BigInteger<32>::max_value(), NumFormat::DEC),
+            "4294967295");
+  EXPECT_EQ(toPrettyString(BigInteger<32>::zero_value(), NumFormat::DEC), "0");
+  EXPECT_EQ(toPrettyString(BigInteger<32>::min_value(), NumFormat::DEC),
+            "-4294967295");
+
+  EXPECT_EQ(toPrettyString(BigInteger<64>::max_value(), NumFormat::DEC),
+            "18446744073709551615");
+  EXPECT_EQ(toPrettyString(BigInteger<64>::zero_value(), NumFormat::DEC), "0");
+  EXPECT_EQ(toPrettyString(BigInteger<64>::min_value(), NumFormat::DEC),
+            "-18446744073709551615");
 }
