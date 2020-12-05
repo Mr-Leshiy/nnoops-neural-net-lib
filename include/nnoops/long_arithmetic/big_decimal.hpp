@@ -187,7 +187,7 @@ struct BigDecimal {
                                     NumFormat format = NumFormat::DEC) {
     std::string exp_part;
     if (format == NumFormat::DEC) {
-      exp_part = std::to_string(val.exponent);
+      exp_part = std::to_string(std::abs(val.exponent));
     }
     if (format == NumFormat::HEX) {
       exp_part = removeZeros(

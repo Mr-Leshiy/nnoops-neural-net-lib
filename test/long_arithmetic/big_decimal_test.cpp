@@ -32,32 +32,40 @@ TEST(BigDecimal, toPrettyString_test) {
   BigDecimal<> val(1234);
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "0.4d2*e^(4)");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "0.1234*e^(4)");
 
   val = 1234000000;
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "0.4d2*e^(a)");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "0.1234*e^(10)");
 
   val = -1234;
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "-0.4d2*e^(4)");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "-0.1234*e^(4)");
 
   val = -1234000000;
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "-0.4d2*e^(a)");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "-0.1234*e^(10)");
 
   val = 124.2134;
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "0.12f416*e^(3)");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "0.1242134*e^(3)");
 
   val = -124.2134;
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "-0.12f416*e^(3)");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "-0.1242134*e^(3)");
 
   val = 0.00124;
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "0.7c*e^(-2)");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "0.124*e^(-2)");
 
   val = -0.00124;
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "-0.7c*e^(-2)");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "-0.124*e^(-2)");
 }
