@@ -23,6 +23,12 @@ TEST(BigDecimal, multiplication_test) {
 
   EXPECT_EQ(val1 * val2, BigFloatT("38790.165256912"));
   EXPECT_EQ(val2 * val1, BigFloatT("38790.165256912"));
+
+  val1 = BigFloatT("0.312415");
+  val2 = BigFloatT("0.00000312");
+
+  EXPECT_EQ(val1 * val2, BigFloatT("0.0000009747348"));
+  EXPECT_EQ(val2 * val1, BigFloatT("0.0000009747348"));
 }
 
 TEST(BigDecimal, toPrettyString_test) {
