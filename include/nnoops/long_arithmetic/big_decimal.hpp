@@ -41,15 +41,32 @@ struct BigDecimal {
     return *this;
   }
 
-  BigDecimal(double val) {
-    uint64_t exp = 0;
-    while ((val - (int64_t)val) != 0) {
-      val *= 10;
-      ++exp;
+  BigDecimal(std::string str, NumFormat format = NumFormat::DEC) {
+    THROW_ARITH_ERROR(!str.empty(), "str value should not be empty");
+    bool sign = true;
+    if (str[0] == '-') {
+      str = str.substr(1);
+      sign = false;
     }
-    init((int64_t)val);
+    // find '.' and remove it
+    int64_t position = (int64_t)str.find('.');
+    size_t str_size = str.size();
+    str = str.substr(0, position) + str.substr(position + 1, str_size - 1);
+    if (format == NumFormat::HEX) {
+      str = HexToDec(str);
+    }
+    // remove zeros at the end of the number
+    size_t i = str.size() - 1;
+    for (; i != 0 && str[i] == '0'; --i) {
+    }
+    str.erase(i + 1);
+    for (i = 0; i < str.size() && str[i] == '0'; ++i, --position) {
+    }
 
-    this->exponent -= exp;
+    this->mantissa =
+        BigIntegerT(std::string(str.begin() + i, str.end()), NumFormat::DEC);
+    this->mantissa.setSign(sign);
+    this->exponent = position;
   }
 
   BigDecimal(int8_t val) { init(val); }
@@ -157,7 +174,7 @@ struct BigDecimal {
   friend void multiplication(const BigDecimalT& a,
                              const BigDecimalT& b,
                              BigDecimalT& result) {
-    result.exponent = a.exponent + b.exponent;
+    addition(a.exponent, b.exponent, result.exponent);
     multiplication(a.mantissa, b.mantissa, result.mantissa);
   }
 
@@ -173,11 +190,9 @@ struct BigDecimal {
   // return 1 if this bigger than b
   // return 0 if this equal to b
   int compareTo(const BigDecimalT& val) const {
-    if (this->exponent < val.exponent) {
-      return -1;
-    }
-    if (this->exponent > val.exponent) {
-      return 1;
+    int rv = this->exponent.compareTo(val.exponent);
+    if (rv != 0) {
+      return rv;
     }
 
     return this->mantissa.compareTo(val.mantissa);
@@ -185,24 +200,13 @@ struct BigDecimal {
 
   friend std::string toPrettyString(const BigDecimalT& val,
                                     NumFormat format = NumFormat::DEC) {
-    std::string exp_part;
-    if (format == NumFormat::DEC) {
-      exp_part = std::to_string(std::abs(val.exponent));
-    }
-    if (format == NumFormat::HEX) {
-      exp_part = removeZeros(
-          HexStr(std::vector<uint64_t>{(uint64_t)std::abs(val.exponent)}));
-    }
-    if (val.exponent < 0) {
-      exp_part = "-" + exp_part;
-    }
-
     std::string m_part = toPrettyString(val.mantissa, format);
     if (m_part[0] == '-') {
-      return "-0." + m_part.substr(1) + "*e^(" + exp_part + ")";
+      return "-0." + m_part.substr(1) + "*e^(" +
+             toPrettyString(val.exponent, format) + ")";
     }
 
-    return "0." + m_part + "*e^(" + exp_part + ")";
+    return "0." + m_part + "*e^(" + toPrettyString(val.exponent, format) + ")";
   }
 
  private:
@@ -215,7 +219,7 @@ struct BigDecimal {
       val /= 10;
       ++exp;
     }
-    this->mantissa = BigIntegerT(val);
+    this->mantissa = val;
     while (val != 0) {
       val /= 10;
       ++exp;
@@ -224,7 +228,7 @@ struct BigDecimal {
   }
 
  private:
-  int64_t exponent{};
+  BigIntegerT exponent{};
   BigIntegerT mantissa{};
 };
 
