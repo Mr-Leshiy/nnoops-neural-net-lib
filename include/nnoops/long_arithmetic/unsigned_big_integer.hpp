@@ -57,10 +57,10 @@ struct UBigInteger {
   UBigInteger(const std::string& str, NumFormat format = NumFormat::DEC) {
     std::vector<BASE_T> vec{};
     if (format == NumFormat::DEC) {
-      vec = ParseHex<BASE_T>(DecToHex(str));
+      vec = ParseHex<BASE_T>(DecToHex(removeZeros(str)));
     }
     if (format == NumFormat::HEX) {
-      vec = ParseHex<BASE_T>(str);
+      vec = ParseHex<BASE_T>(removeZeros(str));
     }
 
     THROW_ARITH_ERROR(vec.size() <= ARRAY_LEN,

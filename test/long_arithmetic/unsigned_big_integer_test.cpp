@@ -400,6 +400,19 @@ TEST(UBigInteger, toPrettyString_test) {
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "4d3");
   EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "1235");
+
+  val = UBigInteger<>("00000213", NumFormat::DEC);
+
+  EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "d5");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "213");
+
+  val = UBigInteger<>(
+      "000000000000000000000000000000000000000000000000000000000000000000000000"
+      "000000000000000000000213",
+      NumFormat::HEX);
+
+  EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "213");
+  EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "531");
 }
 
 TEST(UBigInteger, basic_values_test) {
