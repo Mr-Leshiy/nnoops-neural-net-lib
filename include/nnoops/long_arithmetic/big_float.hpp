@@ -43,12 +43,15 @@ struct BigFloat {
 
   BigFloat(std::string str) {
     // find '.' and remove it
-    int64_t position = (int64_t)str.find('.');
-    size_t str_size = str.size();
-    str = str.substr(0, position) + str.substr(position + 1, str_size - 1);
+    size_t position = str.find('.');
+    // does not find '.'
+    if (position != std::string::npos) {
+      str.erase(position, 1);
+      this->exponent = -(int64_t)(str.size() - position);
+    }
 
     this->mantissa = BigIntegerT(str, NumFormat::DEC);
-    this->exponent = position - (int64_t)str.size();
+    normalize();
   }
 
   BigFloat(int8_t val) { init(val); }

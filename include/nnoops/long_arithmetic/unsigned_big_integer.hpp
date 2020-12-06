@@ -55,6 +55,9 @@ struct UBigInteger {
   }
 
   UBigInteger(const std::string& str, NumFormat format = NumFormat::DEC) {
+    // remove zeros
+    str = removeZeros(str);
+
     std::vector<BASE_T> vec{};
     if (format == NumFormat::DEC) {
       vec = ParseHex<BASE_T>(DecToHex(str));
