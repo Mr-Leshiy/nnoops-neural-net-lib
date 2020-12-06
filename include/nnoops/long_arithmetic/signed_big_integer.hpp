@@ -56,7 +56,7 @@ struct BigInteger {
 
   bool getSign() const { return this->sign; }
 
-  void setSign(bool sign) { this->sign = sign; }
+  void setSign(bool v) { this->sign = v; }
 
   BigIntegerT operator-() const {
     BigIntegerT ret = *this;

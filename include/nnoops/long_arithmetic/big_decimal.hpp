@@ -41,28 +41,30 @@ struct BigDecimal {
     return *this;
   }
 
-  BigDecimal(double val) { std::string str = std::to_string(val); }
-
   BigDecimal(std::string str, NumFormat format = NumFormat::DEC) {
     THROW_ARITH_ERROR(!str.empty(), "str value should not be empty");
     bool sign = true;
     if (str[0] == '-') {
-      str.erase(0);
+      str = str.substr(1);
       sign = false;
     }
     // find '.' and remove it
     int64_t position = (int64_t)str.find('.');
-
-    str.erase(position);
+    size_t str_size = str.size();
+    str = str.substr(0, position) + str.substr(position + 1, str_size - 1);
     if (format == NumFormat::HEX) {
       str = HexToDec(str);
     }
     // remove zeros at the end of the number
-    auto it = str.rbegin();
-    for (; it != str.rend() && *it == '0'; ++it, --position) {
+    size_t i = str.size() - 1;
+    for (; i != 0 && str[i] == '0'; --i) {
+    }
+    str.erase(i + 1);
+    for (i = 0; i < str.size() && str[i] == '0'; ++i, --position) {
     }
 
-    this->mantissa = BigIntegerT(std::string(str.rend(), it), format);
+    this->mantissa =
+        BigIntegerT(std::string(str.begin() + i, str.end()), NumFormat::DEC);
     this->mantissa.setSign(sign);
     this->exponent = position;
   }

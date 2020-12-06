@@ -8,24 +8,24 @@ using namespace nnoops;
 
 TEST(BigDecimal, multiplication_test) {
   /*
-   using BigDecimalT = BigDecimal<>;
-   BigDecimalT val1 = 3124.3312;
-   BigDecimalT val2 = -12.41551;
+  using BigDecimalT = BigDecimal<1024>;
+  BigDecimalT val1 = 3124.3312;
+  BigDecimalT val2 = -12.41551;
 
-   val1 *= val2;
+  val1 *= val2;
 
-   EXPECT_EQ(val1, BigDecimalT(-38790.165256912));
+  EXPECT_EQ(val1, BigDecimalT(-38790.165256912));
 
-   val1 = 3124.3312;
+  val1 = 3124.3312;
 
-   EXPECT_EQ(val1 * val2, BigDecimalT(-38790.165256912));
-   EXPECT_EQ(val2 * val1, BigDecimalT(-38790.165256912));
+  EXPECT_EQ(val1 * val2, BigDecimalT(-38790.165256912));
+  EXPECT_EQ(val2 * val1, BigDecimalT(-38790.165256912));
 
-   val2 *= -1;
+  val2 *= -1;
 
-   EXPECT_EQ(val1 * val2, BigDecimalT(38790.165256912));
-   EXPECT_EQ(val2 * val1, BigDecimalT(38790.165256912));
-   */
+  EXPECT_EQ(val1 * val2, BigDecimalT(38790.165256912));
+  EXPECT_EQ(val2 * val1, BigDecimalT(38790.165256912));
+  */
 }
 
 TEST(BigDecimal, toPrettyString_test) {
@@ -49,22 +49,22 @@ TEST(BigDecimal, toPrettyString_test) {
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "-0.4d2*e^(a)");
   EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "-0.1234*e^(10)");
 
-  val = 124.2134;
+  val = BigDecimal<>("124.2134");
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "0.12f416*e^(3)");
   EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "0.1242134*e^(3)");
 
-  val = -124.2134;
+  val = BigDecimal<>("-124.2134");
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "-0.12f416*e^(3)");
   EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "-0.1242134*e^(3)");
 
-  val = 0.00124;
+  val = BigDecimal<>("0.00124");
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "0.7c*e^(-2)");
   EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "0.124*e^(-2)");
 
-  val = -0.00124;
+  val = BigDecimal<>("-0.00124");
 
   EXPECT_EQ(toPrettyString(val, NumFormat::HEX), "-0.7c*e^(-2)");
   EXPECT_EQ(toPrettyString(val, NumFormat::DEC), "-0.124*e^(-2)");
