@@ -41,32 +41,14 @@ struct BigFloat {
     return *this;
   }
 
-  BigFloat(std::string str, NumFormat format = NumFormat::DEC) {
-    THROW_ARITH_ERROR(!str.empty(), "str value should not be empty");
-    bool sign = true;
-    if (str[0] == '-') {
-      str = str.substr(1);
-      sign = false;
-    }
+  BigFloat(std::string str) {
     // find '.' and remove it
     int64_t position = (int64_t)str.find('.');
     size_t str_size = str.size();
     str = str.substr(0, position) + str.substr(position + 1, str_size - 1);
-    if (format == NumFormat::HEX) {
-      str = HexToDec(str);
-    }
-    // remove zeros at the end of the number
-    size_t i = str.size() - 1;
-    for (; i != 0 && str[i] == '0'; --i) {
-    }
-    str.erase(i + 1);
-    for (i = 0; i < str.size() && str[i] == '0'; ++i, --position) {
-    }
 
-    this->mantissa =
-        BigIntegerT(std::string(str.begin() + i, str.end()), NumFormat::DEC);
-    this->mantissa.setSign(sign);
-    this->exponent = position;
+    this->mantissa = BigIntegerT(str, NumFormat::DEC);
+    this->exponent = position - (int64_t)str.size();
   }
 
   BigFloat(int8_t val) { init(val); }
@@ -172,6 +154,7 @@ struct BigFloat {
                              BigFloatT& result) {
     addition(a.exponent, b.exponent, result.exponent);
     multiplication(a.mantissa, b.mantissa, result.mantissa);
+    result.normalize();
   }
 
   friend void division(BigFloatT dividend,
@@ -194,18 +177,26 @@ struct BigFloat {
     return this->mantissa.compareTo(val.mantissa);
   }
 
-  friend std::string toPrettyString(const BigFloatT& val,
-                                    NumFormat format = NumFormat::DEC) {
-    std::string m_part = toPrettyString(val.mantissa, format);
-    if (m_part[0] == '-') {
-      return "-0." + m_part.substr(1) + "*e^(" +
-             toPrettyString(val.exponent, format) + ")";
-    }
-
-    return "0." + m_part + "*e^(" + toPrettyString(val.exponent, format) + ")";
+  friend std::string toPrettyString(const BigFloatT& val) {
+    return toPrettyString(val.mantissa, NumFormat::DEC) + "*e^(" +
+           toPrettyString(val.exponent, NumFormat::DEC) + ")";
   }
 
  private:
+  void normalize() {
+    while (true) {
+      BigIntegerT quotient;
+      BigIntegerT remainder;
+      division(mantissa, 10, quotient, &remainder);
+      if (remainder == 0) {
+        ++this->exponent;
+        this->mantissa = quotient;
+      } else {
+        break;
+      }
+    }
+  }
+
   template <
       typename T,
       typename = typename std::enable_if<std::is_integral<T>::value>::type>
@@ -216,10 +207,6 @@ struct BigFloat {
       ++exp;
     }
     this->mantissa = val;
-    while (val != 0) {
-      val /= 10;
-      ++exp;
-    }
     this->exponent = exp;
   }
 
