@@ -15,33 +15,33 @@ namespace nnoops {
 // actual size of the BigDecimal equals to SIZE / 2
 // representation is equal to quotient of a / b
 template <uint64_t SIZE = 64, typename BASE_T = uint32_t>
-struct BigDecimal {
-  using BigDecimalT = BigDecimal<SIZE, BASE_T>;
+struct BigFloat {
+  using BigFloatT = BigFloat<SIZE, BASE_T>;
   using BigIntegerT = BigInteger<SIZE, BASE_T>;
 
-  ~BigDecimal() = default;
+  ~BigFloat() = default;
 
-  BigDecimal() = default;
+  BigFloat() = default;
 
-  BigDecimal(const BigDecimalT& val)
+  BigFloat(const BigFloatT& val)
       : exponent(val.exponent), mantissa(val.mantissa) {}
 
-  BigDecimal(BigDecimalT&& val)
+  BigFloat(BigFloatT&& val)
       : exponent(std::move(val.exponent)), mantissa(std::move(val.mantissa)) {}
 
-  BigDecimalT& operator=(const BigDecimalT& val) {
+  BigFloatT& operator=(const BigFloatT& val) {
     this->exponent = val.exponent;
     this->mantissa = val.mantissa;
     return *this;
   }
 
-  BigDecimalT& operator=(BigDecimalT&& val) {
+  BigFloatT& operator=(BigFloatT&& val) {
     this->exponent = std::move(val.exponent);
     this->mantissa = std::move(val.mantissa);
     return *this;
   }
 
-  BigDecimal(std::string str, NumFormat format = NumFormat::DEC) {
+  BigFloat(std::string str, NumFormat format = NumFormat::DEC) {
     THROW_ARITH_ERROR(!str.empty(), "str value should not be empty");
     bool sign = true;
     if (str[0] == '-') {
@@ -69,91 +69,87 @@ struct BigDecimal {
     this->exponent = position;
   }
 
-  BigDecimal(int8_t val) { init(val); }
+  BigFloat(int8_t val) { init(val); }
 
-  BigDecimal(int16_t val) { init(val); }
+  BigFloat(int16_t val) { init(val); }
 
-  BigDecimal(int32_t val) { init(val); }
+  BigFloat(int32_t val) { init(val); }
 
-  BigDecimal(int64_t val) { init(val); }
+  BigFloat(int64_t val) { init(val); }
 
-  BigDecimalT& operator+=(const BigDecimalT& b) {
+  BigFloatT& operator+=(const BigFloatT& b) {
     addition(*this, b, *this);
     return *this;
   }
 
-  BigDecimalT& operator-=(const BigDecimalT& b) {
+  BigFloatT& operator-=(const BigFloatT& b) {
     substraction(*this, b, *this);
     return *this;
   }
 
-  BigDecimalT& operator*=(const BigDecimalT& b) {
-    BigDecimalT res;
+  BigFloatT& operator*=(const BigFloatT& b) {
+    BigFloatT res;
     multiplication(*this, b, res);
     *this = std::move(res);
     return *this;
   }
 
-  BigDecimalT& operator/=(const BigDecimalT& b) {
+  BigFloatT& operator/=(const BigFloatT& b) {
     division(*this, b, *this);
     return *this;
   }
 
-  friend inline BigDecimalT operator+(const BigDecimalT& a,
-                                      const BigDecimalT& b) {
-    BigDecimalT res;
+  friend inline BigFloatT operator+(const BigFloatT& a, const BigFloatT& b) {
+    BigFloatT res;
     addition(a, b, res);
     return res;
   }
 
-  friend inline BigDecimalT operator-(const BigDecimalT& a,
-                                      const BigDecimalT& b) {
-    BigDecimalT res;
+  friend inline BigFloatT operator-(const BigFloatT& a, const BigFloatT& b) {
+    BigFloatT res;
     substraction(a, b, res);
     return res;
   }
 
-  friend inline BigDecimalT operator*(const BigDecimalT& a,
-                                      const BigDecimalT& b) {
-    BigDecimalT res;
+  friend inline BigFloatT operator*(const BigFloatT& a, const BigFloatT& b) {
+    BigFloatT res;
     multiplication(a, b, res);
     return res;
   }
 
-  friend inline BigDecimalT operator/(const BigDecimalT& a,
-                                      const BigDecimalT& b) {
-    BigDecimalT q;
+  friend inline BigFloatT operator/(const BigFloatT& a, const BigFloatT& b) {
+    BigFloatT q;
     division(a, b, q);
     return q;
   }
 
-  bool operator==(const BigDecimalT& val) const {
+  bool operator==(const BigFloatT& val) const {
     return this->mantissa == val.mantissa && this->exponent == val.exponent;
   }
 
-  bool operator!=(const BigDecimalT& val) const { return !(*this == val); }
+  bool operator!=(const BigFloatT& val) const { return !(*this == val); }
 
-  friend bool operator>(const BigDecimalT& a, const BigDecimalT& b) {
+  friend bool operator>(const BigFloatT& a, const BigFloatT& b) {
     return a.compareTo(b) > 0;
   }
 
-  friend bool operator<(const BigDecimalT& a, const BigDecimalT& b) {
+  friend bool operator<(const BigFloatT& a, const BigFloatT& b) {
     return a.compareTo(b) < 0;
   }
 
-  friend bool operator>=(const BigDecimalT& a, const BigDecimalT& b) {
+  friend bool operator>=(const BigFloatT& a, const BigFloatT& b) {
     return a.compareTo(b) >= 0;
   }
 
-  friend bool operator<=(const BigDecimalT& a, const BigDecimalT& b) {
+  friend bool operator<=(const BigFloatT& a, const BigFloatT& b) {
     return a.compareTo(b) <= 0;
   }
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
   // 'b' arguments
-  friend void addition(const BigDecimalT& a,
-                       const BigDecimalT& b,
-                       BigDecimalT& result) {
+  friend void addition(const BigFloatT& a,
+                       const BigFloatT& b,
+                       BigFloatT& result) {
     (void)a;
     (void)b;
     (void)result;
@@ -161,9 +157,9 @@ struct BigDecimal {
 
   // reference to the 'result' argument CAN BE THE SAME with the 'a' or
   // 'b' arguments
-  friend void substraction(const BigDecimalT& a,
-                           const BigDecimal& b,
-                           BigDecimalT& result) {
+  friend void substraction(const BigFloatT& a,
+                           const BigFloatT& b,
+                           BigFloatT& result) {
     (void)a;
     (void)b;
     (void)result;
@@ -171,16 +167,16 @@ struct BigDecimal {
 
   // reference to the 'result' argument SHOULD NOT BE THE SAME with the 'a'
   // or 'b' arguments
-  friend void multiplication(const BigDecimalT& a,
-                             const BigDecimalT& b,
-                             BigDecimalT& result) {
+  friend void multiplication(const BigFloatT& a,
+                             const BigFloatT& b,
+                             BigFloatT& result) {
     addition(a.exponent, b.exponent, result.exponent);
     multiplication(a.mantissa, b.mantissa, result.mantissa);
   }
 
-  friend void division(BigDecimalT dividend,
-                       BigDecimalT divisor,
-                       BigDecimalT& quotient) {
+  friend void division(BigFloatT dividend,
+                       BigFloatT divisor,
+                       BigFloatT& quotient) {
     (void)dividend;
     (void)divisor;
     (void)quotient;
@@ -189,7 +185,7 @@ struct BigDecimal {
   // return -1 if this less than b,
   // return 1 if this bigger than b
   // return 0 if this equal to b
-  int compareTo(const BigDecimalT& val) const {
+  int compareTo(const BigFloatT& val) const {
     int rv = this->exponent.compareTo(val.exponent);
     if (rv != 0) {
       return rv;
@@ -198,7 +194,7 @@ struct BigDecimal {
     return this->mantissa.compareTo(val.mantissa);
   }
 
-  friend std::string toPrettyString(const BigDecimalT& val,
+  friend std::string toPrettyString(const BigFloatT& val,
                                     NumFormat format = NumFormat::DEC) {
     std::string m_part = toPrettyString(val.mantissa, format);
     if (m_part[0] == '-') {
@@ -231,6 +227,15 @@ struct BigDecimal {
   BigIntegerT exponent{};
   BigIntegerT mantissa{};
 };
+
+extern template struct BigFloat<32>;
+extern template struct BigFloat<64>;
+extern template struct BigFloat<128>;
+extern template struct BigFloat<256>;
+extern template struct BigFloat<512>;
+extern template struct BigFloat<1024>;
+extern template struct BigFloat<2048>;
+extern template struct BigFloat<4096>;
 
 }  // namespace nnoops
 
