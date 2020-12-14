@@ -182,8 +182,8 @@ struct BigFloat {
     return this->mantissa.compareTo(val.mantissa);
   }
 
-  void setAccuracy(uint64_t accuracy) {
-    this->accuracy = accuracy;
+  void setAccuracy(uint64_t val) {
+    this->accuracy = val;
     this->normalize();
   }
 
