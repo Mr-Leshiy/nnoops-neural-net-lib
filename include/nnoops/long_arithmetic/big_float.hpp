@@ -180,6 +180,13 @@ struct BigFloat {
     return this->mantissa.compareTo(val.mantissa);
   }
 
+  BigFloatT inverse() const {
+    THROW_ARITH_ERROR(this->mantissa != BigIntegerT::zero_value(),
+                      "division by zero");
+
+    return BigFloatT();
+  }
+
   friend std::string toPrettyString(const BigFloatT& val) {
     return toPrettyString(val.mantissa, NumFormat::DEC) + "*e^(" +
            toPrettyString(val.exponent, NumFormat::DEC) + ")";
@@ -187,16 +194,12 @@ struct BigFloat {
 
  private:
   void normalize() {
-    while (true) {
-      BigIntegerT quotient;
-      BigIntegerT remainder;
-      division(mantissa, 10, quotient, &remainder);
-      if (remainder == 0) {
-        ++this->exponent;
-        this->mantissa = quotient;
-      } else {
-        break;
-      }
+    BigIntegerT q = 0;
+    BigIntegerT r = 0;
+    division(mantissa, 10, q, &r);
+    for (; r == 0; division(mantissa, 10, q, &r)) {
+      ++this->exponent;
+      this->mantissa = q;
     }
   }
 
@@ -216,6 +219,7 @@ struct BigFloat {
  private:
   BigIntegerT exponent{};
   BigIntegerT mantissa{};
+  uint64_t accuracy{1000};
 };
 
 extern template struct BigFloat<32>;

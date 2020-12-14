@@ -5,7 +5,7 @@
 #include "nnoops/long_arithmetic/big_float.hpp"
 using namespace nnoops;
 
-TEST(BigDecimal, multiplication_test) {
+TEST(BigFloat, multiplication_test) {
   using BigFloatT = BigFloat<1024>;
   BigFloatT val1("3124.3312");
   BigFloatT val2("-12.41551");
@@ -31,7 +31,7 @@ TEST(BigDecimal, multiplication_test) {
   EXPECT_EQ(val2 * val1, BigFloatT("0.0000009747348"));
 }
 
-TEST(BigDecimal, toPrettyString_test) {
+TEST(BigFloat, toPrettyString_test) {
   BigFloat<> val(1234);
 
   EXPECT_EQ(toPrettyString(val), "1234*e^(0)");
