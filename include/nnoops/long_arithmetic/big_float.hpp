@@ -207,10 +207,20 @@ struct BigFloat {
     BigIntegerT r = 0;
     division(mantissa, 10, q, &r);
 
-    for (; r == 0 || this->exponent < -1 * (int64_t)this->accuracy;
-         division(mantissa, 10, q, &r)) {
-      ++this->exponent;
-      this->mantissa = q;
+    // remove zeros
+    for (; r == 0; division(mantissa, 10, q, &r)) {
+      ++exponent;
+      mantissa = q;
+    }
+
+    //
+    for (; exponent < -1 * (int64_t)accuracy; division(mantissa, 10, q, &r)) {
+      ++exponent;
+      mantissa = q;
+    }
+
+    if (mantissa == 0) {
+      exponent = 0;
     }
   }
 
