@@ -240,6 +240,7 @@ struct BigFloat {
  private:
   int64_t exponent{};
   BigIntegerT mantissa{};
+  // default accuracy is 1000
   uint64_t accuracy{1000};
 };
 
