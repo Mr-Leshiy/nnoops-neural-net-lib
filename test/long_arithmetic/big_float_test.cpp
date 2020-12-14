@@ -64,6 +64,10 @@ TEST(BigFloat, toPrettyString_test) {
 
   EXPECT_EQ(toPrettyString(val), "-124*e^(-5)");
 
+  val = BigFloat<>("-0.00124", 2);
+
+  EXPECT_EQ(toPrettyString(val), "0*e^(0)");
+
   val = BigFloat<>("20000.0");
 
   EXPECT_EQ(toPrettyString(val), "2*e^(4)");

@@ -41,7 +41,7 @@ struct BigFloat {
     return *this;
   }
 
-  BigFloat(std::string str) {
+  BigFloat(std::string str, uint64_t accuracy = 1000) : accuracy(accuracy) {
     // find '.' and remove it
     size_t position = str.find('.');
     // does not find '.'
@@ -155,7 +155,7 @@ struct BigFloat {
   friend void multiplication(const BigFloatT& a,
                              const BigFloatT& b,
                              BigFloatT& result) {
-    addition(a.exponent, b.exponent, result.exponent);
+    result.exponent = a.exponent + b.exponent;
     multiplication(a.mantissa, b.mantissa, result.mantissa);
     result.normalize();
   }
@@ -172,13 +172,22 @@ struct BigFloat {
   // return 1 if this bigger than b
   // return 0 if this equal to b
   int compareTo(const BigFloatT& val) const {
-    int rv = this->exponent.compareTo(val.exponent);
-    if (rv != 0) {
-      return rv;
+    if (this->exponent < val.exponent) {
+      return -1;
+    }
+    if (this->exponent > val.exponent) {
+      return 1;
     }
 
     return this->mantissa.compareTo(val.mantissa);
   }
+
+  void setAccuracy(uint64_t accuracy) {
+    this->accuracy = accuracy;
+    this->normalize();
+  }
+
+  uint64_t getAccuracy() const { return this->accuracy; }
 
   BigFloatT inverse() const {
     THROW_ARITH_ERROR(this->mantissa != BigIntegerT::zero_value(),
@@ -189,7 +198,7 @@ struct BigFloat {
 
   friend std::string toPrettyString(const BigFloatT& val) {
     return toPrettyString(val.mantissa, NumFormat::DEC) + "*e^(" +
-           toPrettyString(val.exponent, NumFormat::DEC) + ")";
+           std::to_string(val.exponent) + ")";
   }
 
  private:
@@ -197,7 +206,9 @@ struct BigFloat {
     BigIntegerT q = 0;
     BigIntegerT r = 0;
     division(mantissa, 10, q, &r);
-    for (; r == 0; division(mantissa, 10, q, &r)) {
+
+    for (; r == 0 || this->exponent < -1 * (int64_t)this->accuracy;
+         division(mantissa, 10, q, &r)) {
       ++this->exponent;
       this->mantissa = q;
     }
@@ -217,7 +228,7 @@ struct BigFloat {
   }
 
  private:
-  BigIntegerT exponent{};
+  int64_t exponent{};
   BigIntegerT mantissa{};
   uint64_t accuracy{1000};
 };
