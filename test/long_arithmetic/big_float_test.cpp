@@ -31,6 +31,22 @@ TEST(BigFloat, multiplication_test) {
   EXPECT_EQ(val2 * val1, BigFloatT("0.0000009747348"));
 }
 
+TEST(BigFloat, inverse_test) {
+  using BigFloatT = BigFloat<1024>;
+  BigFloatT val("5.0");
+
+  EXPECT_EQ(val.inverse(), BigFloatT("0.2"));
+
+  // accuracy - 5
+  val = BigFloatT("3.0", 5);
+
+  EXPECT_EQ(val.inverse(), BigFloatT("0.33333"));
+
+  val = BigFloatT("4134.6146161");
+
+  EXPECT_EQ(val.inverse(), BigFloatT("0.0002418605100717358"));
+}
+
 TEST(BigFloat, toPrettyString_test) {
   BigFloat<> val(1234);
 
