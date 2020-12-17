@@ -215,7 +215,7 @@ struct BigFloat {
     while (d.exponent > -1 * this->accuracy && r != BigIntegerT::zero_value()) {
       division(x, d.mantissa, q, &r);
       x = 10 * r;
-      d.mantissa = q;
+      d.mantissa += q;
       --d.exponent;
     }
 
