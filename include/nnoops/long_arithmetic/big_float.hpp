@@ -209,14 +209,17 @@ struct BigFloat {
     for (int64_t i = 0; i < d.exponent; ++i) {
       x *= 10;
     }
-    while (d.exponent > -1 * this->accuracy) {
-      x *= 10;
+
+    BigIntegerT r(1);
+    BigIntegerT q;
+    BigIntegerT tmp(1);
+    while (d.exponent > -1 * this->accuracy && r != BigIntegerT::zero_value()) {
+      division(x, d.mantissa, q, &r);
+      x = 10 * r;
+      d.mantissa = q * tmp;
+      tmp *= 10;
       --d.exponent;
     }
-
-    BigIntegerT q;
-    division(x, d.mantissa, q);
-    d.mantissa = q;
 
     d.mantissa.setSign(this->mantissa.getSign());
 
