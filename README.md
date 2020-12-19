@@ -1,6 +1,6 @@
 ![CI](https://github.com/Mr-Leshiy/nnoops-lib/workflows/CI/badge.svg)
 
-# Nnoops library
+# Nnoops neural net library
 Library for building, training neural networks.
 
 ## Build Linux
