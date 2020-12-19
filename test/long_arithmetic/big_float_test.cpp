@@ -50,6 +50,10 @@ TEST(BigFloat, inverse_test) {
   val = BigFloatT("0.245555542", 15);
 
   EXPECT_EQ(val.inverse(), BigFloatT("4.072398414856383"));
+
+  val = BigFloatT("-0.245555542", 15);
+
+  EXPECT_EQ(val.inverse(), BigFloatT("-4.072398414856383"));
 }
 
 TEST(BigFloat, toPrettyString_test) {

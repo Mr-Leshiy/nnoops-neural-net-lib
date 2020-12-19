@@ -216,16 +216,8 @@ struct BigFloat {
       --res.exponent;
     }
 
-    BigIntegerT r;
+    BigIntegerT r(1);
     BigIntegerT q;
-    // first division
-    if (res.exponent > -1 * this->accuracy) {
-      division(x, this->mantissa, q, &r);
-      x = 10 * r;
-      res.mantissa = q;
-      --res.exponent;
-    }
-
     while (res.exponent > -1 * this->accuracy &&
            r != BigIntegerT::zero_value()) {
       division(x, this->mantissa, q, &r);
