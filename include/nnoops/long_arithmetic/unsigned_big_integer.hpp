@@ -342,8 +342,8 @@ struct UBigInteger {
 
       // Test
       while (q == ((uint64_t)BASE + 1) ||
-             n >= 1 && q * divisor.data[n - 1] > (((uint64_t)BASE + 1) * r +
-                                                  dividend.data[j + n - 1])) {
+             (n >= 1 && q * divisor.data[n - 1] > (((uint64_t)BASE + 1) * r +
+                                                   dividend.data[j + n - 1]))) {
         --q;
         r += divisor.data[n];
         if (r > BASE) {

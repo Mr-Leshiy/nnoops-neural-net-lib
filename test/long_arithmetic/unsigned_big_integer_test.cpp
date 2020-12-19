@@ -242,6 +242,14 @@ TYPED_TEST_P(UBigIntegerTest, division_test2) {
   EXPECT_EQ(val2 % val1, UBigIntegerT(999990));
   EXPECT_EQ(val1 % val1, UBigIntegerT(0));
   EXPECT_EQ(val2 % val2, UBigIntegerT(0));
+
+  val1 = 41346146161;
+  val2 = 10;
+
+  EXPECT_EQ(val1 % val2, UBigIntegerT(1));
+  EXPECT_EQ(val2 % val1, UBigIntegerT(10));
+  EXPECT_EQ(val1 % val1, UBigIntegerT(0));
+  EXPECT_EQ(val2 % val2, UBigIntegerT(0));
 }
 
 TYPED_TEST_P(UBigIntegerTest, exception_handling_test) {
