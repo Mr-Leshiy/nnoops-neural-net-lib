@@ -7,6 +7,7 @@
 #include <string>
 
 #include "nnoops/long_arithmetic/signed_big_integer.hpp"
+#include "nnoops/long_arithmetic/unsigned_big_integer.hpp"
 
 namespace nnoops {
 
@@ -18,30 +19,37 @@ template <uint64_t SIZE = 64, typename BASE_T = uint32_t>
 struct BigFloat {
   using BigFloatT = BigFloat<SIZE, BASE_T>;
   using BigIntegerT = BigInteger<SIZE, BASE_T>;
+  using UBigIntegerT = UBigInteger<SIZE, BASE_T>;
 
   ~BigFloat() = default;
 
   BigFloat() = default;
 
   BigFloat(const BigFloatT& val)
-      : exponent(val.exponent), mantissa(val.mantissa) {}
+      : exponent(val.exponent),
+        mantissa(val.mantissa),
+        accuracy(val.accuracy) {}
 
   BigFloat(BigFloatT&& val)
-      : exponent(std::move(val.exponent)), mantissa(std::move(val.mantissa)) {}
+      : exponent(std::move(val.exponent)),
+        mantissa(std::move(val.mantissa)),
+        accuracy(std::move(val.accuracy)) {}
 
   BigFloatT& operator=(const BigFloatT& val) {
     this->exponent = val.exponent;
     this->mantissa = val.mantissa;
+    this->accuracy = val.accuracy;
     return *this;
   }
 
   BigFloatT& operator=(BigFloatT&& val) {
     this->exponent = std::move(val.exponent);
     this->mantissa = std::move(val.mantissa);
+    this->accuracy = std::move(val.accuracy);
     return *this;
   }
 
-  BigFloat(std::string str) {
+  BigFloat(std::string str, uint64_t accuracy = 200) : accuracy(accuracy) {
     // find '.' and remove it
     size_t position = str.find('.');
     // does not find '.'
@@ -155,7 +163,7 @@ struct BigFloat {
   friend void multiplication(const BigFloatT& a,
                              const BigFloatT& b,
                              BigFloatT& result) {
-    addition(a.exponent, b.exponent, result.exponent);
+    result.exponent = a.exponent + b.exponent;
     multiplication(a.mantissa, b.mantissa, result.mantissa);
     result.normalize();
   }
@@ -172,31 +180,83 @@ struct BigFloat {
   // return 1 if this bigger than b
   // return 0 if this equal to b
   int compareTo(const BigFloatT& val) const {
-    int rv = this->exponent.compareTo(val.exponent);
-    if (rv != 0) {
-      return rv;
+    if (this->exponent < val.exponent) {
+      return -1;
+    }
+    if (this->exponent > val.exponent) {
+      return 1;
     }
 
     return this->mantissa.compareTo(val.mantissa);
   }
 
+  void setAccuracy(int64_t val) {
+    this->accuracy = abs(val);
+    this->normalize();
+  }
+
+  int64_t getAccuracy() const { return (uint64_t)this->accuracy; }
+
+  BigFloatT inverse() const {
+    THROW_ARITH_ERROR(this->mantissa != BigIntegerT::zero_value(),
+                      "division by zero");
+
+    BigFloatT res(0);
+    res.exponent = -this->exponent;
+    res.accuracy = this->accuracy;
+
+    BigIntegerT x(10);
+
+    for (int64_t i = 0; i < this->exponent; ++i) {
+      x *= 10;
+    }
+
+    while (x < this->mantissa) {
+      x *= 10;
+      --res.exponent;
+    }
+
+    BigIntegerT r(1);
+    BigIntegerT q;
+    while (res.exponent > -1 * this->accuracy &&
+           r != BigIntegerT::zero_value()) {
+      division(x, this->mantissa, q, &r);
+      x = 10 * r;
+      res.mantissa *= 10;
+      res.mantissa += q;
+      --res.exponent;
+    }
+
+    res.mantissa.setSign(this->mantissa.getSign());
+
+    return res;
+  }
+
   friend std::string toPrettyString(const BigFloatT& val) {
     return toPrettyString(val.mantissa, NumFormat::DEC) + "*e^(" +
-           toPrettyString(val.exponent, NumFormat::DEC) + ")";
+           std::to_string(val.exponent) + ")";
   }
 
  private:
   void normalize() {
-    while (true) {
-      BigIntegerT quotient;
-      BigIntegerT remainder;
-      division(mantissa, 10, quotient, &remainder);
-      if (remainder == 0) {
-        ++this->exponent;
-        this->mantissa = quotient;
-      } else {
-        break;
-      }
+    BigIntegerT q = 0;
+    BigIntegerT r = 0;
+    division(mantissa, 10, q, &r);
+
+    // remove zeros
+    for (; r == 0; division(mantissa, 10, q, &r)) {
+      ++exponent;
+      mantissa = q;
+    }
+
+    // normalizing number by its accuracy
+    for (; exponent < -1 * accuracy; division(mantissa, 10, q, &r)) {
+      ++exponent;
+      mantissa = q;
+    }
+
+    if (mantissa == 0) {
+      exponent = 0;
     }
   }
 
@@ -204,6 +264,10 @@ struct BigFloat {
       typename T,
       typename = typename std::enable_if<std::is_integral<T>::value>::type>
   void init(T val) {
+    if (val == 0) {
+      return;
+    }
+
     uint64_t exp = 0;
     while (val % 10 == 0) {
       val /= 10;
@@ -214,8 +278,10 @@ struct BigFloat {
   }
 
  private:
-  BigIntegerT exponent{};
+  int64_t exponent{};
   BigIntegerT mantissa{};
+  // default accuracy is 200
+  int64_t accuracy{200};
 };
 
 extern template struct BigFloat<32>;
