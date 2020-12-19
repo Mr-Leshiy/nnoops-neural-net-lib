@@ -4,11 +4,6 @@ include_directories(${CMAKE_BINARY_DIR}/include)
 
 add_subdirectory(functions)
 add_subdirectory(algorithms)
-add_subdirectory(long_arithmetic)
-
-addtest(strutil_test 
-    strutil_test.cpp
-    )
 
 if(NEURAL_NET_TESTING)
 add_subdirectory(neural_net)

@@ -1,1 +1,0 @@
-addbenchmark(unsigned_big_integer_bench unsigned_big_integer_bench.cpp)
