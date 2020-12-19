@@ -49,7 +49,7 @@ struct BigFloat {
     return *this;
   }
 
-  BigFloat(std::string str, uint64_t accuracy = 1000) : accuracy(accuracy) {
+  BigFloat(std::string str, uint64_t accuracy = 200) : accuracy(accuracy) {
     // find '.' and remove it
     size_t position = str.find('.');
     // does not find '.'
@@ -201,36 +201,43 @@ struct BigFloat {
     THROW_ARITH_ERROR(this->mantissa != BigIntegerT::zero_value(),
                       "division by zero");
 
-    BigFloatT d(*this);
-    // TODO use d = abs(*this);
-    d.mantissa.setSign(true);
+    BigFloatT res(0);
+    res.exponent = -this->exponent;
+    res.accuracy = this->accuracy;
+
     BigIntegerT x(10);
 
-    for (int64_t i = 0; i < d.exponent; ++i) {
+    for (int64_t i = 0; i < this->exponent; ++i) {
       x *= 10;
+    }
+
+    while (x < this->mantissa) {
+      x *= 10;
+      --res.exponent;
     }
 
     BigIntegerT r;
     BigIntegerT q;
     // first division
-    if (d.exponent > -1 * this->accuracy) {
-      division(x, d.mantissa, q, &r);
+    if (res.exponent > -1 * this->accuracy) {
+      division(x, this->mantissa, q, &r);
       x = 10 * r;
-      d.mantissa = q;
-      --d.exponent;
+      res.mantissa = q;
+      --res.exponent;
     }
 
-    while (d.exponent > -1 * this->accuracy && r != BigIntegerT::zero_value()) {
-      division(x, q, q, &r);
+    while (res.exponent > -1 * this->accuracy &&
+           r != BigIntegerT::zero_value()) {
+      division(x, this->mantissa, q, &r);
       x = 10 * r;
-      d.mantissa *= 10;
-      d.mantissa += q;
-      --d.exponent;
+      res.mantissa *= 10;
+      res.mantissa += q;
+      --res.exponent;
     }
 
-    d.mantissa.setSign(this->mantissa.getSign());
+    res.mantissa.setSign(this->mantissa.getSign());
 
-    return d;
+    return res;
   }
 
   friend std::string toPrettyString(const BigFloatT& val) {
@@ -265,6 +272,10 @@ struct BigFloat {
       typename T,
       typename = typename std::enable_if<std::is_integral<T>::value>::type>
   void init(T val) {
+    if (val == 0) {
+      return;
+    }
+
     uint64_t exp = 0;
     while (val % 10 == 0) {
       val /= 10;
@@ -277,8 +288,8 @@ struct BigFloat {
  private:
   int64_t exponent{};
   BigIntegerT mantissa{};
-  // default accuracy is 1000
-  int64_t accuracy{1000};
+  // default accuracy is 200
+  int64_t accuracy{200};
 };
 
 extern template struct BigFloat<32>;

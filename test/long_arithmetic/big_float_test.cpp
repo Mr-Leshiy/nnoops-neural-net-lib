@@ -39,15 +39,17 @@ TEST(BigFloat, inverse_test) {
 
   // accuracy - 5
   val = BigFloatT("3.0", 5);
-  val = val.inverse();
 
-  EXPECT_EQ(val, BigFloatT("0.33333"));
+  EXPECT_EQ(val.inverse(), BigFloatT("0.33333"));
 
-  val = BigFloatT("4134.6146161");
+  // accuracy - 19
+  val = BigFloatT("4134.6146161", 19);
 
-  EXPECT_EQ(toPrettyString(val.inverse()), "");
+  EXPECT_EQ(val.inverse(), BigFloatT("0.0002418605100717357"));
 
-  // EXPECT_EQ(val.inverse(), BigFloatT("0.0002418605100717358"));
+  val = BigFloatT("0.245555542", 15);
+
+  EXPECT_EQ(val.inverse(), BigFloatT("4.072398414856383"));
 }
 
 TEST(BigFloat, toPrettyString_test) {
